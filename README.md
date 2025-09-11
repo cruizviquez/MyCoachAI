@@ -1,2 +1,5 @@
 # MyCoachAI
-Your personal AI trainer with real-time form analysis and coaching
+
+### Your Personal AI Trainer
+
+MyCoachAI revolutionizes fitness training by transforming your smartphone into an intelligent personal trainer.
