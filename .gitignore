@@ -127,3 +127,10 @@ docker-compose.override.yml
 # Local History for Visual Studio Code
 .history/
 
+
+# Safety: ignore heavy folders
+apps/mobile/node_modules/
+apps/mobile/.expo/
+apps/mobile/web-build/
+apps/mobile/ios/build/
+apps/mobile/android/build/
