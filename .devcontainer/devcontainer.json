@@ -7,8 +7,7 @@
     "vscode": {
       "extensions": [
         "ms-python.python",
-        "ms-vscode.vscode-typescript-next",
-        "expo.vscode-expo-tools"
+        "ms-vscode.vscode-typescript-next"
       ]
     }
   },
