@@ -1,7 +1,12 @@
 {
   "name": "MyCoachAI Development",
-  "image": "mcr.microsoft.com/devcontainers/typescript-node:18",
-  "forwardPorts": [8000, 8081, 5432],
+  "image": "mcr.microsoft.com/devcontainers/typescript-node:18-bullseye",
+  "forwardPorts": [8000, 8081],
+  "features": {
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.11"
+    }
+  },
   "postCreateCommand": "make setup",
   "customizations": {
     "vscode": {
@@ -9,15 +14,6 @@
         "ms-python.python",
         "ms-vscode.vscode-typescript-next"
       ]
-    }
-  },
-  "features": {
-    "ghcr.io/devcontainers/features/python:1": {"version": "3.11"},
-    "ghcr.io/devcontainers/features/postgres:1": {
-      "version": "15",
-      "password": "mycoach",
-      "database": "mycoach",
-      "user": "mycoach"
     }
   }
 }
