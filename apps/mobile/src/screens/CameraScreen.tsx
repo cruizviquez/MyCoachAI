@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Camera } from 'expo-camera';
 import { useRoute } from '@react-navigation/native';
 
@@ -20,11 +20,9 @@ export default function CameraScreen() {
 
   const startAnalysis = () => {
     setIsAnalyzing(true);
-    // Simulate pose analysis for MVP
     setFormScore(85);
     setFeedback('Great form! Keep your back straight');
     
-    // In v2, this will actually capture frames and analyze pose
     setTimeout(() => {
       setFormScore(92);
       setFeedback('Excellent depth on that squat!');

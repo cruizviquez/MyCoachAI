@@ -11,7 +11,7 @@ export default function HomeScreen() {
   const navigation = useNavigation();
 
   const startExercise = (exerciseId: string) => {
-    navigation.navigate('Camera' as never, { exerciseId } as never);
+    navigation.navigate('Camera', { exerciseId });
   };
 
   return (
