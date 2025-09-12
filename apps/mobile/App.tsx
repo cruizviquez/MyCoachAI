@@ -8,6 +8,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 // Import all screens
 import WelcomeScreen from './src/screens/onboarding/WelcomeScreen';
 import SetupScreen from './src/screens/onboarding/SetupScreen';
+import WorkoutPlanScreen from './src/screens/workout/WorkoutPlanScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import CameraScreen from './src/screens/CameraScreen';
 
@@ -20,7 +21,7 @@ export default function App() {
         <Stack.Navigator 
           initialRouteName="Welcome"
           screenOptions={{
-            headerStyle: { backgroundColor: '#4299e1' },
+            headerStyle: { backgroundColor: '#FF8C00' }, // Changed from blue to orange
             headerTintColor: 'white',
             headerTitleStyle: { fontWeight: 'bold' },
           }}
@@ -34,6 +35,11 @@ export default function App() {
             name="Setup" 
             component={SetupScreen}
             options={{ title: 'Setup Your Workout' }}
+          />
+          <Stack.Screen 
+            name="WorkoutPlan" 
+            component={WorkoutPlanScreen}
+            options={{ title: 'Your Plan' }}
           />
           <Stack.Screen 
             name="Home" 

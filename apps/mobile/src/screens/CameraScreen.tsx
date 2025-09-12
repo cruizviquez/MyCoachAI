@@ -1,71 +1,73 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import { Camera } from 'expo-camera';
-import { useRoute } from '@react-navigation/native';
 
 export default function CameraScreen() {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
-  const [formScore, setFormScore] = useState(0);
-  const [feedback, setFeedback] = useState('Position yourself in frame');
-  const route = useRoute();
-  const { exerciseId } = route.params as { exerciseId: string };
+  const [cameraRef, setCameraRef] = useState<Camera | null>(null);
 
   useEffect(() => {
     (async () => {
+      if (Platform.OS === 'web') {
+        // On web, we'll show a placeholder for now
+        setHasPermission(false);
+        return;
+      }
+      
       const { status } = await Camera.requestCameraPermissionsAsync();
       setHasPermission(status === 'granted');
     })();
   }, []);
 
-  const startAnalysis = () => {
-    setIsAnalyzing(true);
-    setFormScore(85);
-    setFeedback('Great form! Keep your back straight');
-    
-    setTimeout(() => {
-      setFormScore(92);
-      setFeedback('Excellent depth on that squat!');
-    }, 2000);
-  };
-
-  const stopAnalysis = () => {
-    setIsAnalyzing(false);
-    setFormScore(0);
-    setFeedback('Session complete! Great work 💪');
-  };
+  // Web fallback
+  if (Platform.OS === 'web') {
+    return (
+      <View style={styles.container}>
+        <View style={styles.webFallback}>
+          <Text style={styles.webTitle}>📱 Camera View</Text>
+          <Text style={styles.webText}>
+            Camera functionality is available on mobile devices.
+          </Text>
+          <Text style={styles.webText}>
+            On web, you'll see your workout form analysis here.
+          </Text>
+          <View style={styles.placeholder}>
+            <Text style={styles.placeholderText}>🎥</Text>
+            <Text style={styles.placeholderText}>Camera Preview</Text>
+          </View>
+        </View>
+      </View>
+    );
+  }
 
   if (hasPermission === null) {
-    return <View style={styles.container}><Text>Requesting camera permission...</Text></View>;
+    return (
+      <View style={styles.container}>
+        <Text>Requesting camera permission...</Text>
+      </View>
+    );
   }
+
   if (hasPermission === false) {
-    return <View style={styles.container}><Text>No access to camera</Text></View>;
+    return (
+      <View style={styles.container}>
+        <Text style={styles.noPermissionText}>No access to camera</Text>
+      </View>
+    );
   }
 
   return (
     <View style={styles.container}>
-      <Camera style={styles.camera} type={Camera.Constants.Type.front}>
+      <Camera 
+        style={styles.camera} 
+        ref={(ref) => setCameraRef(ref)}
+        type={Camera.Constants?.Type?.front || 'front' as any}
+      >
         <View style={styles.overlay}>
-          <View style={styles.header}>
-            <Text style={styles.exerciseName}>{exerciseId.toUpperCase()}</Text>
-            <Text style={styles.formScore}>Form Score: {formScore}%</Text>
-          </View>
-          
-          <View style={styles.feedbackContainer}>
-            <Text style={styles.feedback}>{feedback}</Text>
-          </View>
-          
-          <View style={styles.controls}>
-            {!isAnalyzing ? (
-              <TouchableOpacity style={styles.startButton} onPress={startAnalysis}>
-                <Text style={styles.buttonText}>Start Exercise</Text>
-              </TouchableOpacity>
-            ) : (
-              <TouchableOpacity style={styles.stopButton} onPress={stopAnalysis}>
-                <Text style={styles.buttonText}>Stop</Text>
-              </TouchableOpacity>
-            )}
-          </View>
+          <Text style={styles.overlayText}>AI Form Analysis Active 🤖</Text>
+          <TouchableOpacity style={styles.stopButton}>
+            <Text style={styles.stopButtonText}>Stop Workout</Text>
+          </TouchableOpacity>
         </View>
       </Camera>
     </View>
@@ -75,6 +77,7 @@ export default function CameraScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#000',
   },
   camera: {
     flex: 1,
@@ -82,54 +85,66 @@ const styles = StyleSheet.create({
   overlay: {
     flex: 1,
     backgroundColor: 'transparent',
-    justifyContent: 'space-between',
-  },
-  header: {
-    backgroundColor: 'rgba(0,0,0,0.7)',
+    flexDirection: 'column',
+    justifyContent: 'flex-end',
     padding: 20,
-    alignItems: 'center',
   },
-  exerciseName: {
-    color: 'white',
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  formScore: {
-    color: '#4CAF50',
-    fontSize: 28,
-    fontWeight: 'bold',
-  },
-  feedbackContainer: {
-    backgroundColor: 'rgba(0,0,0,0.7)',
-    padding: 15,
-    marginHorizontal: 20,
-    borderRadius: 10,
-  },
-  feedback: {
+  overlayText: {
     color: 'white',
     fontSize: 18,
     textAlign: 'center',
-  },
-  controls: {
-    padding: 30,
-    alignItems: 'center',
-  },
-  startButton: {
-    backgroundColor: '#4CAF50',
-    paddingHorizontal: 40,
-    paddingVertical: 15,
-    borderRadius: 30,
+    marginBottom: 20,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    padding: 10,
+    borderRadius: 8,
   },
   stopButton: {
-    backgroundColor: '#f44336',
-    paddingHorizontal: 40,
-    paddingVertical: 15,
-    borderRadius: 30,
+    backgroundColor: '#FF6B35',
+    padding: 15,
+    borderRadius: 8,
+    alignItems: 'center',
   },
-  buttonText: {
+  stopButtonText: {
     color: 'white',
-    fontSize: 20,
+    fontSize: 16,
     fontWeight: 'bold',
+  },
+  webFallback: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#fff5f0',
+    padding: 40,
+  },
+  webTitle: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#FF6B35',
+    marginBottom: 20,
+  },
+  webText: {
+    fontSize: 16,
+    color: '#666',
+    textAlign: 'center',
+    marginBottom: 15,
+    lineHeight: 24,
+  },
+  placeholder: {
+    marginTop: 40,
+    padding: 60,
+    backgroundColor: '#FF6B35',
+    borderRadius: 20,
+    alignItems: 'center',
+    opacity: 0.8,
+  },
+  placeholderText: {
+    color: 'white',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
+  noPermissionText: {
+    color: 'white',
+    fontSize: 18,
+    textAlign: 'center',
   },
 });
