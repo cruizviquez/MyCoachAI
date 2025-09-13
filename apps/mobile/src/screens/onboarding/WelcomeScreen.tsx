@@ -9,8 +9,12 @@ type WelcomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Welc
 export default function WelcomeScreen() {
   const navigation = useNavigation<WelcomeScreenNavigationProp>();
 
-  const handleGetStarted = () => {
+  const handleQuickSetup = () => {
     navigation.navigate('Setup');
+  };
+
+  const handlePersonalizedSetup = () => {
+    navigation.navigate('OnboardingGoals');
   };
 
   return (
@@ -36,21 +40,28 @@ export default function WelcomeScreen() {
         <View style={styles.features}>
           <View style={styles.feature}>
             <Text style={styles.featureEmoji}>💪</Text>
-            <Text style={styles.featureText}>No equipment needed</Text>
+            <Text style={styles.featureText}>Smart workout generation</Text>
           </View>
           <View style={styles.feature}>
             <Text style={styles.featureEmoji}>🎯</Text>
             <Text style={styles.featureText}>Real-time form feedback</Text>
           </View>
           <View style={styles.feature}>
-            <Text style={styles.featureEmoji}>⚡</Text>
-            <Text style={styles.featureText}>Quick personalized workouts</Text>
+            <Text style={styles.featureEmoji}>📊</Text>
+            <Text style={styles.featureText}>Track your progress</Text>
           </View>
         </View>
 
-        <TouchableOpacity style={styles.button} onPress={handleGetStarted}>
-          <Text style={styles.buttonText}>Get Started 🚀</Text>
-        </TouchableOpacity>
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.primaryButton} onPress={handlePersonalizedSetup}>
+            <Text style={styles.primaryButtonText}>Personalized Setup 🎯</Text>
+            <Text style={styles.buttonSubtext}>Get AI-optimized workouts (2 min)</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.secondaryButton} onPress={handleQuickSetup}>
+            <Text style={styles.secondaryButtonText}>Quick Start ⚡</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     </SafeAreaView>
   );
@@ -59,7 +70,7 @@ export default function WelcomeScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8fafc',
+    backgroundColor: '#fff5f0',
   },
   content: {
     flex: 1,
@@ -69,7 +80,7 @@ const styles = StyleSheet.create({
   },
   header: {
     alignItems: 'center',
-    marginTop: 60,
+    marginTop: 40,
   },
   logoContainer: {
     flexDirection: 'row',
@@ -99,11 +110,11 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   titleAI: {
-    color: '#FF6B35', // Orange for AI
+    color: '#FF6B35',
   },
   subtitle: {
     fontSize: 18,
-    color: '#2D7D7D', // Teal
+    color: '#666',
     fontWeight: '500',
   },
   description: {
@@ -117,36 +128,39 @@ const styles = StyleSheet.create({
     lineHeight: 26,
   },
   features: {
-    gap: 16,
+    gap: 12,
   },
   feature: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: 'white',
-    padding: 20,
-    borderRadius: 16,
+    padding: 16,
+    borderRadius: 12,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.08,
     shadowRadius: 6,
     elevation: 3,
     borderLeftWidth: 4,
-    borderLeftColor: '#32D74B', // Green accent
+    borderLeftColor: '#FF6B35',
   },
   featureEmoji: {
-    fontSize: 28,
-    marginRight: 16,
+    fontSize: 24,
+    marginRight: 14,
   },
   featureText: {
-    fontSize: 16,
+    fontSize: 15,
     color: '#1a202c',
     fontWeight: '600',
   },
-  button: {
-    backgroundColor: '#FF6B35', // Energy orange
+  buttonContainer: {
+    gap: 12,
+  },
+  primaryButton: {
+    backgroundColor: '#FF6B35',
     paddingVertical: 18,
     paddingHorizontal: 32,
-    borderRadius: 16,
+    borderRadius: 12,
     alignItems: 'center',
     shadowColor: '#FF6B35',
     shadowOffset: { width: 0, height: 4 },
@@ -154,9 +168,28 @@ const styles = StyleSheet.create({
     shadowRadius: 8,
     elevation: 6,
   },
-  buttonText: {
+  primaryButtonText: {
     color: 'white',
     fontSize: 18,
     fontWeight: '700',
+    marginBottom: 4,
+  },
+  buttonSubtext: {
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontSize: 13,
+  },
+  secondaryButton: {
+    backgroundColor: 'white',
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 12,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#FF6B35',
+  },
+  secondaryButtonText: {
+    color: '#FF6B35',
+    fontSize: 17,
+    fontWeight: '600',
   },
 });

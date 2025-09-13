@@ -12,75 +12,129 @@ export default function SetupScreen() {
   const [equipment, setEquipment] = useState('');
   const [time, setTime] = useState('');
 
+  const canContinue = level && equipment && time;
+
   const handleCreateWorkout = () => {
-    console.log('BUTTON CLICKED!'); // Debug log
-    navigation.navigate('WorkoutPlan', { 
-      level: level || 'beginner', 
-      equipment: equipment || 'bodyweight', 
-      time: time || '30'
-    });
+    if (canContinue) {
+      navigation.navigate('WorkoutPlan', { level, equipment, time });
+    }
   };
+
+  const OptionButton = ({ 
+    title, 
+    isSelected, 
+    onPress 
+  }: { 
+    title: string; 
+    isSelected: boolean; 
+    onPress: () => void 
+  }) => (
+    <TouchableOpacity
+      style={[styles.optionButton, isSelected && styles.selectedOption]}
+      onPress={onPress}
+    >
+      <Text style={[styles.optionText, isSelected && styles.selectedOptionText]}>
+        {title}
+      </Text>
+    </TouchableOpacity>
+  );
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView}>
-        <View style={styles.content}>
+      <ScrollView 
+        style={styles.scrollView} 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.header}>
           <Text style={styles.title}>Let's personalize your workout</Text>
           <Text style={styles.subtitle}>Just 3 quick questions to get started</Text>
-
-          <View style={styles.section}>
-            <Text style={styles.questionTitle}>What's your fitness level?</Text>
-            <TouchableOpacity
-              style={[styles.optionButton, level === 'beginner' && styles.selectedOption]}
-              onPress={() => setLevel('beginner')}
-            >
-              <Text>Beginner</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.optionButton, level === 'intermediate' && styles.selectedOption]}
-              onPress={() => setLevel('intermediate')}
-            >
-              <Text>Intermediate</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.questionTitle}>Equipment?</Text>
-            <TouchableOpacity
-              style={[styles.optionButton, equipment === 'bodyweight' && styles.selectedOption]}
-              onPress={() => setEquipment('bodyweight')}
-            >
-              <Text>Bodyweight Only</Text>
-            </TouchableOpacity>
-            <TouchableOpacity
-              style={[styles.optionButton, equipment === 'dumbbells' && styles.selectedOption]}
-              onPress={() => setEquipment('dumbbells')}
-            >
-              <Text>Dumbbells</Text>
-            </TouchableOpacity>
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.questionTitle}>Time?</Text>
-            <TouchableOpacity
-              style={[styles.optionButton, time === '30' && styles.selectedOption]}
-              onPress={() => setTime('30')}
-            >
-              <Text>30 min</Text>
-            </TouchableOpacity>
-          </View>
-
-          {/* SUPER OBVIOUS BUTTON */}
-          <TouchableOpacity
-            style={styles.bigButton}
-            onPress={handleCreateWorkout}
-          >
-            <Text style={styles.bigButtonText}>
-              CLICK ME TO CONTINUE
-            </Text>
-          </TouchableOpacity>
-
         </View>
+
+        <View style={styles.section}>
+          <Text style={styles.questionTitle}>1. What's your fitness level?</Text>
+          <View style={styles.optionsRow}>
+            <OptionButton
+              title="Beginner"
+              isSelected={level === 'beginner'}
+              onPress={() => setLevel('beginner')}
+            />
+            <OptionButton
+              title="Intermediate"
+              isSelected={level === 'intermediate'}
+              onPress={() => setLevel('intermediate')}
+            />
+            <OptionButton
+              title="Advanced"
+              isSelected={level === 'advanced'}
+              onPress={() => setLevel('advanced')}
+            />
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.questionTitle}>2. What equipment do you have?</Text>
+          <View style={styles.optionsGrid}>
+            <OptionButton
+              title="Bodyweight"
+              isSelected={equipment === 'bodyweight'}
+              onPress={() => setEquipment('bodyweight')}
+            />
+            <OptionButton
+              title="Dumbbells"
+              isSelected={equipment === 'dumbbells'}
+              onPress={() => setEquipment('dumbbells')}
+            />
+            <OptionButton
+              title="Full Gym"
+              isSelected={equipment === 'gym'}
+              onPress={() => setEquipment('gym')}
+            />
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <Text style={styles.questionTitle}>3. How long can you workout?</Text>
+          <View style={styles.optionsRow}>
+            <OptionButton
+              title="15 min"
+              isSelected={time === '15'}
+              onPress={() => setTime('15')}
+            />
+            <OptionButton
+              title="30 min"
+              isSelected={time === '30'}
+              onPress={() => setTime('30')}
+            />
+            <OptionButton
+              title="45 min"
+              isSelected={time === '45'}
+              onPress={() => setTime('45')}
+            />
+          </View>
+        </View>
+
+        {/* Progress indicator */}
+        <View style={styles.progressContainer}>
+          <View style={styles.progressBar}>
+            <View style={[styles.progressFill, { width: `${(level ? 33 : 0) + (equipment ? 33 : 0) + (time ? 34 : 0)}%` }]} />
+          </View>
+          <Text style={styles.progressText}>
+            {!canContinue && `${[level, equipment, time].filter(Boolean).length}/3 questions answered`}
+            {canContinue && '✓ All set!'}
+          </Text>
+        </View>
+
+        {/* Create button */}
+        <TouchableOpacity
+          style={[styles.createButton, !canContinue && styles.createButtonDisabled]}
+          onPress={handleCreateWorkout}
+          disabled={!canContinue}
+        >
+          <Text style={[styles.createButtonText, !canContinue && styles.createButtonTextDisabled]}>
+            {canContinue ? 'Create My Workout 🚀' : 'Please answer all questions'}
+          </Text>
+        </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
   );
@@ -89,55 +143,116 @@ export default function SetupScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f0f0f0',
+    backgroundColor: '#fff5f0',
   },
   scrollView: {
     flex: 1,
   },
-  content: {
-    padding: 20,
+  scrollContent: {
+    paddingHorizontal: 20,
+    paddingTop: 20,
+    paddingBottom: 40,
+  },
+  header: {
+    marginBottom: 30,
+    alignItems: 'center',
   },
   title: {
-    fontSize: 24,
+    fontSize: 26,
     fontWeight: 'bold',
+    color: '#1a202c',
     textAlign: 'center',
-    marginBottom: 10,
+    marginBottom: 8,
   },
   subtitle: {
     fontSize: 16,
+    color: '#666',
     textAlign: 'center',
-    marginBottom: 30,
   },
   section: {
-    marginBottom: 30,
+    marginBottom: 25,
   },
   questionTitle: {
     fontSize: 18,
-    fontWeight: 'bold',
-    marginBottom: 15,
+    fontWeight: '600',
+    color: '#333',
+    marginBottom: 12,
+  },
+  optionsRow: {
+    flexDirection: 'row',
+    gap: 10,
+  },
+  optionsGrid: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 10,
   },
   optionButton: {
+    flex: 1,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     backgroundColor: 'white',
-    padding: 15,
-    marginBottom: 10,
+    borderRadius: 8,
     borderWidth: 2,
-    borderColor: '#ccc',
+    borderColor: '#e2e8f0',
+    alignItems: 'center',
+    minHeight: 44,
+    justifyContent: 'center',
   },
   selectedOption: {
-    backgroundColor: '#ffeecc',
-    borderColor: '#ff6600',
+    borderColor: '#FF6B35',
+    backgroundColor: '#fff8f5',
   },
-  bigButton: {
-    backgroundColor: 'red',
-    padding: 30,
-    marginTop: 50,
-    marginBottom: 50,
-    borderRadius: 10,
-  },
-  bigButtonText: {
-    color: 'white',
-    fontSize: 20,
-    fontWeight: 'bold',
+  optionText: {
+    fontSize: 14,
+    color: '#666',
+    fontWeight: '500',
     textAlign: 'center',
+  },
+  selectedOptionText: {
+    color: '#FF6B35',
+    fontWeight: '600',
+  },
+  progressContainer: {
+    marginTop: 20,
+    marginBottom: 25,
+    alignItems: 'center',
+  },
+  progressBar: {
+    width: '100%',
+    height: 8,
+    backgroundColor: '#e2e8f0',
+    borderRadius: 4,
+    overflow: 'hidden',
+    marginBottom: 8,
+  },
+  progressFill: {
+    height: '100%',
+    backgroundColor: '#FF6B35',
+    borderRadius: 4,
+    transition: 'width 0.3s ease',
+  },
+  progressText: {
+    fontSize: 14,
+    color: '#666',
+  },
+  createButton: {
+    backgroundColor: '#FF6B35',
+    paddingVertical: 16,
+    paddingHorizontal: 32,
+    borderRadius: 10,
+    alignItems: 'center',
+    marginTop: 10,
+  },
+  createButtonDisabled: {
+    backgroundColor: '#ccc',
+  },
+  createButtonText: {
+    fontSize: 17,
+    fontWeight: '600',
+    color: 'white',
+  },
+  createButtonTextDisabled: {
+    color: '#999',
   },
 });
