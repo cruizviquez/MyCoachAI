@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, TextInput } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, TextInput, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/navigation';
@@ -31,98 +31,109 @@ export default function OnboardingProfile() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView 
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView 
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <View style={styles.header}>
-          <View style={styles.progressBar}>
-            <View style={[styles.progressFill, { width: '40%' }]} />
-          </View>
-          <Text style={styles.step}>Step 2 of 5</Text>
-          <Text style={styles.title}>Your Profile</Text>
-          <Text style={styles.subtitle}>Help us personalize your experience</Text>
-        </View>
-
-        <View style={styles.form}>
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Age</Text>
-            <TextInput
-              style={styles.input}
-              value={age}
-              onChangeText={setAge}
-              placeholder="25"
-              keyboardType="numeric"
-              maxLength={3}
-            />
-          </View>
-
-          <View style={styles.inputRow}>
-            <View style={[styles.inputGroup, { flex: 1, marginRight: 10 }]}>
-              <Text style={styles.label}>Weight (kg)</Text>
-              <TextInput
-                style={styles.input}
-                value={weight}
-                onChangeText={setWeight}
-                placeholder="70"
-                keyboardType="numeric"
-                maxLength={3}
-              />
-            </View>
-            <View style={[styles.inputGroup, { flex: 1, marginLeft: 10 }]}>
-              <Text style={styles.label}>Height (cm)</Text>
-              <TextInput
-                style={styles.input}
-                value={height}
-                onChangeText={setHeight}
-                placeholder="175"
-                keyboardType="numeric"
-                maxLength={3}
-              />
-            </View>
-          </View>
-
-          <View style={styles.inputGroup}>
-            <Text style={styles.label}>Gender</Text>
-            <View style={styles.genderOptions}>
-              {['Male', 'Female', 'Other'].map((option) => (
-                <TouchableOpacity
-                  key={option}
-                  style={[styles.genderButton, gender === option.toLowerCase() && styles.selectedGender]}
-                  onPress={() => setGender(option.toLowerCase())}
-                >
-                  <Text style={[styles.genderText, gender === option.toLowerCase() && styles.selectedGenderText]}>
-                    {option}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
-          {getBMI() && (
-            <View style={styles.bmiContainer}>
-              <Text style={styles.bmiLabel}>Your BMI:</Text>
-              <Text style={styles.bmiValue}>{getBMI()}</Text>
-              <Text style={styles.bmiStatus}>
-                {parseFloat(getBMI()) < 18.5 ? 'Underweight' :
-                 parseFloat(getBMI()) < 25 ? 'Normal' :
-                 parseFloat(getBMI()) < 30 ? 'Overweight' : 'Obese'}
-              </Text>
-            </View>
-          )}
-        </View>
-
-        <TouchableOpacity
-          style={[styles.nextButton, !canContinue && styles.nextButtonDisabled]}
-          onPress={handleNext}
-          disabled={!canContinue}
+        <ScrollView 
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={true}
+          bounces={false}
         >
-          <Text style={[styles.nextButtonText, !canContinue && styles.nextButtonTextDisabled]}>
-            Continue
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
+          <View style={styles.content}>
+            <View style={styles.header}>
+              <View style={styles.progressBar}>
+                <View style={[styles.progressFill, { width: '40%' }]} />
+              </View>
+              <Text style={styles.step}>Step 2 of 5</Text>
+              <Text style={styles.title}>Your Profile</Text>
+              <Text style={styles.subtitle}>Help us personalize your experience</Text>
+            </View>
+
+            <View style={styles.form}>
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Age</Text>
+                <TextInput
+                  style={styles.input}
+                  value={age}
+                  onChangeText={setAge}
+                  placeholder="Enter your age"
+                  placeholderTextColor="#999"
+                  keyboardType="numeric"
+                  maxLength={3}
+                />
+              </View>
+
+              <View style={styles.inputRow}>
+                <View style={[styles.inputGroup, { flex: 1, marginRight: 10 }]}>
+                  <Text style={styles.label}>Weight (kg)</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={weight}
+                    onChangeText={setWeight}
+                    placeholder="Enter weight"
+                    placeholderTextColor="#999"
+                    keyboardType="numeric"
+                    maxLength={3}
+                  />
+                </View>
+                <View style={[styles.inputGroup, { flex: 1, marginLeft: 10 }]}>
+                  <Text style={styles.label}>Height (cm)</Text>
+                  <TextInput
+                    style={styles.input}
+                    value={height}
+                    onChangeText={setHeight}
+                    placeholder="Enter height"
+                    placeholderTextColor="#999"
+                    keyboardType="numeric"
+                    maxLength={3}
+                  />
+                </View>
+              </View>
+
+              <View style={styles.inputGroup}>
+                <Text style={styles.label}>Gender</Text>
+                <View style={styles.genderOptions}>
+                  {['Male', 'Female', 'Other'].map((option) => (
+                    <TouchableOpacity
+                      key={option}
+                      style={[styles.genderButton, gender === option.toLowerCase() && styles.selectedGender]}
+                      onPress={() => setGender(option.toLowerCase())}
+                    >
+                      <Text style={[styles.genderText, gender === option.toLowerCase() && styles.selectedGenderText]}>
+                        {option}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+
+              {getBMI() && (
+                <View style={styles.bmiContainer}>
+                  <Text style={styles.bmiLabel}>Your BMI:</Text>
+                  <Text style={styles.bmiValue}>{getBMI()}</Text>
+                  <Text style={styles.bmiStatus}>
+                    {parseFloat(getBMI()) < 18.5 ? 'Underweight' :
+                     parseFloat(getBMI()) < 25 ? 'Normal' :
+                     parseFloat(getBMI()) < 30 ? 'Overweight' : 'Obese'}
+                  </Text>
+                </View>
+              )}
+            </View>
+
+            <TouchableOpacity
+              style={[styles.nextButton, !canContinue && styles.nextButtonDisabled]}
+              onPress={handleNext}
+              disabled={!canContinue}
+            >
+              <Text style={[styles.nextButtonText, !canContinue && styles.nextButtonTextDisabled]}>
+                Continue
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -136,11 +147,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 20,
+    flexGrow: 1,
+  },
+  content: {
+    padding: 20,
+    paddingBottom: 40,
   },
   header: {
-    padding: 20,
-    paddingTop: 10,
+    marginBottom: 20,
   },
   progressBar: {
     height: 4,
@@ -169,8 +183,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   form: {
-    padding: 20,
-    paddingTop: 10,
+    marginTop: 10,
   },
   inputGroup: {
     marginBottom: 20,
@@ -247,8 +260,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 10,
     alignItems: 'center',
-    marginHorizontal: 20,
-    marginTop: 10,
+    marginTop: 20,
   },
   nextButtonDisabled: {
     backgroundColor: '#ccc',

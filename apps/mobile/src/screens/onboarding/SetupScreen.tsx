@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/navigation';
@@ -41,101 +41,379 @@ export default function SetupScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView 
-        style={styles.scrollView} 
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView 
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <View style={styles.header}>
-          <Text style={styles.title}>Let's personalize your workout</Text>
-          <Text style={styles.subtitle}>Just 3 quick questions to get started</Text>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.questionTitle}>1. What's your fitness level?</Text>
-          <View style={styles.optionsRow}>
-            <OptionButton
-              title="Beginner"
-              isSelected={level === 'beginner'}
-              onPress={() => setLevel('beginner')}
-            />
-            <OptionButton
-              title="Intermediate"
-              isSelected={level === 'intermediate'}
-              onPress={() => setLevel('intermediate')}
-            />
-            <OptionButton
-              title="Advanced"
-              isSelected={level === 'advanced'}
-              onPress={() => setLevel('advanced')}
-            />
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.questionTitle}>2. What equipment do you have?</Text>
-          <View style={styles.optionsGrid}>
-            <OptionButton
-              title="Bodyweight"
-              isSelected={equipment === 'bodyweight'}
-              onPress={() => setEquipment('bodyweight')}
-            />
-            <OptionButton
-              title="Dumbbells"
-              isSelected={equipment === 'dumbbells'}
-              onPress={() => setEquipment('dumbbells')}
-            />
-            <OptionButton
-              title="Full Gym"
-              isSelected={equipment === 'gym'}
-              onPress={() => setEquipment('gym')}
-            />
-          </View>
-        </View>
-
-        <View style={styles.section}>
-          <Text style={styles.questionTitle}>3. How long can you workout?</Text>
-          <View style={styles.optionsRow}>
-            <OptionButton
-              title="15 min"
-              isSelected={time === '15'}
-              onPress={() => setTime('15')}
-            />
-            <OptionButton
-              title="30 min"
-              isSelected={time === '30'}
-              onPress={() => setTime('30')}
-            />
-            <OptionButton
-              title="45 min"
-              isSelected={time === '45'}
-              onPress={() => setTime('45')}
-            />
-          </View>
-        </View>
-
-        {/* Progress indicator */}
-        <View style={styles.progressContainer}>
-          <View style={styles.progressBar}>
-            <View style={[styles.progressFill, { width: `${(level ? 33 : 0) + (equipment ? 33 : 0) + (time ? 34 : 0)}%` }]} />
-          </View>
-          <Text style={styles.progressText}>
-            {!canContinue && `${[level, equipment, time].filter(Boolean).length}/3 questions answered`}
-            {canContinue && '✓ All set!'}
-          </Text>
-        </View>
-
-        {/* Create button */}
-        <TouchableOpacity
-          style={[styles.createButton, !canContinue && styles.createButtonDisabled]}
-          onPress={handleCreateWorkout}
-          disabled={!canContinue}
+        <ScrollView 
+          style={styles.scrollView} 
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={true}
+          bounces={false}
         >
-          <Text style={[styles.createButtonText, !canContinue && styles.createButtonTextDisabled]}>
-            {canContinue ? 'Create My Workout 🚀' : 'Please answer all questions'}
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
+          <View style={styles.content}>
+            <View style={styles.header}>
+              <Text style={styles.title}>Let's personalize your workout</Text>
+              <Text style={styles.subtitle}>Just 3 quick questions to get started</Text>
+            </View>
+
+            <View style={styles.section}>
+              <Text style={styles.questionTitle}>1. What's your fitness level?</Text>
+              <View style={styles.optionsRow}>
+                <OptionButton
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  title="Beginner"
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  isSelected={level === 'beginner'}
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  onPress={() => setLevel('beginner')}
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                />
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                <OptionButton
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  title="Intermediate"
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  isSelected={level === 'intermediate'}
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  onPress={() => setLevel('intermediate')}
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                />
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                <OptionButton
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  title="Advanced"
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  isSelected={level === 'advanced'}
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  onPress={() => setLevel('advanced')}
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                />
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+              </View>
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+            </View>
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+            <View style={styles.section}>
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+              <Text style={styles.questionTitle}>2. What equipment do you have?</Text>
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+              <View style={styles.optionsGrid}>
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                <OptionButton
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  title="Bodyweight"
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  isSelected={equipment === 'bodyweight'}
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  onPress={() => setEquipment('bodyweight')}
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                />
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                <OptionButton
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  title="Dumbbells"
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  isSelected={equipment === 'dumbbells'}
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  onPress={() => setEquipment('dumbbells')}
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                />
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                <OptionButton
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  title="Full Gym"
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  isSelected={equipment === 'gym'}
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  onPress={() => setEquipment('gym')}
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                />
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+              </View>
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+            </View>
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+            <View style={styles.section}>
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+              <Text style={styles.questionTitle}>3. How long can you workout?</Text>
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+              <View style={styles.optionsRow}>
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                <OptionButton
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  title="15 min"
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  isSelected={time === '15'}
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  onPress={() => setTime('15')}
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                />
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                <OptionButton
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  title="30 min"
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  isSelected={time === '30'}
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  onPress={() => setTime('30')}
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                />
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                <OptionButton
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  title="45 min"
+                <OptionButton
+                  title="60 min"
+                  isSelected={time === "60"}
+                  onPress={() => setTime("60")}
+                />
+                  isSelected={time === '45'}
+                  onPress={() => setTime('45')}
+                />
+              </View>
+            </View>
+
+            {/* Progress indicator */}
+            <View style={styles.progressContainer}>
+              <View style={styles.progressBar}>
+                <View style={[styles.progressFill, { width: `${(level ? 33 : 0) + (equipment ? 33 : 0) + (time ? 34 : 0)}%` }]} />
+              </View>
+              <Text style={styles.progressText}>
+                {!canContinue && `${[level, equipment, time].filter(Boolean).length}/3 questions answered`}
+                {canContinue && '✓ All set!'}
+              </Text>
+            </View>
+
+            {/* Create button */}
+            <TouchableOpacity
+              style={[styles.createButton, !canContinue && styles.createButtonDisabled]}
+              onPress={handleCreateWorkout}
+              disabled={!canContinue}
+            >
+              <Text style={[styles.createButtonText, !canContinue && styles.createButtonTextDisabled]}>
+                {canContinue ? 'Create My Workout 🚀' : 'Please answer all questions'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -149,23 +427,25 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingHorizontal: 20,
-    paddingTop: 20,
+    flexGrow: 1,
+  },
+  content: {
+    padding: 20,
     paddingBottom: 40,
   },
   header: {
-    marginBottom: 30,
+    marginBottom: 25,
     alignItems: 'center',
   },
   title: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#1a202c',
     textAlign: 'center',
     marginBottom: 8,
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 15,
     color: '#666',
     textAlign: 'center',
   },
@@ -173,7 +453,7 @@ const styles = StyleSheet.create({
     marginBottom: 25,
   },
   questionTitle: {
-    fontSize: 18,
+    fontSize: 17,
     fontWeight: '600',
     color: '#333',
     marginBottom: 12,
@@ -215,7 +495,7 @@ const styles = StyleSheet.create({
   },
   progressContainer: {
     marginTop: 20,
-    marginBottom: 25,
+    marginBottom: 20,
     alignItems: 'center',
   },
   progressBar: {

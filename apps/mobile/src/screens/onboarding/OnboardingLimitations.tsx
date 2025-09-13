@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/navigation';
@@ -41,63 +41,71 @@ export default function OnboardingLimitations() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView 
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView 
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <View style={styles.header}>
-          <View style={styles.progressBar}>
-            <View style={[styles.progressFill, { width: '60%' }]} />
-          </View>
-          <Text style={styles.step}>Step 3 of 5</Text>
-          <Text style={styles.title}>Any limitations?</Text>
-          <Text style={styles.subtitle}>We'll adjust exercises for your safety</Text>
-        </View>
-
-        <View style={styles.limitationsContainer}>
-          {limitations.map((limitation) => (
-            <TouchableOpacity
-              key={limitation.id}
-              style={[
-                styles.limitationCard,
-                selectedLimitations.includes(limitation.id) && styles.selectedLimitation
-              ]}
-              onPress={() => handleToggleLimitation(limitation.id)}
-            >
-              <Text style={styles.limitationIcon}>{limitation.icon}</Text>
-              <View style={styles.limitationTextContainer}>
-                <Text style={[
-                  styles.limitationTitle,
-                  selectedLimitations.includes(limitation.id) && styles.selectedText
-                ]}>
-                  {limitation.title}
-                </Text>
-                <Text style={[
-                  styles.limitationDescription,
-                  selectedLimitations.includes(limitation.id) && styles.selectedSubtext
-                ]}>
-                  {limitation.description}
-                </Text>
-              </View>
-              {selectedLimitations.includes(limitation.id) && (
-                <View style={styles.checkmark}>
-                  <Text style={styles.checkmarkText}>✓</Text>
-                </View>
-              )}
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        <TouchableOpacity
-          style={styles.nextButton}
-          onPress={handleNext}
+        <ScrollView 
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={true}
+          bounces={false}
         >
-          <Text style={styles.nextButtonText}>
-            Continue
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
+          <View style={styles.content}>
+            <View style={styles.header}>
+              <View style={styles.progressBar}>
+                <View style={[styles.progressFill, { width: '60%' }]} />
+              </View>
+              <Text style={styles.step}>Step 3 of 5</Text>
+              <Text style={styles.title}>Any limitations?</Text>
+              <Text style={styles.subtitle}>We'll adjust exercises for your safety</Text>
+            </View>
+
+            <View style={styles.limitationsContainer}>
+              {limitations.map((limitation) => (
+                <TouchableOpacity
+                  key={limitation.id}
+                  style={[
+                    styles.limitationCard,
+                    selectedLimitations.includes(limitation.id) && styles.selectedLimitation
+                  ]}
+                  onPress={() => handleToggleLimitation(limitation.id)}
+                >
+                  <Text style={styles.limitationIcon}>{limitation.icon}</Text>
+                  <View style={styles.limitationTextContainer}>
+                    <Text style={[
+                      styles.limitationTitle,
+                      selectedLimitations.includes(limitation.id) && styles.selectedText
+                    ]}>
+                      {limitation.title}
+                    </Text>
+                    <Text style={[
+                      styles.limitationDescription,
+                      selectedLimitations.includes(limitation.id) && styles.selectedSubtext
+                    ]}>
+                      {limitation.description}
+                    </Text>
+                  </View>
+                  {selectedLimitations.includes(limitation.id) && (
+                    <View style={styles.checkmark}>
+                      <Text style={styles.checkmarkText}>✓</Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <TouchableOpacity
+              style={styles.nextButton}
+              onPress={handleNext}
+            >
+              <Text style={styles.nextButtonText}>
+                Continue
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -111,11 +119,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 20,
+    flexGrow: 1,
+  },
+  content: {
+    padding: 20,
+    paddingBottom: 40,
   },
   header: {
-    padding: 20,
-    paddingTop: 10,
+    marginBottom: 20,
   },
   progressBar: {
     height: 4,
@@ -144,8 +155,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   limitationsContainer: {
-    padding: 20,
-    paddingTop: 5,
+    marginTop: 10,
   },
   limitationCard: {
     flexDirection: 'row',
@@ -202,8 +212,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 10,
     alignItems: 'center',
-    marginHorizontal: 20,
-    marginTop: 10,
+    marginTop: 20,
   },
   nextButtonText: {
     fontSize: 17,

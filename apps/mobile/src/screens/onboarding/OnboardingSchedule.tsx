@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/navigation';
@@ -16,107 +16,118 @@ export default function OnboardingSchedule() {
 
   const handleComplete = () => {
     if (canContinue) {
-      // For now, navigate to Setup screen with all collected data
-      // In a real app, you'd store this in context/redux
-      navigation.navigate('Setup');
+      // Navigate directly to WorkoutPlan with the session length
+      navigation.navigate('WorkoutPlan', { 
+        level: 'intermediate', 
+        equipment: 'mixed', 
+        time: sessionLength 
+      });
     }
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView 
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView 
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <View style={styles.header}>
-          <View style={styles.progressBar}>
-            <View style={[styles.progressFill, { width: '100%' }]} />
-          </View>
-          <Text style={styles.step}>Step 5 of 5</Text>
-          <Text style={styles.title}>Your schedule</Text>
-          <Text style={styles.subtitle}>When can you workout?</Text>
-        </View>
-
-        <View style={styles.form}>
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Days per week</Text>
-            <View style={styles.optionsRow}>
-              {['2', '3', '4', '5', '6'].map((days) => (
-                <TouchableOpacity
-                  key={days}
-                  style={[styles.dayButton, daysPerWeek === days && styles.selectedButton]}
-                  onPress={() => setDaysPerWeek(days)}
-                >
-                  <Text style={[styles.dayText, daysPerWeek === days && styles.selectedButtonText]}>
-                    {days}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Session length</Text>
-            <View style={styles.optionsColumn}>
-              {[
-                { value: '15', label: '15 minutes - Quick' },
-                { value: '30', label: '30 minutes - Standard' },
-                { value: '45', label: '45 minutes - Extended' },
-                { value: '60', label: '60 minutes - Full' },
-              ].map((option) => (
-                <TouchableOpacity
-                  key={option.value}
-                  style={[styles.timeButton, sessionLength === option.value && styles.selectedTimeButton]}
-                  onPress={() => setSessionLength(option.value)}
-                >
-                  <Text style={[styles.timeText, sessionLength === option.value && styles.selectedText]}>
-                    {option.label}
-                  </Text>
-                  {sessionLength === option.value && (
-                    <View style={styles.checkmark}>
-                      <Text style={styles.checkmarkText}>✓</Text>
-                    </View>
-                  )}
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Preferred time</Text>
-            <View style={styles.optionsGrid}>
-              {[
-                { value: 'morning', label: 'Morning', icon: '🌅' },
-                { value: 'afternoon', label: 'Afternoon', icon: '☀️' },
-                { value: 'evening', label: 'Evening', icon: '🌆' },
-                { value: 'flexible', label: 'Flexible', icon: '🔄' },
-              ].map((option) => (
-                <TouchableOpacity
-                  key={option.value}
-                  style={[styles.periodButton, preferredTime === option.value && styles.selectedPeriodButton]}
-                  onPress={() => setPreferredTime(option.value)}
-                >
-                  <Text style={styles.periodIcon}>{option.icon}</Text>
-                  <Text style={[styles.periodText, preferredTime === option.value && styles.selectedText]}>
-                    {option.label}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
-          </View>
-        </View>
-
-        <TouchableOpacity
-          style={[styles.completeButton, !canContinue && styles.completeButtonDisabled]}
-          onPress={handleComplete}
-          disabled={!canContinue}
+        <ScrollView 
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={true}
+          bounces={false}
         >
-          <Text style={[styles.completeButtonText, !canContinue && styles.completeButtonTextDisabled]}>
-            Complete Setup 🎉
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
+          <View style={styles.content}>
+            <View style={styles.header}>
+              <View style={styles.progressBar}>
+                <View style={[styles.progressFill, { width: '100%' }]} />
+              </View>
+              <Text style={styles.step}>Step 5 of 5</Text>
+              <Text style={styles.title}>Your schedule</Text>
+              <Text style={styles.subtitle}>When can you workout?</Text>
+            </View>
+
+            <View style={styles.form}>
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Days per week</Text>
+                <View style={styles.optionsRow}>
+                  {['2', '3', '4', '5', '6'].map((days) => (
+                    <TouchableOpacity
+                      key={days}
+                      style={[styles.dayButton, daysPerWeek === days && styles.selectedButton]}
+                      onPress={() => setDaysPerWeek(days)}
+                    >
+                      <Text style={[styles.dayText, daysPerWeek === days && styles.selectedButtonText]}>
+                        {days}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Session length</Text>
+                <View style={styles.optionsColumn}>
+                  {[
+                    { value: '15', label: '15 minutes - Quick' },
+                    { value: '30', label: '30 minutes - Standard' },
+                    { value: '45', label: '45 minutes - Extended' },
+                    { value: '60', label: '60 minutes - Full' },
+                  ].map((option) => (
+                    <TouchableOpacity
+                      key={option.value}
+                      style={[styles.timeButton, sessionLength === option.value && styles.selectedTimeButton]}
+                      onPress={() => setSessionLength(option.value)}
+                    >
+                      <Text style={[styles.timeText, sessionLength === option.value && styles.selectedText]}>
+                        {option.label}
+                      </Text>
+                      {sessionLength === option.value && (
+                        <View style={styles.checkmark}>
+                          <Text style={styles.checkmarkText}>✓</Text>
+                        </View>
+                      )}
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+
+              <View style={styles.section}>
+                <Text style={styles.sectionTitle}>Preferred time</Text>
+                <View style={styles.optionsGrid}>
+                  {[
+                    { value: 'morning', label: 'Morning', icon: '🌅' },
+                    { value: 'afternoon', label: 'Afternoon', icon: '☀️' },
+                    { value: 'evening', label: 'Evening', icon: '🌆' },
+                    { value: 'flexible', label: 'Flexible', icon: '🔄' },
+                  ].map((option) => (
+                    <TouchableOpacity
+                      key={option.value}
+                      style={[styles.periodButton, preferredTime === option.value && styles.selectedPeriodButton]}
+                      onPress={() => setPreferredTime(option.value)}
+                    >
+                      <Text style={styles.periodIcon}>{option.icon}</Text>
+                      <Text style={[styles.periodText, preferredTime === option.value && styles.selectedText]}>
+                        {option.label}
+                      </Text>
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              </View>
+            </View>
+
+            <TouchableOpacity
+              style={[styles.completeButton, !canContinue && styles.completeButtonDisabled]}
+              onPress={handleComplete}
+              disabled={!canContinue}
+            >
+              <Text style={[styles.completeButtonText, !canContinue && styles.completeButtonTextDisabled]}>
+                Complete Setup 🎉
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -130,11 +141,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 20,
+    flexGrow: 1,
+  },
+  content: {
+    padding: 20,
+    paddingBottom: 40,
   },
   header: {
-    padding: 20,
-    paddingTop: 10,
+    marginBottom: 20,
   },
   progressBar: {
     height: 4,
@@ -163,8 +177,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   form: {
-    padding: 20,
-    paddingTop: 10,
+    marginTop: 10,
   },
   section: {
     marginBottom: 25,
@@ -271,8 +284,7 @@ const styles = StyleSheet.create({
     paddingVertical: 18,
     borderRadius: 10,
     alignItems: 'center',
-    marginHorizontal: 20,
-    marginTop: 10,
+    marginTop: 20,
   },
   completeButtonDisabled: {
     backgroundColor: '#ccc',

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/navigation';
@@ -26,55 +26,63 @@ export default function OnboardingGoals() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView 
-        style={styles.scrollView} 
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={true}
+      <KeyboardAvoidingView 
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <View style={styles.header}>
-          <View style={styles.progressBar}>
-            <View style={[styles.progressFill, { width: '20%' }]} />
-          </View>
-          <Text style={styles.step}>Step 1 of 5</Text>
-          <Text style={styles.title}>What's your main goal?</Text>
-          <Text style={styles.subtitle}>We'll customize your workouts</Text>
-        </View>
-
-        <View style={styles.goalsContainer}>
-          {goals.map((goal) => (
-            <TouchableOpacity
-              key={goal.id}
-              style={[styles.goalCard, selectedGoal === goal.id && styles.selectedGoal]}
-              onPress={() => setSelectedGoal(goal.id)}
-            >
-              <Text style={styles.goalIcon}>{goal.icon}</Text>
-              <View style={styles.goalTextContainer}>
-                <Text style={[styles.goalTitle, selectedGoal === goal.id && styles.selectedText]}>
-                  {goal.title}
-                </Text>
-                <Text style={[styles.goalDescription, selectedGoal === goal.id && styles.selectedSubtext]}>
-                  {goal.description}
-                </Text>
-              </View>
-              {selectedGoal === goal.id && (
-                <View style={styles.checkmark}>
-                  <Text style={styles.checkmarkText}>✓</Text>
-                </View>
-              )}
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        <TouchableOpacity
-          style={[styles.nextButton, !selectedGoal && styles.nextButtonDisabled]}
-          onPress={handleNext}
-          disabled={!selectedGoal}
+        <ScrollView 
+          style={styles.scrollView} 
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={true}
+          bounces={false}
         >
-          <Text style={[styles.nextButtonText, !selectedGoal && styles.nextButtonTextDisabled]}>
-            Continue
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
+          <View style={styles.content}>
+            <View style={styles.header}>
+              <View style={styles.progressBar}>
+                <View style={[styles.progressFill, { width: '20%' }]} />
+              </View>
+              <Text style={styles.step}>Step 1 of 5</Text>
+              <Text style={styles.title}>What's your main goal?</Text>
+              <Text style={styles.subtitle}>We'll customize your workouts</Text>
+            </View>
+
+            <View style={styles.goalsContainer}>
+              {goals.map((goal) => (
+                <TouchableOpacity
+                  key={goal.id}
+                  style={[styles.goalCard, selectedGoal === goal.id && styles.selectedGoal]}
+                  onPress={() => setSelectedGoal(goal.id)}
+                >
+                  <Text style={styles.goalIcon}>{goal.icon}</Text>
+                  <View style={styles.goalTextContainer}>
+                    <Text style={[styles.goalTitle, selectedGoal === goal.id && styles.selectedText]}>
+                      {goal.title}
+                    </Text>
+                    <Text style={[styles.goalDescription, selectedGoal === goal.id && styles.selectedSubtext]}>
+                      {goal.description}
+                    </Text>
+                  </View>
+                  {selectedGoal === goal.id && (
+                    <View style={styles.checkmark}>
+                      <Text style={styles.checkmarkText}>✓</Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <TouchableOpacity
+              style={[styles.nextButton, !selectedGoal && styles.nextButtonDisabled]}
+              onPress={handleNext}
+              disabled={!selectedGoal}
+            >
+              <Text style={[styles.nextButtonText, !selectedGoal && styles.nextButtonTextDisabled]}>
+                Continue
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -88,11 +96,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 20,
+    flexGrow: 1,
+  },
+  content: {
+    padding: 20,
+    paddingBottom: 40,
   },
   header: {
-    padding: 20,
-    paddingTop: 10,
+    marginBottom: 20,
   },
   progressBar: {
     height: 4,
@@ -121,8 +132,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   goalsContainer: {
-    padding: 20,
-    paddingTop: 5,
+    marginTop: 10,
   },
   goalCard: {
     flexDirection: 'row',
@@ -180,8 +190,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 10,
     alignItems: 'center',
-    marginHorizontal: 20,
-    marginTop: 10,
+    marginTop: 20,
   },
   nextButtonDisabled: {
     backgroundColor: '#ccc',

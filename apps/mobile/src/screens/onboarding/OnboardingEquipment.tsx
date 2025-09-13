@@ -1,6 +1,5 @@
-
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/navigation';
@@ -48,64 +47,72 @@ export default function OnboardingEquipment() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView 
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        showsVerticalScrollIndicator={false}
+      <KeyboardAvoidingView 
+        style={styles.container}
+        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
       >
-        <View style={styles.header}>
-          <View style={styles.progressBar}>
-            <View style={[styles.progressFill, { width: '80%' }]} />
-          </View>
-          <Text style={styles.step}>Step 4 of 5</Text>
-          <Text style={styles.title}>Available equipment</Text>
-          <Text style={styles.subtitle}>Select all that you have access to</Text>
-        </View>
-
-        <View style={styles.equipmentContainer}>
-          {equipment.map((item) => (
-            <TouchableOpacity
-              key={item.id}
-              style={[
-                styles.equipmentCard,
-                selectedEquipment.includes(item.id) && styles.selectedEquipment
-              ]}
-              onPress={() => handleToggleEquipment(item.id)}
-            >
-              <Text style={styles.equipmentIcon}>{item.icon}</Text>
-              <View style={styles.equipmentTextContainer}>
-                <Text style={[
-                  styles.equipmentTitle,
-                  selectedEquipment.includes(item.id) && styles.selectedText
-                ]}>
-                  {item.title}
-                </Text>
-                <Text style={[
-                  styles.equipmentDescription,
-                  selectedEquipment.includes(item.id) && styles.selectedSubtext
-                ]}>
-                  {item.description}
-                </Text>
-              </View>
-              {selectedEquipment.includes(item.id) && (
-                <View style={styles.checkmark}>
-                  <Text style={styles.checkmarkText}>✓</Text>
-                </View>
-              )}
-            </TouchableOpacity>
-          ))}
-        </View>
-
-        <TouchableOpacity
-          style={[styles.nextButton, !canContinue && styles.nextButtonDisabled]}
-          onPress={handleNext}
-          disabled={!canContinue}
+        <ScrollView 
+          style={styles.scrollView}
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={true}
+          bounces={false}
         >
-          <Text style={[styles.nextButtonText, !canContinue && styles.nextButtonTextDisabled]}>
-            Continue
-          </Text>
-        </TouchableOpacity>
-      </ScrollView>
+          <View style={styles.content}>
+            <View style={styles.header}>
+              <View style={styles.progressBar}>
+                <View style={[styles.progressFill, { width: '80%' }]} />
+              </View>
+              <Text style={styles.step}>Step 4 of 5</Text>
+              <Text style={styles.title}>Available equipment</Text>
+              <Text style={styles.subtitle}>Select all that you have access to</Text>
+            </View>
+
+            <View style={styles.equipmentContainer}>
+              {equipment.map((item) => (
+                <TouchableOpacity
+                  key={item.id}
+                  style={[
+                    styles.equipmentCard,
+                    selectedEquipment.includes(item.id) && styles.selectedEquipment
+                  ]}
+                  onPress={() => handleToggleEquipment(item.id)}
+                >
+                  <Text style={styles.equipmentIcon}>{item.icon}</Text>
+                  <View style={styles.equipmentTextContainer}>
+                    <Text style={[
+                      styles.equipmentTitle,
+                      selectedEquipment.includes(item.id) && styles.selectedText
+                    ]}>
+                      {item.title}
+                    </Text>
+                    <Text style={[
+                      styles.equipmentDescription,
+                      selectedEquipment.includes(item.id) && styles.selectedSubtext
+                    ]}>
+                      {item.description}
+                    </Text>
+                  </View>
+                  {selectedEquipment.includes(item.id) && (
+                    <View style={styles.checkmark}>
+                      <Text style={styles.checkmarkText}>✓</Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              ))}
+            </View>
+
+            <TouchableOpacity
+              style={[styles.nextButton, !canContinue && styles.nextButtonDisabled]}
+              onPress={handleNext}
+              disabled={!canContinue}
+            >
+              <Text style={[styles.nextButtonText, !canContinue && styles.nextButtonTextDisabled]}>
+                Continue
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </ScrollView>
+      </KeyboardAvoidingView>
     </SafeAreaView>
   );
 }
@@ -119,11 +126,14 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingBottom: 20,
+    flexGrow: 1,
+  },
+  content: {
+    padding: 20,
+    paddingBottom: 40,
   },
   header: {
-    padding: 20,
-    paddingTop: 10,
+    marginBottom: 20,
   },
   progressBar: {
     height: 4,
@@ -152,8 +162,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   equipmentContainer: {
-    padding: 20,
-    paddingTop: 5,
+    marginTop: 10,
   },
   equipmentCard: {
     flexDirection: 'row',
@@ -210,8 +219,7 @@ const styles = StyleSheet.create({
     paddingVertical: 16,
     borderRadius: 10,
     alignItems: 'center',
-    marginHorizontal: 20,
-    marginTop: 10,
+    marginTop: 20,
   },
   nextButtonDisabled: {
     backgroundColor: '#ccc',
