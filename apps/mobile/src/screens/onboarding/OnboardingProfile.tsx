@@ -17,21 +17,32 @@ export default function OnboardingProfile() {
 
   const handleNext = () => {
     if (canContinue) {
-      // Store profile data (we'll add context later)
-      navigation.navigate('Setup'); // For now, go to existing setup
+      navigation.navigate('OnboardingLimitations');
     }
+  };
+
+  const getBMI = () => {
+    if (weight && height) {
+      const bmi = parseFloat(weight) / Math.pow(parseFloat(height) / 100, 2);
+      return bmi.toFixed(1);
+    }
+    return '';
   };
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView 
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
         <View style={styles.header}>
           <View style={styles.progressBar}>
             <View style={[styles.progressFill, { width: '40%' }]} />
           </View>
           <Text style={styles.step}>Step 2 of 5</Text>
-          <Text style={styles.title}>Tell us about yourself</Text>
-          <Text style={styles.subtitle}>This helps us calculate calories and adjust intensity</Text>
+          <Text style={styles.title}>Your Profile</Text>
+          <Text style={styles.subtitle}>Help us personalize your experience</Text>
         </View>
 
         <View style={styles.form}>
@@ -75,39 +86,28 @@ export default function OnboardingProfile() {
           <View style={styles.inputGroup}>
             <Text style={styles.label}>Gender</Text>
             <View style={styles.genderOptions}>
-              <TouchableOpacity
-                style={[styles.genderButton, gender === 'male' && styles.selectedGender]}
-                onPress={() => setGender('male')}
-              >
-                <Text style={[styles.genderText, gender === 'male' && styles.selectedGenderText]}>
-                  Male
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.genderButton, gender === 'female' && styles.selectedGender]}
-                onPress={() => setGender('female')}
-              >
-                <Text style={[styles.genderText, gender === 'female' && styles.selectedGenderText]}>
-                  Female
-                </Text>
-              </TouchableOpacity>
-              <TouchableOpacity
-                style={[styles.genderButton, gender === 'other' && styles.selectedGender]}
-                onPress={() => setGender('other')}
-              >
-                <Text style={[styles.genderText, gender === 'other' && styles.selectedGenderText]}>
-                  Other
-                </Text>
-              </TouchableOpacity>
+              {['Male', 'Female', 'Other'].map((option) => (
+                <TouchableOpacity
+                  key={option}
+                  style={[styles.genderButton, gender === option.toLowerCase() && styles.selectedGender]}
+                  onPress={() => setGender(option.toLowerCase())}
+                >
+                  <Text style={[styles.genderText, gender === option.toLowerCase() && styles.selectedGenderText]}>
+                    {option}
+                  </Text>
+                </TouchableOpacity>
+              ))}
             </View>
           </View>
 
-          {/* BMI calculation preview */}
-          {weight && height && (
+          {getBMI() && (
             <View style={styles.bmiContainer}>
               <Text style={styles.bmiLabel}>Your BMI:</Text>
-              <Text style={styles.bmiValue}>
-                {(parseFloat(weight) / Math.pow(parseFloat(height) / 100, 2)).toFixed(1)}
+              <Text style={styles.bmiValue}>{getBMI()}</Text>
+              <Text style={styles.bmiStatus}>
+                {parseFloat(getBMI()) < 18.5 ? 'Underweight' :
+                 parseFloat(getBMI()) < 25 ? 'Normal' :
+                 parseFloat(getBMI()) < 30 ? 'Overweight' : 'Obese'}
               </Text>
             </View>
           )}
@@ -135,6 +135,9 @@ const styles = StyleSheet.create({
   scrollView: {
     flex: 1,
   },
+  scrollContent: {
+    paddingBottom: 20,
+  },
   header: {
     padding: 20,
     paddingTop: 10,
@@ -143,7 +146,7 @@ const styles = StyleSheet.create({
     height: 4,
     backgroundColor: '#e2e8f0',
     borderRadius: 2,
-    marginBottom: 20,
+    marginBottom: 15,
   },
   progressFill: {
     height: '100%',
@@ -153,18 +156,17 @@ const styles = StyleSheet.create({
   step: {
     fontSize: 14,
     color: '#999',
-    marginBottom: 10,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#1a202c',
     marginBottom: 8,
   },
+  title: {
+    fontSize: 26,
+    fontWeight: 'bold',
+    color: '#1a202c',
+    marginBottom: 6,
+  },
   subtitle: {
-    fontSize: 16,
+    fontSize: 15,
     color: '#666',
-    lineHeight: 22,
   },
   form: {
     padding: 20,
@@ -175,10 +177,9 @@ const styles = StyleSheet.create({
   },
   inputRow: {
     flexDirection: 'row',
-    marginBottom: 20,
   },
   label: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
     color: '#333',
     marginBottom: 8,
@@ -209,7 +210,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff8f5',
   },
   genderText: {
-    fontSize: 16,
+    fontSize: 15,
     color: '#666',
     fontWeight: '500',
   },
@@ -221,29 +222,32 @@ const styles = StyleSheet.create({
     backgroundColor: 'white',
     borderRadius: 12,
     padding: 16,
-    flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
-    marginTop: 20,
+    marginTop: 10,
     borderWidth: 2,
     borderColor: '#FF6B35',
   },
   bmiLabel: {
-    fontSize: 16,
+    fontSize: 14,
     color: '#666',
   },
   bmiValue: {
-    fontSize: 24,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#FF6B35',
+    marginVertical: 5,
+  },
+  bmiStatus: {
+    fontSize: 14,
+    color: '#FF6B35',
+    fontWeight: '600',
   },
   nextButton: {
     backgroundColor: '#FF6B35',
     paddingVertical: 16,
-    paddingHorizontal: 32,
     borderRadius: 10,
     alignItems: 'center',
-    margin: 20,
+    marginHorizontal: 20,
     marginTop: 10,
   },
   nextButtonDisabled: {

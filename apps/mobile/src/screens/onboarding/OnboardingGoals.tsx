@@ -20,7 +20,7 @@ export default function OnboardingGoals() {
 
   const handleNext = () => {
     if (selectedGoal) {
-      navigation.navigate('Setup');
+      navigation.navigate('OnboardingProfile');
     }
   };
 

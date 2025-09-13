@@ -230,7 +230,6 @@ const styles = StyleSheet.create({
     height: '100%',
     backgroundColor: '#FF6B35',
     borderRadius: 4,
-    transition: 'width 0.3s ease',
   },
   progressText: {
     fontSize: 14,

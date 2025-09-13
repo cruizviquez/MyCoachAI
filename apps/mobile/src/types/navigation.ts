@@ -16,6 +16,11 @@ export type RootStackParamList = {
       weight?: number;
       height?: number;
       age?: number;
+      gender?: string;
+    };
+    schedule?: {
+      daysPerWeek?: number;
+      preferredTime?: string;
     };
   };
   Home: undefined;

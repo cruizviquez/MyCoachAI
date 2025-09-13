@@ -9,6 +9,10 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import WelcomeScreen from './src/screens/onboarding/WelcomeScreen';
 import SetupScreen from './src/screens/onboarding/SetupScreen';
 import OnboardingGoals from './src/screens/onboarding/OnboardingGoals';
+import OnboardingProfile from './src/screens/onboarding/OnboardingProfile';
+import OnboardingLimitations from './src/screens/onboarding/OnboardingLimitations';
+import OnboardingEquipment from './src/screens/onboarding/OnboardingEquipment';
+import OnboardingSchedule from './src/screens/onboarding/OnboardingSchedule';
 import WorkoutPlanScreen from './src/screens/workout/WorkoutPlanScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import CameraScreen from './src/screens/CameraScreen';
@@ -41,6 +45,26 @@ export default function App() {
             name="OnboardingGoals" 
             component={OnboardingGoals}
             options={{ title: 'Your Goals' }}
+          />
+          <Stack.Screen 
+            name="OnboardingProfile" 
+            component={OnboardingProfile}
+            options={{ title: 'Your Profile' }}
+          />
+          <Stack.Screen 
+            name="OnboardingLimitations" 
+            component={OnboardingLimitations}
+            options={{ title: 'Limitations' }}
+          />
+          <Stack.Screen 
+            name="OnboardingEquipment" 
+            component={OnboardingEquipment}
+            options={{ title: 'Equipment' }}
+          />
+          <Stack.Screen 
+            name="OnboardingSchedule" 
+            component={OnboardingSchedule}
+            options={{ title: 'Schedule' }}
           />
           <Stack.Screen 
             name="WorkoutPlan" 
