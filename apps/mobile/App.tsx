@@ -9,7 +9,6 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import WelcomeScreen from './src/screens/onboarding/WelcomeScreen';
 import SetupScreen from './src/screens/onboarding/SetupScreen';
 import OnboardingGoals from './src/screens/onboarding/OnboardingGoals';
-import OnboardingProfile from './src/screens/onboarding/OnboardingProfile';
 import WorkoutPlanScreen from './src/screens/workout/WorkoutPlanScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import CameraScreen from './src/screens/CameraScreen';
@@ -44,11 +43,6 @@ export default function App() {
             options={{ title: 'Your Goals' }}
           />
           <Stack.Screen 
-            name="OnboardingProfile" 
-            component={OnboardingProfile}
-            options={{ title: 'Your Profile' }}
-          />
-          <Stack.Screen 
             name="WorkoutPlan" 
             component={WorkoutPlanScreen}
             options={{ title: 'Your Plan' }}
@@ -61,7 +55,7 @@ export default function App() {
           <Stack.Screen 
             name="Camera" 
             component={CameraScreen} 
-            options={{ title: 'Workout' }}
+            options={{ title: 'AI Coach' }}
           />
         </Stack.Navigator>
       </NavigationContainer>
