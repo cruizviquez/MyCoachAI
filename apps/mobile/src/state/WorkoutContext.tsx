@@ -1,13 +1,13 @@
 import React, { createContext, useState, useEffect } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import * as SecureStore from 'expo-secure-store';
 
 interface Exercise {
   id: string;
   name: string;
   sets: number;
   reps: number;
-  duration?: number; // in seconds
-  rest: number; // rest time in seconds
+  duration?: number;
+  rest: number;
   description?: string;
   gifUrl?: string;
 }
@@ -16,7 +16,7 @@ interface WorkoutPlan {
   id: string;
   name: string;
   exercises: Exercise[];
-  totalDuration: number; // in minutes
+  totalDuration: number;
   difficulty: string;
   createdAt: Date;
 }
@@ -31,6 +31,9 @@ interface WorkoutContextProps {
 
 const WorkoutContext = createContext<WorkoutContextProps | undefined>(undefined);
 
+const WORKOUT_KEY = 'current_workout';
+const HISTORY_KEY = 'workout_history';
+
 const WorkoutProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [currentWorkout, setCurrentWorkoutState] = useState<WorkoutPlan | null>(null);
   const [workoutHistory, setWorkoutHistory] = useState<WorkoutPlan[]>([]);
@@ -41,8 +44,8 @@ const WorkoutProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
 
   const loadWorkoutData = async () => {
     try {
-      const currentJson = await AsyncStorage.getItem('@current_workout');
-      const historyJson = await AsyncStorage.getItem('@workout_history');
+      const currentJson = await SecureStore.getItemAsync(WORKOUT_KEY);
+      const historyJson = await SecureStore.getItemAsync(HISTORY_KEY);
       
       if (currentJson) setCurrentWorkoutState(JSON.parse(currentJson));
       if (historyJson) setWorkoutHistory(JSON.parse(historyJson));
@@ -53,18 +56,18 @@ const WorkoutProvider: React.FC<{ children: React.ReactNode }> = ({ children }) 
 
   const setCurrentWorkout = (workout: WorkoutPlan) => {
     setCurrentWorkoutState(workout);
-    AsyncStorage.setItem('@current_workout', JSON.stringify(workout)).catch(console.error);
+    SecureStore.setItemAsync(WORKOUT_KEY, JSON.stringify(workout)).catch(console.error);
   };
 
   const addToHistory = (workout: WorkoutPlan) => {
-    const newHistory = [workout, ...workoutHistory].slice(0, 50); // Keep last 50 workouts
+    const newHistory = [workout, ...workoutHistory].slice(0, 50);
     setWorkoutHistory(newHistory);
-    AsyncStorage.setItem('@workout_history', JSON.stringify(newHistory)).catch(console.error);
+    SecureStore.setItemAsync(HISTORY_KEY, JSON.stringify(newHistory)).catch(console.error);
   };
 
   const clearCurrentWorkout = () => {
     setCurrentWorkoutState(null);
-    AsyncStorage.removeItem('@current_workout').catch(console.error);
+    SecureStore.deleteItemAsync(WORKOUT_KEY).catch(console.error);
   };
 
   return (

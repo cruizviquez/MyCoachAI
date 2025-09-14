@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect } from 'react';
-import * as SecureStore from 'expo-secure-store';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export interface OnboardingData {
   fitnessLevel?: string;
@@ -26,15 +26,13 @@ interface OnboardingContextProps {
 
 const OnboardingContext = createContext<OnboardingContextProps | undefined>(undefined);
 
-const STORAGE_KEY = 'onboarding_data';
-
 const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [data, setDataState] = useState<OnboardingData>({});
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const json = await SecureStore.getItemAsync(STORAGE_KEY);
+        const json = await AsyncStorage.getItem('@onboarding_data');
         if (json) setDataState(JSON.parse(json));
       } catch (e) {
         console.error('Failed to load onboarding data', e);
@@ -46,14 +44,14 @@ const OnboardingProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const setData = (updates: Partial<OnboardingData>) => {
     setDataState((prev) => {
       const newData = { ...prev, ...updates };
-      SecureStore.setItemAsync(STORAGE_KEY, JSON.stringify(newData)).catch(console.error);
+      AsyncStorage.setItem('@onboarding_data', JSON.stringify(newData)).catch(console.error);
       return newData;
     });
   };
 
   const clearData = () => {
     setDataState({});
-    SecureStore.deleteItemAsync(STORAGE_KEY).catch(console.error);
+    AsyncStorage.removeItem('@onboarding_data').catch(console.error);
   };
 
   return (

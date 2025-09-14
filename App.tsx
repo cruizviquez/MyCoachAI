@@ -39,6 +39,22 @@ import CameraScreen from './src/screens/CameraScreen';
 
 const Stack = createStackNavigator();
 
+const Stack = createNativeStackNavigator();
+
+export default function App() {
+  return (
+    <OnboardingProvider>
+      <WorkoutProvider>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Welcome">
+            {/* Your existing navigation structure */}
+          </Stack.Navigator>
+        </NavigationContainer>
+      </WorkoutProvider>
+    </OnboardingProvider>
+  );
+}
+
 export default function App() {
   return (
     <SafeAreaProvider>
