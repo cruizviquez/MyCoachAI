@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, KeyboardAvoidingView, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Dimensions } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/navigation';
+
+const { height: screenHeight } = Dimensions.get('window');
 
 type OnboardingGoalsNavigationProp = StackNavigationProp<RootStackParamList, 'OnboardingGoals'>;
 
@@ -26,63 +28,59 @@ export default function OnboardingGoals() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView 
-        style={styles.container}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
+      <View style={styles.innerContainer}>
         <ScrollView 
           style={styles.scrollView} 
           contentContainerStyle={styles.scrollContent}
           showsVerticalScrollIndicator={true}
-          bounces={false}
         >
-          <View style={styles.content}>
-            <View style={styles.header}>
-              <View style={styles.progressBar}>
-                <View style={[styles.progressFill, { width: '20%' }]} />
-              </View>
-              <Text style={styles.step}>Step 1 of 5</Text>
-              <Text style={styles.title}>What's your main goal?</Text>
-              <Text style={styles.subtitle}>We'll customize your workouts</Text>
+          <View style={styles.header}>
+            <View style={styles.progressBar}>
+              <View style={[styles.progressFill, { width: '20%' }]} />
             </View>
+            <Text style={styles.step}>Step 1 of 5</Text>
+            <Text style={styles.title}>What's your main goal?</Text>
+            <Text style={styles.subtitle}>We'll customize your workouts</Text>
+          </View>
 
-            <View style={styles.goalsContainer}>
-              {goals.map((goal) => (
-                <TouchableOpacity
-                  key={goal.id}
-                  style={[styles.goalCard, selectedGoal === goal.id && styles.selectedGoal]}
-                  onPress={() => setSelectedGoal(goal.id)}
-                >
-                  <Text style={styles.goalIcon}>{goal.icon}</Text>
-                  <View style={styles.goalTextContainer}>
-                    <Text style={[styles.goalTitle, selectedGoal === goal.id && styles.selectedText]}>
-                      {goal.title}
-                    </Text>
-                    <Text style={[styles.goalDescription, selectedGoal === goal.id && styles.selectedSubtext]}>
-                      {goal.description}
-                    </Text>
+          <View style={styles.goalsContainer}>
+            {goals.map((goal) => (
+              <TouchableOpacity
+                key={goal.id}
+                style={[styles.goalCard, selectedGoal === goal.id && styles.selectedGoal]}
+                onPress={() => setSelectedGoal(goal.id)}
+              >
+                <Text style={styles.goalIcon}>{goal.icon}</Text>
+                <View style={styles.goalTextContainer}>
+                  <Text style={[styles.goalTitle, selectedGoal === goal.id && styles.selectedText]}>
+                    {goal.title}
+                  </Text>
+                  <Text style={[styles.goalDescription, selectedGoal === goal.id && styles.selectedSubtext]}>
+                    {goal.description}
+                  </Text>
+                </View>
+                {selectedGoal === goal.id && (
+                  <View style={styles.checkmark}>
+                    <Text style={styles.checkmarkText}>✓</Text>
                   </View>
-                  {selectedGoal === goal.id && (
-                    <View style={styles.checkmark}>
-                      <Text style={styles.checkmarkText}>✓</Text>
-                    </View>
-                  )}
-                </TouchableOpacity>
-              ))}
-            </View>
-
-            <TouchableOpacity
-              style={[styles.nextButton, !selectedGoal && styles.nextButtonDisabled]}
-              onPress={handleNext}
-              disabled={!selectedGoal}
-            >
-              <Text style={[styles.nextButtonText, !selectedGoal && styles.nextButtonTextDisabled]}>
-                Continue
-              </Text>
-            </TouchableOpacity>
+                )}
+              </TouchableOpacity>
+            ))}
           </View>
         </ScrollView>
-      </KeyboardAvoidingView>
+
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity
+            style={[styles.nextButton, !selectedGoal && styles.nextButtonDisabled]}
+            onPress={handleNext}
+            disabled={!selectedGoal}
+          >
+            <Text style={[styles.nextButtonText, !selectedGoal && styles.nextButtonTextDisabled]}>
+              Continue
+            </Text>
+          </TouchableOpacity>
+        </View>
+      </View>
     </SafeAreaView>
   );
 }
@@ -92,15 +90,15 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff5f0',
   },
+  innerContainer: {
+    flex: 1,
+  },
   scrollView: {
     flex: 1,
   },
   scrollContent: {
-    flexGrow: 1,
-  },
-  content: {
     padding: 20,
-    paddingBottom: 40,
+    paddingBottom: 10,
   },
   header: {
     marginBottom: 20,
@@ -122,7 +120,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    fontSize: 26,
+    fontSize: 24,
     fontWeight: 'bold',
     color: '#1a202c',
     marginBottom: 6,
@@ -138,32 +136,32 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     backgroundColor: 'white',
     borderRadius: 10,
-    padding: 14,
-    marginBottom: 10,
+    padding: 12,
+    marginBottom: 8,
     alignItems: 'center',
     borderWidth: 2,
     borderColor: 'transparent',
-    minHeight: 70,
+    minHeight: 60,
   },
   selectedGoal: {
     borderColor: '#FF6B35',
     backgroundColor: '#fff8f5',
   },
   goalIcon: {
-    fontSize: 28,
+    fontSize: 24,
     marginRight: 12,
   },
   goalTextContainer: {
     flex: 1,
   },
   goalTitle: {
-    fontSize: 16,
+    fontSize: 15,
     fontWeight: '600',
     color: '#333',
     marginBottom: 2,
   },
   goalDescription: {
-    fontSize: 13,
+    fontSize: 12,
     color: '#666',
   },
   selectedText: {
@@ -173,9 +171,9 @@ const styles = StyleSheet.create({
     color: '#FF8C60',
   },
   checkmark: {
-    width: 22,
-    height: 22,
-    borderRadius: 11,
+    width: 20,
+    height: 20,
+    borderRadius: 10,
     backgroundColor: '#FF6B35',
     justifyContent: 'center',
     alignItems: 'center',
@@ -183,14 +181,19 @@ const styles = StyleSheet.create({
   checkmarkText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 14,
+    fontSize: 12,
+  },
+  buttonContainer: {
+    padding: 20,
+    backgroundColor: '#fff5f0',
+    borderTopWidth: 1,
+    borderTopColor: '#f0f0f0',
   },
   nextButton: {
     backgroundColor: '#FF6B35',
     paddingVertical: 16,
     borderRadius: 10,
     alignItems: 'center',
-    marginTop: 20,
   },
   nextButtonDisabled: {
     backgroundColor: '#ccc',
