@@ -55,7 +55,7 @@ export default function WorkoutPlanScreen({ navigation }: WorkoutPlanScreenProps
       'This will replace your current workout plan. Are you sure?',
       [
         { text: 'Cancel', style: 'cancel' },
-        { text: 'Generate', onPress: generateNewWorkout },
+              { text: 'Generate', onPress: () => generateNewWorkout() }, // Make sure this is called
       ]
     );
   };

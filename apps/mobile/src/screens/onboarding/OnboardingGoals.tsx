@@ -1,5 +1,14 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Dimensions } from 'react-native';
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  TouchableOpacity, 
+  SafeAreaView, 
+  ScrollView, 
+  Dimensions,
+  Platform 
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/navigation';
@@ -44,13 +53,17 @@ export default function OnboardingGoals() {
     }
   };
 
+  const handleBack = () => {
+    navigation.goBack();
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
         <ScrollView 
           style={styles.scrollView} 
           contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={true}
+          showsVerticalScrollIndicator={false}
         >
           <View style={styles.header}>
             <View style={styles.progressBar}>
@@ -89,15 +102,33 @@ export default function OnboardingGoals() {
               );
             })}
           </View>
+
+          {/* Spacing for bottom buttons */}
+          <View style={{ height: 100 }} />
         </ScrollView>
 
-        <View style={styles.buttonContainer}>
+        {/* Fixed Bottom Button Container */}
+        <View style={styles.bottomButtonContainer}>
           <TouchableOpacity
-            style={[styles.nextButton, selectedGoals.length === 0 && styles.nextButtonDisabled]}
+            style={[styles.navButton, styles.backButton]}
+            onPress={handleBack}
+          >
+            <Text style={styles.backButtonText}>Back</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.navButton, 
+              styles.nextButton, 
+              selectedGoals.length === 0 && styles.nextButtonDisabled
+            ]}
             onPress={handleNext}
             disabled={selectedGoals.length === 0}
           >
-            <Text style={[styles.nextButtonText, selectedGoals.length === 0 && styles.nextButtonTextDisabled]}>
+            <Text style={[
+              styles.nextButtonText, 
+              selectedGoals.length === 0 && styles.nextButtonTextDisabled
+            ]}>
               Continue
             </Text>
           </TouchableOpacity>
@@ -120,7 +151,6 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: 20,
-    paddingBottom: 10,
   },
   header: {
     marginBottom: 20,
@@ -205,23 +235,51 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize: 12,
   },
-  buttonContainer: {
-    padding: 20,
+  bottomButtonContainer: {
+    position: Platform.OS === 'web' ? 'fixed' : 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
     backgroundColor: '#fff5f0',
+    paddingHorizontal: 20,
+    paddingVertical: 20,
+    paddingBottom: Platform.OS === 'web' ? 20 : 30,
     borderTopWidth: 1,
     borderTopColor: '#f0f0f0',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    elevation: 10,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: -2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 3,
   },
-  nextButton: {
-    backgroundColor: '#FF6B35',
+  navButton: {
+    flex: 1,
     paddingVertical: 16,
     borderRadius: 10,
     alignItems: 'center',
   },
+  backButton: {
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: '#FF6B35',
+    marginRight: 6,
+  },
+  nextButton: {
+    backgroundColor: '#FF6B35',
+    marginLeft: 6,
+  },
   nextButtonDisabled: {
     backgroundColor: '#ccc',
   },
+  backButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FF6B35',
+  },
   nextButtonText: {
-    fontSize: 17,
+    fontSize: 16,
     fontWeight: '600',
     color: 'white',
   },

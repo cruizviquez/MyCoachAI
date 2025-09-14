@@ -22,73 +22,29 @@ export default function SetupScreen({ navigation }: SetupScreenProps) {
   const { data, setData } = useOnboarding();
   
   // Initialize state with existing data from context
-  const [currentQuestion, setCurrentQuestion] = useState(0);
   const [fitnessLevel, setFitnessLevel] = useState(data.fitnessLevel || '');
   const [equipment, setEquipment] = useState<string[]>(data.equipment || []);
   const [duration, setDuration] = useState(data.workoutDuration || '');
 
-  const questions = [
-    {
-      question: "What's your fitness level?",
-      options: ['Beginner', 'Intermediate', 'Advanced'],
-      type: 'single',
-    },
-    {
-      question: 'What equipment do you have?',
-      options: ['None', 'Dumbbells', 'Resistance Bands', 'Pull-up Bar', 'Kettlebell'],
-      type: 'multiple',
-    },
-    {
-      question: 'How long can you workout?',
-      options: ['15 mins', '30 mins', '45 mins', '60 mins'],
-      type: 'single',
-    },
-  ];
-
-  const handleAnswer = (answer: string) => {
-    if (currentQuestion === 0) {
-      setFitnessLevel(answer);
-    } else if (currentQuestion === 1) {
-      if (equipment.includes(answer)) {
-        setEquipment(equipment.filter((item) => item !== answer));
-      } else {
-        setEquipment([...equipment, answer]);
-      }
-    } else if (currentQuestion === 2) {
-      setDuration(answer);
-    }
-  };
-
-  const handleNext = () => {
-    if (currentQuestion < questions.length - 1) {
-      setCurrentQuestion(currentQuestion + 1);
+  const toggleEquipment = (item: string) => {
+    if (equipment.includes(item)) {
+      setEquipment(equipment.filter(e => e !== item));
     } else {
-      // Save data to context before navigating
-      setData({
-        fitnessLevel,
-        equipment,
-        workoutDuration: duration,
-      });
-      navigation.navigate('WorkoutPlan');
+      setEquipment([...equipment, item]);
     }
   };
 
-  const handleBack = () => {
-    if (currentQuestion > 0) {
-      setCurrentQuestion(currentQuestion - 1);
-    } else {
-      navigation.goBack();
-    }
+  const handleGetStarted = () => {
+    // Save data to context before navigating
+    setData({
+      fitnessLevel,
+      equipment,
+      workoutDuration: duration,
+    });
+    navigation.navigate('WorkoutPlan');
   };
 
-  const isAnswered = () => {
-    if (currentQuestion === 0) return fitnessLevel !== '';
-    if (currentQuestion === 1) return equipment.length > 0;
-    if (currentQuestion === 2) return duration !== '';
-    return false;
-  };
-
-  const currentQ = questions[currentQuestion];
+  const isFormComplete = fitnessLevel && equipment.length > 0 && duration;
 
   return (
     <SafeAreaView style={styles.container}>
@@ -96,80 +52,100 @@ export default function SetupScreen({ navigation }: SetupScreenProps) {
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
       >
-        <View style={styles.progressContainer}>
-          <View style={styles.progressBar}>
-            <View
-              style={[
-                styles.progressFill,
-                { width: `${((currentQuestion + 1) / questions.length) * 100}%` },
-              ]}
-            />
-          </View>
-          <Text style={styles.progressText}>
-            {currentQuestion + 1} of {questions.length}
-          </Text>
-        </View>
-
-        <View style={styles.questionContainer}>
-          <Text style={styles.question}>{currentQ.question}</Text>
-
+        {/* Question 1: Fitness Level */}
+        <View style={styles.questionSection}>
+          <Text style={styles.questionNumber}>1.</Text>
+          <Text style={styles.question}>What's your fitness level?</Text>
           <View style={styles.optionsContainer}>
-            {currentQ.options.map((option) => {
-              const isSelected =
-                currentQuestion === 0
-                  ? fitnessLevel === option
-                  : currentQuestion === 1
-                  ? equipment.includes(option)
-                  : duration === option;
-
-              return (
-                <TouchableOpacity
-                  key={option}
+            {['Beginner', 'Intermediate', 'Advanced'].map((level) => (
+              <TouchableOpacity
+                key={level}
+                style={[
+                  styles.optionButton,
+                  fitnessLevel === level && styles.optionButtonSelected,
+                ]}
+                onPress={() => setFitnessLevel(level)}
+              >
+                <Text
                   style={[
-                    styles.optionButton,
-                    isSelected && styles.optionButtonSelected,
+                    styles.optionText,
+                    fitnessLevel === level && styles.optionTextSelected,
                   ]}
-                  onPress={() => handleAnswer(option)}
                 >
-                  <Text
-                    style={[
-                      styles.optionText,
-                      isSelected && styles.optionTextSelected,
-                    ]}
-                  >
-                    {option}
-                  </Text>
-                </TouchableOpacity>
-              );
-            })}
+                  {level}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
-
-          {currentQuestion === 1 && (
-            <Text style={styles.helperText}>
-              Select all that apply
-            </Text>
-          )}
         </View>
 
-        <View style={styles.navigationContainer}>
-          <TouchableOpacity
-            style={[styles.navButton, styles.backButton]}
-            onPress={handleBack}
-          >
-            <Text style={styles.backButtonText}>Back</Text>
-          </TouchableOpacity>
+        {/* Question 2: Equipment */}
+        <View style={styles.questionSection}>
+          <Text style={styles.questionNumber}>2.</Text>
+          <Text style={styles.question}>What equipment do you have?</Text>
+          <Text style={styles.helperText}>Select all that apply</Text>
+          <View style={styles.optionsContainer}>
+            {['None', 'Dumbbells', 'Resistance Bands', 'Pull-up Bar', 'Kettlebell'].map((item) => (
+              <TouchableOpacity
+                key={item}
+                style={[
+                  styles.optionButton,
+                  equipment.includes(item) && styles.optionButtonSelected,
+                ]}
+                onPress={() => toggleEquipment(item)}
+              >
+                <Text
+                  style={[
+                    styles.optionText,
+                    equipment.includes(item) && styles.optionTextSelected,
+                  ]}
+                >
+                  {item}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
 
+        {/* Question 3: Duration */}
+        <View style={styles.questionSection}>
+          <Text style={styles.questionNumber}>3.</Text>
+          <Text style={styles.question}>How long can you workout?</Text>
+          <View style={styles.optionsContainer}>
+            {['15 mins', '30 mins', '45 mins', '60 mins'].map((time) => (
+              <TouchableOpacity
+                key={time}
+                style={[
+                  styles.optionButton,
+                  duration === time && styles.optionButtonSelected,
+                ]}
+                onPress={() => setDuration(time)}
+              >
+                <Text
+                  style={[
+                    styles.optionText,
+                    duration === time && styles.optionTextSelected,
+                  ]}
+                >
+                  {time}
+                </Text>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+
+        {/* Action Button */}
+        <View style={styles.buttonContainer}>
           <TouchableOpacity
             style={[
-              styles.navButton,
-              styles.nextButton,
-              !isAnswered() && styles.disabledButton,
+              styles.getStartedButton,
+              !isFormComplete && styles.disabledButton,
             ]}
-            onPress={handleNext}
-            disabled={!isAnswered()}
+            onPress={handleGetStarted}
+            disabled={!isFormComplete}
           >
-            <Text style={styles.nextButtonText}>
-              {currentQuestion === questions.length - 1 ? 'Get Started' : 'Next'}
+            <Text style={styles.getStartedText}>
+              Get Started
             </Text>
           </TouchableOpacity>
         </View>
@@ -186,107 +162,73 @@ const styles = StyleSheet.create({
   scrollContent: {
     flexGrow: 1,
     padding: 20,
+    paddingBottom: 40,
   },
-  progressContainer: {
-    marginBottom: 30,
+  questionSection: {
+    marginBottom: 35,
   },
-  progressBar: {
-    height: 8,
-    backgroundColor: '#ffe5d9',
-    borderRadius: 4,
-    overflow: 'hidden',
-  },
-  progressFill: {
-    height: '100%',
-    backgroundColor: '#FF6B35',
-    borderRadius: 4,
-  },
-  progressText: {
-    marginTop: 8,
-    fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
-  },
-  questionContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    marginVertical: 20,
+  questionNumber: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FF6B35',
+    marginBottom: 8,
   },
   question: {
-    fontSize: 28,
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#333',
-    textAlign: 'center',
-    marginBottom: 40,
+    marginBottom: 8,
+  },
+  helperText: {
+    fontSize: 14,
+    color: '#666',
+    fontStyle: 'italic',
+    marginBottom: 12,
   },
   optionsContainer: {
     flexDirection: 'row',
     flexWrap: 'wrap',
-    justifyContent: 'center',
-    gap: 12,
+    marginTop: 12,
   },
   optionButton: {
-    paddingHorizontal: 24,
-    paddingVertical: 14,
+    paddingHorizontal: 20,
+    paddingVertical: 12,
     borderRadius: 25,
     borderWidth: 2,
     borderColor: '#FF6B35',
     backgroundColor: 'white',
-    minWidth: width < 400 ? 120 : 140,
-    alignItems: 'center',
     margin: 6,
+    minWidth: width < 400 ? 100 : 120,
+    alignItems: 'center',
   },
   optionButtonSelected: {
     backgroundColor: '#FF6B35',
     borderColor: '#FF6B35',
   },
   optionText: {
-    fontSize: 16,
+    fontSize: 15,
     color: '#FF6B35',
     fontWeight: '600',
   },
   optionTextSelected: {
     color: 'white',
   },
-  helperText: {
-    textAlign: 'center',
-    marginTop: 20,
-    fontSize: 14,
-    color: '#666',
-    fontStyle: 'italic',
+  buttonContainer: {
+    marginTop: 30,
+    paddingHorizontal: 20,
   },
-  navigationContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    marginTop: 40,
-  },
-  navButton: {
-    paddingHorizontal: 30,
-    paddingVertical: 15,
-    borderRadius: 25,
-    minWidth: 120,
-    alignItems: 'center',
-  },
-  backButton: {
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: '#FF6B35',
-  },
-  nextButton: {
+  getStartedButton: {
     backgroundColor: '#FF6B35',
+    paddingVertical: 18,
+    borderRadius: 30,
+    alignItems: 'center',
   },
   disabledButton: {
     backgroundColor: '#ccc',
-    borderColor: '#ccc',
   },
-  backButtonText: {
-    fontSize: 16,
-    color: '#FF6B35',
-    fontWeight: '600',
-  },
-  nextButtonText: {
-    fontSize: 16,
+  getStartedText: {
+    fontSize: 18,
+    fontWeight: 'bold',
     color: 'white',
-    fontWeight: '600',
   },
 });
