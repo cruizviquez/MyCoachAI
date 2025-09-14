@@ -1,112 +1,130 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Dimensions } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/navigation';
-
-const { width: screenWidth } = Dimensions.get('window');
-const isWeb = screenWidth > 768;
+import { useOnboarding } from '../../state/OnboardingContext';
 
 type OnboardingEquipmentNavigationProp = StackNavigationProp<RootStackParamList, 'OnboardingEquipment'>;
 
 export default function OnboardingEquipment() {
   const navigation = useNavigation<OnboardingEquipmentNavigationProp>();
-  const [selectedEquipment, setSelectedEquipment] = useState<string[]>([]);
+  const { data, setData } = useOnboarding();
+  
+  // Initialize with data from context
+  const [selectedEquipment, setSelectedEquipment] = useState<string[]>(data.equipment || []);
 
   const equipment = [
-    { id: 'none', title: 'No equipment', icon: '🤸', description: 'Bodyweight only' },
-    { id: 'dumbbells', title: 'Dumbbells', icon: '🏋️', description: 'Various weights' },
-    { id: 'resistance', title: 'Resistance bands', icon: '🔗', description: 'Elastic bands' },
-    { id: 'kettlebell', title: 'Kettlebells', icon: '🔔', description: 'Cast iron weights' },
-    { id: 'pullup', title: 'Pull-up bar', icon: '🚪', description: 'Doorway or standalone' },
-    { id: 'gym', title: 'Full gym', icon: '🏢', description: 'Complete gym access' },
+    { id: 'none', label: 'No equipment', icon: '🤷', description: 'Bodyweight only' },
+    { id: 'dumbbells', label: 'Dumbbells', icon: '🏋️', description: 'Various weights' },
+    { id: 'resistance_bands', label: 'Resistance Bands', icon: '🎯', description: 'Elastic bands' },
+    { id: 'pull_up_bar', label: 'Pull-up Bar', icon: '🚪', description: 'Door or wall mounted' },
+    { id: 'kettlebell', label: 'Kettlebell', icon: '🔔', description: 'Single or multiple' },
+    { id: 'barbell', label: 'Barbell', icon: '🏋️‍♂️', description: 'With weight plates' },
+    { id: 'bench', label: 'Exercise Bench', icon: '🪑', description: 'Flat or adjustable' },
+    { id: 'mat', label: 'Yoga Mat', icon: '🧘', description: 'For floor exercises' },
   ];
 
-  const handleToggleEquipment = (id: string) => {
-    if (id === 'none') {
+  const toggleEquipment = (equipmentId: string) => {
+    if (equipmentId === 'none') {
+      // If "No equipment" is selected, clear all others
       setSelectedEquipment(['none']);
-    } else if (id === 'gym') {
-      setSelectedEquipment(['gym']);
     } else {
-      if (selectedEquipment.includes('none') || selectedEquipment.includes('gym')) {
-        setSelectedEquipment([id]);
+      // Remove "none" if other equipment is selected
+      const filtered = selectedEquipment.filter(id => id !== 'none');
+      
+      if (selectedEquipment.includes(equipmentId)) {
+        setSelectedEquipment(filtered.filter(id => id !== equipmentId));
       } else {
-        setSelectedEquipment(prev =>
-          prev.includes(id) 
-            ? prev.filter(item => item !== id)
-            : [...prev, id]
-        );
+        setSelectedEquipment([...filtered, equipmentId]);
       }
     }
   };
 
-  const canContinue = selectedEquipment.length > 0;
-
   const handleNext = () => {
-    if (canContinue) {
-      navigation.navigate('OnboardingSchedule');
-    }
+    // Save to context before navigating
+    setData({ equipment: selectedEquipment });
+    navigation.navigate('OnboardingSchedule');
+  };
+
+  const handleBack = () => {
+    navigation.goBack();
   };
 
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
         <ScrollView 
-          style={styles.scrollView}
+          style={styles.scrollView} 
           contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={true}
+          showsVerticalScrollIndicator={false}
         >
           <View style={styles.header}>
             <View style={styles.progressBar}>
               <View style={[styles.progressFill, { width: '80%' }]} />
             </View>
             <Text style={styles.step}>Step 4 of 5</Text>
-            <Text style={styles.title}>Available equipment</Text>
+            <Text style={styles.title}>Available Equipment</Text>
             <Text style={styles.subtitle}>Select all that you have access to</Text>
           </View>
 
           <View style={styles.equipmentContainer}>
-            {equipment.map((item) => (
-              <TouchableOpacity
-                key={item.id}
-                style={[
-                  styles.equipmentCard,
-                  selectedEquipment.includes(item.id) && styles.selectedEquipment
-                ]}
-                onPress={() => handleToggleEquipment(item.id)}
-              >
-                <Text style={styles.equipmentIcon}>{item.icon}</Text>
-                <View style={styles.equipmentTextContainer}>
-                  <Text style={[
-                    styles.equipmentTitle,
-                    selectedEquipment.includes(item.id) && styles.selectedText
-                  ]}>
-                    {item.title}
-                  </Text>
-                  <Text style={[
-                    styles.equipmentDescription,
-                    selectedEquipment.includes(item.id) && styles.selectedSubtext
-                  ]}>
-                    {item.description}
-                  </Text>
-                </View>
-                {selectedEquipment.includes(item.id) && (
-                  <View style={styles.checkmark}>
-                    <Text style={styles.checkmarkText}>✓</Text>
+            {equipment.map((item) => {
+              const isSelected = selectedEquipment.includes(item.id);
+              
+              return (
+                <TouchableOpacity
+                  key={item.id}
+                  style={[styles.equipmentCard, isSelected && styles.selectedEquipment]}
+                  onPress={() => toggleEquipment(item.id)}
+                >
+                  <View style={styles.equipmentContent}>
+                    <Text style={styles.equipmentIcon}>{item.icon}</Text>
+                    <View style={styles.equipmentTextContainer}>
+                      <Text style={[styles.equipmentLabel, isSelected && styles.selectedText]}>
+                        {item.label}
+                      </Text>
+                      <Text style={[styles.equipmentDescription, isSelected && styles.selectedDescription]}>
+                        {item.description}
+                      </Text>
+                    </View>
                   </View>
-                )}
-              </TouchableOpacity>
-            ))}
+                  {isSelected && (
+                    <View style={styles.checkmark}>
+                      <Text style={styles.checkmarkText}>✓</Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              );
+            })}
+          </View>
+
+          <View style={styles.tipContainer}>
+            <Text style={styles.tipIcon}>💡</Text>
+            <Text style={styles.tipText}>
+              Don't worry if you have limited equipment. We'll create effective workouts with whatever you have!
+            </Text>
           </View>
         </ScrollView>
 
-        <View style={styles.buttonContainer}>
+        <View style={styles.navigationContainer}>
+          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+            <Text style={styles.backButtonText}>Back</Text>
+          </TouchableOpacity>
+
           <TouchableOpacity
-            style={[styles.nextButton, !canContinue && styles.nextButtonDisabled]}
+            style={[styles.nextButton, selectedEquipment.length === 0 && styles.nextButtonDisabled]}
             onPress={handleNext}
-            disabled={!canContinue}
+            disabled={selectedEquipment.length === 0}
           >
-            <Text style={[styles.nextButtonText, !canContinue && styles.nextButtonTextDisabled]}>
+            <Text style={[styles.nextButtonText, selectedEquipment.length === 0 && styles.nextButtonTextDisabled]}>
               Continue
             </Text>
           </TouchableOpacity>
@@ -120,9 +138,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff5f0',
-    maxWidth: isWeb ? 800 : '100%',
-    alignSelf: 'center',
-    width: '100%',
   },
   innerContainer: {
     flex: 1,
@@ -135,13 +150,13 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   header: {
-    marginBottom: 20,
+    marginBottom: 30,
   },
   progressBar: {
     height: 4,
     backgroundColor: '#e2e8f0',
     borderRadius: 2,
-    marginBottom: 15,
+    marginBottom: 20,
   },
   progressFill: {
     height: '100%',
@@ -154,60 +169,65 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    fontSize: isWeb ? 22 : 26,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#1a202c',
-    marginBottom: 6,
+    marginBottom: 8,
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#666',
   },
   equipmentContainer: {
-    marginTop: 10,
+    gap: 12,
   },
   equipmentCard: {
     flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
     backgroundColor: 'white',
     borderRadius: 10,
-    padding: 12,
-    marginBottom: 8,
-    alignItems: 'center',
+    padding: 16,
+    marginBottom: 12,
     borderWidth: 2,
     borderColor: 'transparent',
-    minHeight: isWeb ? 60 : 70,
   },
   selectedEquipment: {
     borderColor: '#FF6B35',
     backgroundColor: '#fff8f5',
   },
+  equipmentContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
   equipmentIcon: {
-    fontSize: 20,
-    marginRight: 12,
+    fontSize: 28,
+    marginRight: 16,
   },
   equipmentTextContainer: {
     flex: 1,
   },
-  equipmentTitle: {
-    fontSize: 15,
+  equipmentLabel: {
+    fontSize: 16,
     fontWeight: '600',
     color: '#333',
     marginBottom: 2,
   },
   equipmentDescription: {
-    fontSize: 12,
+    fontSize: 13,
     color: '#666',
   },
   selectedText: {
     color: '#FF6B35',
   },
-  selectedSubtext: {
+  selectedDescription: {
     color: '#FF8C60',
   },
   checkmark: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     backgroundColor: '#FF6B35',
     justifyContent: 'center',
     alignItems: 'center',
@@ -215,15 +235,49 @@ const styles = StyleSheet.create({
   checkmarkText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 12,
+    fontSize: 14,
   },
-  buttonContainer: {
+  tipContainer: {
+    flexDirection: 'row',
+    backgroundColor: '#FFF8E5',
+    borderRadius: 10,
+    padding: 16,
+    marginTop: 20,
+    alignItems: 'center',
+  },
+  tipIcon: {
+    fontSize: 20,
+    marginRight: 12,
+  },
+  tipText: {
+    flex: 1,
+    fontSize: 14,
+    color: '#7B6F39',
+    lineHeight: 20,
+  },
+  navigationContainer: {
+    flexDirection: 'row',
+    gap: 12,
     padding: 20,
     backgroundColor: '#fff5f0',
     borderTopWidth: 1,
     borderTopColor: '#f0f0f0',
   },
+  backButton: {
+    flex: 1,
+    paddingVertical: 16,
+    borderRadius: 10,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#FF6B35',
+  },
+  backButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FF6B35',
+  },
   nextButton: {
+    flex: 1,
     backgroundColor: '#FF6B35',
     paddingVertical: 16,
     borderRadius: 10,

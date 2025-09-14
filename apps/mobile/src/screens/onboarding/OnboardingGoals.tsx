@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Dim
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/navigation';
+import { useOnboarding } from '../../state/OnboardingContext';
 
 const { height: screenHeight } = Dimensions.get('window');
 
@@ -10,7 +11,10 @@ type OnboardingGoalsNavigationProp = StackNavigationProp<RootStackParamList, 'On
 
 export default function OnboardingGoals() {
   const navigation = useNavigation<OnboardingGoalsNavigationProp>();
-  const [selectedGoal, setSelectedGoal] = useState('');
+  const { data, setData } = useOnboarding();
+  
+  // Initialize with existing data from context (support multiple goals)
+  const [selectedGoals, setSelectedGoals] = useState<string[]>(data.goals || []);
 
   const goals = [
     { id: 'weight_loss', title: 'Lose Weight', icon: '🔥', description: 'Burn fat & get lean' },
@@ -20,8 +24,22 @@ export default function OnboardingGoals() {
     { id: 'endurance', title: 'Build Endurance', icon: '⚡', description: 'Boost stamina' },
   ];
 
+  const toggleGoal = (goalId: string) => {
+    if (selectedGoals.includes(goalId)) {
+      setSelectedGoals(selectedGoals.filter(g => g !== goalId));
+    } else {
+      // Allow multiple goals or limit to one
+      // For single goal selection:
+      setSelectedGoals([goalId]);
+      // For multiple goals selection:
+      // setSelectedGoals([...selectedGoals, goalId]);
+    }
+  };
+
   const handleNext = () => {
-    if (selectedGoal) {
+    if (selectedGoals.length > 0) {
+      // Save to context before navigating
+      setData({ goals: selectedGoals });
       navigation.navigate('OnboardingProfile');
     }
   };
@@ -44,38 +62,42 @@ export default function OnboardingGoals() {
           </View>
 
           <View style={styles.goalsContainer}>
-            {goals.map((goal) => (
-              <TouchableOpacity
-                key={goal.id}
-                style={[styles.goalCard, selectedGoal === goal.id && styles.selectedGoal]}
-                onPress={() => setSelectedGoal(goal.id)}
-              >
-                <Text style={styles.goalIcon}>{goal.icon}</Text>
-                <View style={styles.goalTextContainer}>
-                  <Text style={[styles.goalTitle, selectedGoal === goal.id && styles.selectedText]}>
-                    {goal.title}
-                  </Text>
-                  <Text style={[styles.goalDescription, selectedGoal === goal.id && styles.selectedSubtext]}>
-                    {goal.description}
-                  </Text>
-                </View>
-                {selectedGoal === goal.id && (
-                  <View style={styles.checkmark}>
-                    <Text style={styles.checkmarkText}>✓</Text>
+            {goals.map((goal) => {
+              const isSelected = selectedGoals.includes(goal.id);
+              
+              return (
+                <TouchableOpacity
+                  key={goal.id}
+                  style={[styles.goalCard, isSelected && styles.selectedGoal]}
+                  onPress={() => toggleGoal(goal.id)}
+                >
+                  <Text style={styles.goalIcon}>{goal.icon}</Text>
+                  <View style={styles.goalTextContainer}>
+                    <Text style={[styles.goalTitle, isSelected && styles.selectedText]}>
+                      {goal.title}
+                    </Text>
+                    <Text style={[styles.goalDescription, isSelected && styles.selectedSubtext]}>
+                      {goal.description}
+                    </Text>
                   </View>
-                )}
-              </TouchableOpacity>
-            ))}
+                  {isSelected && (
+                    <View style={styles.checkmark}>
+                      <Text style={styles.checkmarkText}>✓</Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              );
+            })}
           </View>
         </ScrollView>
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity
-            style={[styles.nextButton, !selectedGoal && styles.nextButtonDisabled]}
+            style={[styles.nextButton, selectedGoals.length === 0 && styles.nextButtonDisabled]}
             onPress={handleNext}
-            disabled={!selectedGoal}
+            disabled={selectedGoals.length === 0}
           >
-            <Text style={[styles.nextButtonText, !selectedGoal && styles.nextButtonTextDisabled]}>
+            <Text style={[styles.nextButtonText, selectedGoals.length === 0 && styles.nextButtonTextDisabled]}>
               Continue
             </Text>
           </TouchableOpacity>

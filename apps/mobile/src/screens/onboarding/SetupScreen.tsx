@@ -9,8 +9,8 @@ import {
   Dimensions,
 } from 'react-native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
-import { RootStackParamList } from '../types/navigation';
-import { useOnboarding } from '../state/OnboardingContext';
+import { RootStackParamList } from '../../types/navigation';
+import { useOnboarding } from '../../state/OnboardingContext';
 
 type SetupScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'Setup'>;

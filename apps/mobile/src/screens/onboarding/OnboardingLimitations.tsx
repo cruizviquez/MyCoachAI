@@ -1,44 +1,66 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Dimensions } from 'react-native';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+} from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/navigation';
-
-const { width: screenWidth } = Dimensions.get('window');
-const isWeb = screenWidth > 768;
+import { useOnboarding } from '../../state/OnboardingContext';
 
 type OnboardingLimitationsNavigationProp = StackNavigationProp<RootStackParamList, 'OnboardingLimitations'>;
 
 export default function OnboardingLimitations() {
   const navigation = useNavigation<OnboardingLimitationsNavigationProp>();
-  const [selectedLimitations, setSelectedLimitations] = useState<string[]>([]);
+  const { data, setData } = useOnboarding();
+  
+  // Initialize with data from context
+  const [selectedLimitations, setSelectedLimitations] = useState<string[]>(data.limitations || []);
 
   const limitations = [
-    { id: 'none', title: 'No limitations', icon: '💪', description: 'I\'m injury-free' },
-    { id: 'back', title: 'Back issues', icon: '🔴', description: 'Lower or upper back pain' },
-    { id: 'knee', title: 'Knee problems', icon: '🦵', description: 'Knee pain or injury' },
-    { id: 'shoulder', title: 'Shoulder issues', icon: '🤕', description: 'Shoulder pain or limited mobility' },
-    { id: 'wrist', title: 'Wrist problems', icon: '✋', description: 'Wrist pain or weakness' },
-    { id: 'pregnancy', title: 'Pregnancy', icon: '🤰', description: 'Currently pregnant' },
+    { id: 'none', label: 'No limitations', icon: '💪' },
+    { id: 'knee', label: 'Knee problems', icon: '🦵' },
+    { id: 'back', label: 'Back issues', icon: '🔙' },
+    { id: 'shoulder', label: 'Shoulder injury', icon: '🤷' },
+    { id: 'ankle', label: 'Ankle problems', icon: '🦶' },
+    { id: 'wrist', label: 'Wrist issues', icon: '✋' },
+    { id: 'hip', label: 'Hip problems', icon: '🚶' },
+    { id: 'other', label: 'Other limitations', icon: '⚠️' },
   ];
 
-  const handleToggleLimitation = (id: string) => {
-    if (id === 'none') {
+  const toggleLimitation = (limitationId: string) => {
+    if (limitationId === 'none') {
+      // If "No limitations" is selected, clear all others
       setSelectedLimitations(['none']);
     } else {
-      if (selectedLimitations.includes('none')) {
-        setSelectedLimitations([id]);
+      // Remove "none" if other limitations are selected
+      const filtered = selectedLimitations.filter(id => id !== 'none');
+      
+      if (selectedLimitations.includes(limitationId)) {
+        setSelectedLimitations(filtered.filter(id => id !== limitationId));
       } else {
-        setSelectedLimitations(prev =>
-          prev.includes(id) 
-            ? prev.filter(item => item !== id)
-            : [...prev, id]
-        );
+        setSelectedLimitations([...filtered, limitationId]);
       }
     }
   };
 
   const handleNext = () => {
+    // Save to context before navigating
+    setData({ limitations: selectedLimitations });
+    navigation.navigate('OnboardingEquipment');
+  };
+
+  const handleBack = () => {
+    navigation.goBack();
+  };
+
+  const handleSkip = () => {
+    // Save empty limitations and navigate
+    setData({ limitations: ['none'] });
     navigation.navigate('OnboardingEquipment');
   };
 
@@ -46,9 +68,9 @@ export default function OnboardingLimitations() {
     <SafeAreaView style={styles.container}>
       <View style={styles.innerContainer}>
         <ScrollView 
-          style={styles.scrollView}
+          style={styles.scrollView} 
           contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={true}
+          showsVerticalScrollIndicator={false}
         >
           <View style={styles.header}>
             <View style={styles.progressBar}>
@@ -56,50 +78,49 @@ export default function OnboardingLimitations() {
             </View>
             <Text style={styles.step}>Step 3 of 5</Text>
             <Text style={styles.title}>Any limitations?</Text>
-            <Text style={styles.subtitle}>We'll adjust exercises for your safety</Text>
+            <Text style={styles.subtitle}>We'll adapt your workouts accordingly</Text>
           </View>
 
           <View style={styles.limitationsContainer}>
-            {limitations.map((limitation) => (
-              <TouchableOpacity
-                key={limitation.id}
-                style={[
-                  styles.limitationCard,
-                  selectedLimitations.includes(limitation.id) && styles.selectedLimitation
-                ]}
-                onPress={() => handleToggleLimitation(limitation.id)}
-              >
-                <Text style={styles.limitationIcon}>{limitation.icon}</Text>
-                <View style={styles.limitationTextContainer}>
-                  <Text style={[
-                    styles.limitationTitle,
-                    selectedLimitations.includes(limitation.id) && styles.selectedText
-                  ]}>
-                    {limitation.title}
+            {limitations.map((limitation) => {
+              const isSelected = selectedLimitations.includes(limitation.id);
+              
+              return (
+                <TouchableOpacity
+                  key={limitation.id}
+                  style={[styles.limitationCard, isSelected && styles.selectedLimitation]}
+                  onPress={() => toggleLimitation(limitation.id)}
+                >
+                  <Text style={styles.limitationIcon}>{limitation.icon}</Text>
+                  <Text style={[styles.limitationText, isSelected && styles.selectedText]}>
+                    {limitation.label}
                   </Text>
-                  <Text style={[
-                    styles.limitationDescription,
-                    selectedLimitations.includes(limitation.id) && styles.selectedSubtext
-                  ]}>
-                    {limitation.description}
-                  </Text>
-                </View>
-                {selectedLimitations.includes(limitation.id) && (
-                  <View style={styles.checkmark}>
-                    <Text style={styles.checkmarkText}>✓</Text>
-                  </View>
-                )}
-              </TouchableOpacity>
-            ))}
+                  {isSelected && (
+                    <View style={styles.checkmark}>
+                      <Text style={styles.checkmarkText}>✓</Text>
+                    </View>
+                  )}
+                </TouchableOpacity>
+              );
+            })}
           </View>
+
+          <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
+            <Text style={styles.skipText}>Skip this step</Text>
+          </TouchableOpacity>
         </ScrollView>
 
-        <View style={styles.buttonContainer}>
+        <View style={styles.navigationContainer}>
+          <TouchableOpacity style={styles.backButton} onPress={handleBack}>
+            <Text style={styles.backButtonText}>Back</Text>
+          </TouchableOpacity>
+
           <TouchableOpacity
-            style={styles.nextButton}
+            style={[styles.nextButton, selectedLimitations.length === 0 && styles.nextButtonDisabled]}
             onPress={handleNext}
+            disabled={selectedLimitations.length === 0}
           >
-            <Text style={styles.nextButtonText}>
+            <Text style={[styles.nextButtonText, selectedLimitations.length === 0 && styles.nextButtonTextDisabled]}>
               Continue
             </Text>
           </TouchableOpacity>
@@ -113,9 +134,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff5f0',
-    maxWidth: isWeb ? 800 : '100%',
-    alignSelf: 'center',
-    width: '100%',
   },
   innerContainer: {
     flex: 1,
@@ -128,13 +146,13 @@ const styles = StyleSheet.create({
     paddingBottom: 10,
   },
   header: {
-    marginBottom: 20,
+    marginBottom: 30,
   },
   progressBar: {
     height: 4,
     backgroundColor: '#e2e8f0',
     borderRadius: 2,
-    marginBottom: 15,
+    marginBottom: 20,
   },
   progressFill: {
     height: '100%',
@@ -147,60 +165,49 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    fontSize: isWeb ? 22 : 26,
+    fontSize: 28,
     fontWeight: 'bold',
     color: '#1a202c',
-    marginBottom: 6,
+    marginBottom: 8,
   },
   subtitle: {
-    fontSize: 14,
+    fontSize: 16,
     color: '#666',
   },
   limitationsContainer: {
-    marginTop: 10,
+    gap: 12,
   },
   limitationCard: {
     flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: 'white',
     borderRadius: 10,
-    padding: 12,
-    marginBottom: 8,
-    alignItems: 'center',
+    padding: 16,
+    marginBottom: 12,
     borderWidth: 2,
     borderColor: 'transparent',
-    minHeight: isWeb ? 60 : 70,
   },
   selectedLimitation: {
     borderColor: '#FF6B35',
     backgroundColor: '#fff8f5',
   },
   limitationIcon: {
-    fontSize: 20,
+    fontSize: 24,
     marginRight: 12,
   },
-  limitationTextContainer: {
+  limitationText: {
     flex: 1,
-  },
-  limitationTitle: {
-    fontSize: 15,
-    fontWeight: '600',
+    fontSize: 16,
     color: '#333',
-    marginBottom: 2,
-  },
-  limitationDescription: {
-    fontSize: 12,
-    color: '#666',
+    fontWeight: '500',
   },
   selectedText: {
     color: '#FF6B35',
   },
-  selectedSubtext: {
-    color: '#FF8C60',
-  },
   checkmark: {
-    width: 20,
-    height: 20,
-    borderRadius: 10,
+    width: 24,
+    height: 24,
+    borderRadius: 12,
     backgroundColor: '#FF6B35',
     justifyContent: 'center',
     alignItems: 'center',
@@ -208,23 +215,55 @@ const styles = StyleSheet.create({
   checkmarkText: {
     color: 'white',
     fontWeight: 'bold',
-    fontSize: 12,
+    fontSize: 14,
   },
-  buttonContainer: {
+  skipButton: {
+    alignItems: 'center',
+    marginTop: 20,
+    paddingVertical: 12,
+  },
+  skipText: {
+    fontSize: 16,
+    color: '#FF6B35',
+    textDecorationLine: 'underline',
+  },
+  navigationContainer: {
+    flexDirection: 'row',
+    gap: 12,
     padding: 20,
     backgroundColor: '#fff5f0',
     borderTopWidth: 1,
     borderTopColor: '#f0f0f0',
   },
+  backButton: {
+    flex: 1,
+    paddingVertical: 16,
+    borderRadius: 10,
+    alignItems: 'center',
+    borderWidth: 2,
+    borderColor: '#FF6B35',
+  },
+  backButtonText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#FF6B35',
+  },
   nextButton: {
+    flex: 1,
     backgroundColor: '#FF6B35',
     paddingVertical: 16,
     borderRadius: 10,
     alignItems: 'center',
   },
+  nextButtonDisabled: {
+    backgroundColor: '#ccc',
+  },
   nextButtonText: {
     fontSize: 16,
     fontWeight: '600',
     color: 'white',
+  },
+  nextButtonTextDisabled: {
+    color: '#999',
   },
 });
