@@ -1,150 +1,179 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView, Dimensions } from 'react-native';
-import { useNavigation } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RootStackParamList } from '../../types/navigation';
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  Dimensions,
+} from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
+import { RootStackParamList } from '../types/navigation';
+import { useOnboarding } from '../state/OnboardingContext';
 
-const { width: screenWidth } = Dimensions.get('window');
-const isWeb = screenWidth > 768;
+type SetupScreenProps = {
+  navigation: NativeStackNavigationProp<RootStackParamList, 'Setup'>;
+};
 
-type SetupScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Setup'>;
+const { width } = Dimensions.get('window');
 
-export default function SetupScreen() {
-  const navigation = useNavigation<SetupScreenNavigationProp>();
-  const [level, setLevel] = useState('');
-  const [equipment, setEquipment] = useState('');
-  const [time, setTime] = useState('');
+export default function SetupScreen({ navigation }: SetupScreenProps) {
+  const { data, setData } = useOnboarding();
+  
+  // Initialize state with existing data from context
+  const [currentQuestion, setCurrentQuestion] = useState(0);
+  const [fitnessLevel, setFitnessLevel] = useState(data.fitnessLevel || '');
+  const [equipment, setEquipment] = useState<string[]>(data.equipment || []);
+  const [duration, setDuration] = useState(data.workoutDuration || '');
 
-  const canContinue = level && equipment && time;
+  const questions = [
+    {
+      question: "What's your fitness level?",
+      options: ['Beginner', 'Intermediate', 'Advanced'],
+      type: 'single',
+    },
+    {
+      question: 'What equipment do you have?',
+      options: ['None', 'Dumbbells', 'Resistance Bands', 'Pull-up Bar', 'Kettlebell'],
+      type: 'multiple',
+    },
+    {
+      question: 'How long can you workout?',
+      options: ['15 mins', '30 mins', '45 mins', '60 mins'],
+      type: 'single',
+    },
+  ];
 
-  const handleCreateWorkout = () => {
-    if (canContinue) {
-      navigation.navigate('WorkoutPlan', { level, equipment, time });
+  const handleAnswer = (answer: string) => {
+    if (currentQuestion === 0) {
+      setFitnessLevel(answer);
+    } else if (currentQuestion === 1) {
+      if (equipment.includes(answer)) {
+        setEquipment(equipment.filter((item) => item !== answer));
+      } else {
+        setEquipment([...equipment, answer]);
+      }
+    } else if (currentQuestion === 2) {
+      setDuration(answer);
     }
   };
 
-  const OptionButton = ({ 
-    title, 
-    isSelected, 
-    onPress,
-    compact = false
-  }: { 
-    title: string; 
-    isSelected: boolean; 
-    onPress: () => void;
-    compact?: boolean;
-  }) => (
-    <TouchableOpacity
-      style={[
-        styles.optionButton, 
-        compact && styles.compactButton,
-        isSelected && styles.selectedOption
-      ]}
-      onPress={onPress}
-    >
-      <Text style={[styles.optionText, isSelected && styles.selectedOptionText]}>
-        {title}
-      </Text>
-    </TouchableOpacity>
-  );
+  const handleNext = () => {
+    if (currentQuestion < questions.length - 1) {
+      setCurrentQuestion(currentQuestion + 1);
+    } else {
+      // Save data to context before navigating
+      setData({
+        fitnessLevel,
+        equipment,
+        workoutDuration: duration,
+      });
+      navigation.navigate('WorkoutPlan');
+    }
+  };
+
+  const handleBack = () => {
+    if (currentQuestion > 0) {
+      setCurrentQuestion(currentQuestion - 1);
+    } else {
+      navigation.goBack();
+    }
+  };
+
+  const isAnswered = () => {
+    if (currentQuestion === 0) return fitnessLevel !== '';
+    if (currentQuestion === 1) return equipment.length > 0;
+    if (currentQuestion === 2) return duration !== '';
+    return false;
+  };
+
+  const currentQ = questions[currentQuestion];
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.innerContainer}>
-        <ScrollView 
-          style={styles.scrollView} 
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={true}
-        >
-          <View style={styles.header}>
-            <Text style={styles.title}>Let's personalize your workout</Text>
-            <Text style={styles.subtitle}>Just 3 quick questions to get started</Text>
+      <ScrollView 
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+      >
+        <View style={styles.progressContainer}>
+          <View style={styles.progressBar}>
+            <View
+              style={[
+                styles.progressFill,
+                { width: `${((currentQuestion + 1) / questions.length) * 100}%` },
+              ]}
+            />
+          </View>
+          <Text style={styles.progressText}>
+            {currentQuestion + 1} of {questions.length}
+          </Text>
+        </View>
+
+        <View style={styles.questionContainer}>
+          <Text style={styles.question}>{currentQ.question}</Text>
+
+          <View style={styles.optionsContainer}>
+            {currentQ.options.map((option) => {
+              const isSelected =
+                currentQuestion === 0
+                  ? fitnessLevel === option
+                  : currentQuestion === 1
+                  ? equipment.includes(option)
+                  : duration === option;
+
+              return (
+                <TouchableOpacity
+                  key={option}
+                  style={[
+                    styles.optionButton,
+                    isSelected && styles.optionButtonSelected,
+                  ]}
+                  onPress={() => handleAnswer(option)}
+                >
+                  <Text
+                    style={[
+                      styles.optionText,
+                      isSelected && styles.optionTextSelected,
+                    ]}
+                  >
+                    {option}
+                  </Text>
+                </TouchableOpacity>
+              );
+            })}
           </View>
 
-          <View style={styles.section}>
-            <Text style={styles.questionTitle}>1. What's your fitness level?</Text>
-            <View style={styles.optionsRow}>
-              <OptionButton
-                title="Beginner"
-                isSelected={level === 'beginner'}
-                onPress={() => setLevel('beginner')}
-                compact
-              />
-              <OptionButton
-                title="Intermediate"
-                isSelected={level === 'intermediate'}
-                onPress={() => setLevel('intermediate')}
-                compact
-              />
-              <OptionButton
-                title="Advanced"
-                isSelected={level === 'advanced'}
-                onPress={() => setLevel('advanced')}
-                compact
-              />
-            </View>
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.questionTitle}>2. What equipment do you have?</Text>
-            <View style={styles.optionsColumn}>
-              <OptionButton
-                title="Bodyweight Only"
-                isSelected={equipment === 'bodyweight'}
-                onPress={() => setEquipment('bodyweight')}
-              />
-              <OptionButton
-                title="Dumbbells"
-                isSelected={equipment === 'dumbbells'}
-                onPress={() => setEquipment('dumbbells')}
-              />
-              <OptionButton
-                title="Full Gym"
-                isSelected={equipment === 'gym'}
-                onPress={() => setEquipment('gym')}
-              />
-            </View>
-          </View>
-
-          <View style={styles.section}>
-            <Text style={styles.questionTitle}>3. How long can you workout?</Text>
-            <View style={styles.timeGrid}>
-              {['15', '30', '45', '60'].map((minutes) => (
-                <OptionButton
-                  key={minutes}
-                  title={`${minutes} min`}
-                  isSelected={time === minutes}
-                  onPress={() => setTime(minutes)}
-                  compact
-                />
-              ))}
-            </View>
-          </View>
-
-          {/* Progress indicator */}
-          <View style={styles.progressContainer}>
-            <View style={styles.progressBar}>
-              <View style={[styles.progressFill, { width: `${(level ? 33 : 0) + (equipment ? 33 : 0) + (time ? 34 : 0)}%` }]} />
-            </View>
-            <Text style={styles.progressText}>
-              {!canContinue && `${[level, equipment, time].filter(Boolean).length}/3 questions answered`}
-              {canContinue && '✓ All set!'}
+          {currentQuestion === 1 && (
+            <Text style={styles.helperText}>
+              Select all that apply
             </Text>
-          </View>
-        </ScrollView>
+          )}
+        </View>
 
-        <View style={styles.buttonContainer}>
+        <View style={styles.navigationContainer}>
           <TouchableOpacity
-            style={[styles.createButton, !canContinue && styles.createButtonDisabled]}
-            onPress={handleCreateWorkout}
-            disabled={!canContinue}
+            style={[styles.navButton, styles.backButton]}
+            onPress={handleBack}
           >
-            <Text style={[styles.createButtonText, !canContinue && styles.createButtonTextDisabled]}>
-              {canContinue ? 'Create My Workout 🚀' : 'Please answer all questions'}
+            <Text style={styles.backButtonText}>Back</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[
+              styles.navButton,
+              styles.nextButton,
+              !isAnswered() && styles.disabledButton,
+            ]}
+            onPress={handleNext}
+            disabled={!isAnswered()}
+          >
+            <Text style={styles.nextButtonText}>
+              {currentQuestion === questions.length - 1 ? 'Get Started' : 'Next'}
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </ScrollView>
     </SafeAreaView>
   );
 }
@@ -153,127 +182,111 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#fff5f0',
-    maxWidth: isWeb ? 800 : '100%',
-    alignSelf: 'center',
-    width: '100%',
-  },
-  innerContainer: {
-    flex: 1,
-  },
-  scrollView: {
-    flex: 1,
   },
   scrollContent: {
+    flexGrow: 1,
     padding: 20,
-    paddingBottom: 10,
-  },
-  header: {
-    marginBottom: 20,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: isWeb ? 22 : 24,
-    fontWeight: 'bold',
-    color: '#1a202c',
-    textAlign: 'center',
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 14,
-    color: '#666',
-    textAlign: 'center',
-  },
-  section: {
-    marginBottom: 20,
-  },
-  questionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    marginBottom: 10,
-  },
-  optionsRow: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  optionsColumn: {
-    gap: 8,
-  },
-  timeGrid: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    gap: 8,
-  },
-  optionButton: {
-    paddingVertical: 12,
-    paddingHorizontal: 16,
-    backgroundColor: 'white',
-    borderRadius: 8,
-    borderWidth: 2,
-    borderColor: '#e2e8f0',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  compactButton: {
-    flex: 1,
-    minWidth: isWeb ? 80 : 70,
-  },
-  selectedOption: {
-    borderColor: '#FF6B35',
-    backgroundColor: '#fff8f5',
-  },
-  optionText: {
-    fontSize: 14,
-    color: '#666',
-    fontWeight: '500',
-    textAlign: 'center',
-  },
-  selectedOptionText: {
-    color: '#FF6B35',
-    fontWeight: '600',
   },
   progressContainer: {
-    marginTop: 15,
-    alignItems: 'center',
+    marginBottom: 30,
   },
   progressBar: {
-    width: '100%',
-    height: 6,
-    backgroundColor: '#e2e8f0',
-    borderRadius: 3,
+    height: 8,
+    backgroundColor: '#ffe5d9',
+    borderRadius: 4,
     overflow: 'hidden',
-    marginBottom: 8,
   },
   progressFill: {
     height: '100%',
     backgroundColor: '#FF6B35',
-    borderRadius: 3,
+    borderRadius: 4,
   },
   progressText: {
-    fontSize: 13,
+    marginTop: 8,
+    fontSize: 14,
     color: '#666',
+    textAlign: 'center',
   },
-  buttonContainer: {
-    padding: 20,
-    backgroundColor: '#fff5f0',
-    borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
+  questionContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    marginVertical: 20,
   },
-  createButton: {
-    backgroundColor: '#FF6B35',
-    paddingVertical: 16,
-    borderRadius: 10,
+  question: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    color: '#333',
+    textAlign: 'center',
+    marginBottom: 40,
+  },
+  optionsContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'center',
+    gap: 12,
+  },
+  optionButton: {
+    paddingHorizontal: 24,
+    paddingVertical: 14,
+    borderRadius: 25,
+    borderWidth: 2,
+    borderColor: '#FF6B35',
+    backgroundColor: 'white',
+    minWidth: width < 400 ? 120 : 140,
     alignItems: 'center',
+    margin: 6,
   },
-  createButtonDisabled: {
-    backgroundColor: '#ccc',
+  optionButtonSelected: {
+    backgroundColor: '#FF6B35',
+    borderColor: '#FF6B35',
   },
-  createButtonText: {
+  optionText: {
     fontSize: 16,
+    color: '#FF6B35',
     fontWeight: '600',
+  },
+  optionTextSelected: {
     color: 'white',
   },
-  createButtonTextDisabled: {
-    color: '#999',
+  helperText: {
+    textAlign: 'center',
+    marginTop: 20,
+    fontSize: 14,
+    color: '#666',
+    fontStyle: 'italic',
+  },
+  navigationContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginTop: 40,
+  },
+  navButton: {
+    paddingHorizontal: 30,
+    paddingVertical: 15,
+    borderRadius: 25,
+    minWidth: 120,
+    alignItems: 'center',
+  },
+  backButton: {
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: '#FF6B35',
+  },
+  nextButton: {
+    backgroundColor: '#FF6B35',
+  },
+  disabledButton: {
+    backgroundColor: '#ccc',
+    borderColor: '#ccc',
+  },
+  backButtonText: {
+    fontSize: 16,
+    color: '#FF6B35',
+    fontWeight: '600',
+  },
+  nextButtonText: {
+    fontSize: 16,
+    color: 'white',
+    fontWeight: '600',
   },
 });

@@ -5,6 +5,26 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
+import { OnboardingProvider } from './src/state/OnboardingContext';
+import RootStack from './src/navigation/RootStack';
+
+import { WorkoutProvider } from './src/state/WorkoutContext';
+
+export default function App() {
+  return (
+    <OnboardingProvider>
+      <WorkoutProvider>
+        <NavigationContainer>
+          <RootStack />
+        </NavigationContainer>
+      </WorkoutProvider>
+    </OnboardingProvider>
+  );
+}
+
+
+
+
 // Import all screens
 import WelcomeScreen from './src/screens/onboarding/WelcomeScreen';
 import SetupScreen from './src/screens/onboarding/SetupScreen';

@@ -1,80 +1,158 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
-import { useNavigation, useRoute } from '@react-navigation/native';
-import { StackNavigationProp } from '@react-navigation/stack';
-import { RouteProp } from '@react-navigation/native';
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  SafeAreaView,
+  ScrollView,
+  TouchableOpacity,
+  ActivityIndicator,
+  Alert,
+} from 'react-native';
+import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import { RootStackParamList } from '../../types/navigation';
+import { useOnboarding } from '../../state/OnboardingContext';
+import { useWorkout } from '../../state/WorkoutContext';
+import { generateWorkoutPlan } from '../../services/workoutGenerator';
 
-type WorkoutPlanScreenNavigationProp = StackNavigationProp<RootStackParamList, 'WorkoutPlan'>;
-type WorkoutPlanScreenRouteProp = RouteProp<RootStackParamList, 'WorkoutPlan'>;
+type WorkoutPlanScreenProps = {
+  navigation: NativeStackNavigationProp<RootStackParamList, 'WorkoutPlan'>;
+};
 
-export default function WorkoutPlanScreen() {
-  const navigation = useNavigation<WorkoutPlanScreenNavigationProp>();
-  const route = useRoute<WorkoutPlanScreenRouteProp>();
-  
-  const { level, equipment, time } = route.params;
+export default function WorkoutPlanScreen({ navigation }: WorkoutPlanScreenProps) {
+  const { data } = useOnboarding();
+  const { currentWorkout, setCurrentWorkout } = useWorkout();
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  // Mock workout based on selections
-  const getWorkout = () => {
-    const exercises = equipment === 'bodyweight' 
-      ? ['Push-ups', 'Squats', 'Plank', 'Jumping Jacks']
-      : equipment === 'dumbbells'
-      ? ['Dumbbell Press', 'Goblet Squats', 'Bent-Over Rows', 'Shoulder Press']
-      : ['Bench Press', 'Leg Press', 'Lat Pulldown', 'Cable Flyes'];
+  useEffect(() => {
+    generateNewWorkout();
+  }, []);
 
-    const sets = level === 'beginner' ? '3 sets' : level === 'intermediate' ? '4 sets' : '5 sets';
-    
-    return exercises.map(exercise => ({
-      name: exercise,
-      sets: sets,
-      duration: `${Math.floor(parseInt(time) / exercises.length)} min`
-    }));
+  const generateNewWorkout = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const workout = await generateWorkoutPlan(data);
+      setCurrentWorkout(workout);
+    } catch (err) {
+      setError('Failed to generate workout. Please try again.');
+      console.error('Workout generation error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const workout = getWorkout();
+  const handleStartWorkout = () => {
+    if (currentWorkout) {
+      navigation.navigate('Home');
+    }
+  };
+
+  const handleRegenerateWorkout = () => {
+    Alert.alert(
+      'Generate New Workout',
+      'This will replace your current workout plan. Are you sure?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        { text: 'Generate', onPress: generateNewWorkout },
+      ]
+    );
+  };
+
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.loadingContainer}>
+          <ActivityIndicator size="large" color="#FF6B35" />
+          <Text style={styles.loadingText}>Creating your personalized workout...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.errorContainer}>
+          <Text style={styles.errorText}>{error}</Text>
+          <TouchableOpacity style={styles.retryButton} onPress={generateNewWorkout}>
+            <Text style={styles.retryButtonText}>Try Again</Text>
+          </TouchableOpacity>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (!currentWorkout) {
+    return null;
+  }
 
   return (
     <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+      <ScrollView showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <Text style={styles.title}>Your Personalized Plan</Text>
-          <View style={styles.summaryContainer}>
-            <View style={styles.summaryItem}>
-              <Text style={styles.summaryLabel}>Level</Text>
-              <Text style={styles.summaryValue}>{level}</Text>
+          <Text style={styles.title}>Your Workout Plan</Text>
+          <Text style={styles.subtitle}>{currentWorkout.name}</Text>
+          <View style={styles.statsContainer}>
+            <View style={styles.stat}>
+              <Text style={styles.statValue}>{currentWorkout.totalDuration}</Text>
+              <Text style={styles.statLabel}>Minutes</Text>
             </View>
-            <View style={styles.summaryItem}>
-              <Text style={styles.summaryLabel}>Equipment</Text>
-              <Text style={styles.summaryValue}>{equipment}</Text>
+            <View style={styles.stat}>
+              <Text style={styles.statValue}>{currentWorkout.exercises.length}</Text>
+              <Text style={styles.statLabel}>Exercises</Text>
             </View>
-            <View style={styles.summaryItem}>
-              <Text style={styles.summaryLabel}>Duration</Text>
-              <Text style={styles.summaryValue}>{time} min</Text>
+            <View style={styles.stat}>
+              <Text style={styles.statValue}>{currentWorkout.difficulty}</Text>
+              <Text style={styles.statLabel}>Level</Text>
             </View>
           </View>
         </View>
 
-        <View style={styles.workoutContainer}>
-          <Text style={styles.sectionTitle}>Today's Workout</Text>
-          {workout.map((exercise, index) => (
-            <View key={index} style={styles.exerciseCard}>
-              <View style={styles.exerciseNumber}>
-                <Text style={styles.numberText}>{index + 1}</Text>
-              </View>
-              <View style={styles.exerciseInfo}>
+        <View style={styles.exercisesContainer}>
+          <Text style={styles.sectionTitle}>Exercises</Text>
+          {currentWorkout.exercises.map((exercise, index) => (
+            <View key={exercise.id} style={styles.exerciseCard}>
+              <View style={styles.exerciseHeader}>
+                <Text style={styles.exerciseNumber}>{index + 1}</Text>
                 <Text style={styles.exerciseName}>{exercise.name}</Text>
-                <Text style={styles.exerciseDetails}>{exercise.sets} • {exercise.duration}</Text>
               </View>
+              <View style={styles.exerciseDetails}>
+                {exercise.sets && exercise.reps ? (
+                  <Text style={styles.exerciseInfo}>
+                    {exercise.sets} sets × {exercise.reps} reps
+                  </Text>
+                ) : exercise.duration ? (
+                  <Text style={styles.exerciseInfo}>
+                    {exercise.sets > 1 ? `${exercise.sets} sets × ` : ''}
+                    {exercise.duration} seconds
+                  </Text>
+                ) : null}
+                <Text style={styles.restInfo}>Rest: {exercise.rest}s</Text>
+              </View>
+              {exercise.description && (
+                <Text style={styles.exerciseDescription}>{exercise.description}</Text>
+              )}
             </View>
           ))}
         </View>
 
-        <TouchableOpacity 
-          style={styles.startButton}
-          onPress={() => navigation.navigate('Home')}
-        >
-          <Text style={styles.startButtonText}>Start Workout 💪</Text>
-        </TouchableOpacity>
+        <View style={styles.actionContainer}>
+          <TouchableOpacity
+            style={styles.startButton}
+            onPress={handleStartWorkout}
+          >
+            <Text style={styles.startButtonText}>Start Workout</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={styles.regenerateButton}
+            onPress={handleRegenerateWorkout}
+          >
+            <Text style={styles.regenerateButtonText}>Generate New Workout</Text>
+          </TouchableOpacity>
+        </View>
       </ScrollView>
     </SafeAreaView>
   );
@@ -85,96 +163,162 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#fff5f0',
   },
-  scrollView: {
+  loadingContainer: {
     flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: '#666',
+  },
+  errorContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 20,
+  },
+  errorText: {
+    fontSize: 16,
+    color: '#d32f2f',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  retryButton: {
+    backgroundColor: '#FF6B35',
+    paddingHorizontal: 30,
+    paddingVertical: 15,
+    borderRadius: 25,
+  },
+  retryButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
   },
   header: {
     padding: 20,
-    backgroundColor: 'white',
-    borderBottomLeftRadius: 20,
-    borderBottomRightRadius: 20,
+    alignItems: 'center',
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#FF6B35',
-    textAlign: 'center',
+    color: '#333',
+    marginBottom: 8,
+  },
+  subtitle: {
+    fontSize: 18,
+    color: '#666',
     marginBottom: 20,
   },
-  summaryContainer: {
+  statsContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
+    width: '100%',
+    marginTop: 20,
   },
-  summaryItem: {
+  stat: {
     alignItems: 'center',
   },
-  summaryLabel: {
-    fontSize: 12,
+  statValue: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#FF6B35',
+  },
+  statLabel: {
+    fontSize: 14,
     color: '#666',
-    marginBottom: 4,
+    marginTop: 4,
   },
-  summaryValue: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#333',
-    textTransform: 'capitalize',
-  },
-  workoutContainer: {
+  exercisesContainer: {
     padding: 20,
   },
   sectionTitle: {
-    fontSize: 20,
-    fontWeight: '600',
+    fontSize: 22,
+    fontWeight: 'bold',
     color: '#333',
-    marginBottom: 15,
+    marginBottom: 16,
   },
   exerciseCard: {
-    flexDirection: 'row',
     backgroundColor: 'white',
     borderRadius: 12,
-    padding: 15,
+    padding: 16,
     marginBottom: 12,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  exerciseHeader: {
+    flexDirection: 'row',
     alignItems: 'center',
+    marginBottom: 8,
   },
   exerciseNumber: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 30,
+    height: 30,
+    borderRadius: 15,
     backgroundColor: '#FF6B35',
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginRight: 15,
-  },
-  numberText: {
     color: 'white',
-    fontWeight: 'bold',
+    textAlign: 'center',
+    lineHeight: 30,
     fontSize: 16,
-  },
-  exerciseInfo: {
-    flex: 1,
+    fontWeight: 'bold',
+    marginRight: 12,
   },
   exerciseName: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '600',
     color: '#333',
-    marginBottom: 4,
+    flex: 1,
   },
   exerciseDetails: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  exerciseInfo: {
+    fontSize: 16,
+    color: '#666',
+  },
+  restInfo: {
+    fontSize: 14,
+    color: '#999',
+  },
+  exerciseDescription: {
     fontSize: 14,
     color: '#666',
+    fontStyle: 'italic',
+    marginTop: 4,
+  },
+  actionContainer: {
+    padding: 20,
+    paddingBottom: 40,
   },
   startButton: {
     backgroundColor: '#FF6B35',
     paddingVertical: 18,
-    paddingHorizontal: 40,
-    borderRadius: 12,
+    borderRadius: 25,
     alignItems: 'center',
-    margin: 20,
-    marginTop: 10,
+    marginBottom: 12,
   },
   startButtonText: {
     color: 'white',
     fontSize: 18,
+    fontWeight: 'bold',
+  },
+  regenerateButton: {
+    backgroundColor: 'transparent',
+    borderWidth: 2,
+    borderColor: '#FF6B35',
+    paddingVertical: 16,
+    borderRadius: 25,
+    alignItems: 'center',
+  },
+  regenerateButtonText: {
+    color: '#FF6B35',
+    fontSize: 16,
     fontWeight: '600',
   },
 });
