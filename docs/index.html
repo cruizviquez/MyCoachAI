@@ -1,1 +1,1311 @@
-<html>hola mundo!</html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MyCoachAI - The AI Coaching Layer for Human Performance</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-dark: #0a0a0a;
+            --bg-darker: #050505;
+            --bg-card: #1a1a1a;
+            --border: #2a2a2a;
+            --text-primary: #ffffff;
+            --text-secondary: #888888;
+            --text-muted: #666666;
+            --accent-cyan: #00D4FF;
+            --accent-green: #00FF88;
+            --accent-red: #FF4B4B;
+            --accent-gold: #FFD700;
+            --gradient-cyan: linear-gradient(135deg, #00D4FF 0%, #0099CC 100%);
+            --gradient-dark: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%);
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
+            background: var(--bg-dark);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            width: 100%;
+            background: rgba(10, 10, 10, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border);
+            z-index: 1000;
+            padding: 20px 0;
+            transition: all 0.3s ease;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 40px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            cursor: pointer;
+        }
+
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+        }
+
+        .logo-text {
+            font-size: 24px;
+            font-weight: 900;
+            letter-spacing: -0.5px;
+        }
+
+        .logo-text span {
+            color: var(--accent-cyan);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--text-primary);
+        }
+
+        .nav-cta {
+            background: var(--gradient-cyan);
+            color: var(--bg-dark);
+            padding: 10px 24px;
+            border-radius: 25px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .nav-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 100vh;
+            padding: 140px 40px 80px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            background: radial-gradient(circle at 20% 50%, rgba(0, 212, 255, 0.1) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 50%, rgba(0, 255, 136, 0.1) 0%, transparent 50%);
+        }
+
+        .hero-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .hero-content h1 {
+            font-size: clamp(48px, 6vw, 80px);
+            font-weight: 900;
+            line-height: 1;
+            margin-bottom: 30px;
+            letter-spacing: -2px;
+        }
+
+        .gradient-text {
+            background: var(--gradient-cyan);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .hero-content p {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            line-height: 1.6;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .stat {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 900;
+            color: var(--accent-cyan);
+        }
+
+        .stat-label {
+            font-size: 14px;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .btn-primary {
+            background: var(--gradient-cyan);
+            color: var(--bg-dark);
+            padding: 16px 32px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 700;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.3);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            padding: 16px 32px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            border-color: var(--accent-cyan);
+            color: var(--accent-cyan);
+        }
+
+        /* Hero Visual */
+        .hero-visual {
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .phone-mockup {
+            width: 380px;
+            height: 760px;
+            background: linear-gradient(145deg, #1a1a1a, #2a2a2a);
+            border-radius: 40px;
+            padding: 12px;
+            box-shadow: 0 50px 100px rgba(0, 0, 0, 0.5),
+                        inset 0 0 0 1px rgba(255, 255, 255, 0.1);
+            position: relative;
+        }
+
+        .phone-screen {
+            width: 100%;
+            height: 100%;
+            background: var(--bg-dark);
+            border-radius: 28px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .app-interface {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .app-header {
+            padding: 20px;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(10px);
+        }
+
+        .app-vision {
+            flex: 1;
+            position: relative;
+            background: linear-gradient(180deg, rgba(0, 212, 255, 0.1) 0%, transparent 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .vision-overlay {
+            position: absolute;
+            width: 80%;
+            height: 60%;
+            border: 2px solid var(--accent-cyan);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .tracking-points {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .tracking-point {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background: var(--accent-cyan);
+            border-radius: 50%;
+            box-shadow: 0 0 20px var(--accent-cyan);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.2); opacity: 0.8; }
+        }
+
+        /* Investor Banner */
+        .investor-banner {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            padding: 60px 40px;
+            margin: 80px auto;
+            max-width: 1400px;
+            border-radius: 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .investor-banner::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--gradient-cyan);
+        }
+
+        .investor-metrics {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+        }
+
+        .metric {
+            text-align: center;
+        }
+
+        .metric-value {
+            font-size: 36px;
+            font-weight: 900;
+            color: var(--accent-cyan);
+            margin-bottom: 10px;
+        }
+
+        .metric-label {
+            color: var(--text-secondary);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Vision Track Section */
+        .vision-track {
+            padding: 120px 40px;
+            background: var(--bg-darker);
+            position: relative;
+        }
+
+        .section-container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 80px;
+        }
+
+        .section-label {
+            color: var(--accent-cyan);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 20px;
+        }
+
+        .section-title {
+            font-size: clamp(36px, 4vw, 56px);
+            font-weight: 900;
+            margin-bottom: 20px;
+            letter-spacing: -1px;
+        }
+
+        .section-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .vision-demo {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 80px;
+            align-items: center;
+        }
+
+        .demo-visual {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 40px;
+            border: 1px solid var(--border);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .demo-screen {
+            aspect-ratio: 16/9;
+            background: var(--bg-dark);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+        }
+
+        .skeleton-viz {
+            width: 60%;
+            height: 80%;
+            position: relative;
+        }
+
+        .demo-content h3 {
+            font-size: 32px;
+            margin-bottom: 30px;
+        }
+
+        .feature-list {
+            list-style: none;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .feature-item {
+            display: flex;
+            align-items: start;
+            gap: 15px;
+        }
+
+        .feature-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--gradient-cyan);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            margin-top: 2px;
+        }
+
+        .feature-icon::after {
+            content: '✓';
+            color: var(--bg-dark);
+            font-weight: 900;
+            font-size: 14px;
+        }
+
+        .feature-text h4 {
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .feature-text p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Features Grid */
+        .features {
+            padding: 120px 40px;
+            background: var(--bg-dark);
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .feature-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 20px;
+            padding: 40px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card:hover {
+            border-color: var(--accent-cyan);
+            transform: translateY(-5px);
+            box-shadow: 0 20px 40px rgba(0, 212, 255, 0.1);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--gradient-cyan);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .feature-card:hover::before {
+            opacity: 1;
+        }
+
+        .feature-emoji {
+            font-size: 48px;
+            margin-bottom: 20px;
+        }
+
+        .feature-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+            color: var(--text-primary);
+        }
+
+        .feature-card p {
+            color: var(--text-secondary);
+            line-height: 1.6;
+        }
+
+        .feature-badge {
+            display: inline-block;
+            background: rgba(0, 212, 255, 0.1);
+            color: var(--accent-cyan);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-top: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Social Features */
+        .social-features {
+            padding: 120px 40px;
+            background: var(--bg-darker);
+        }
+
+        .social-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .social-card {
+            text-align: center;
+        }
+
+        .social-icon {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: var(--gradient-cyan);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+
+        .social-card h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .social-card p {
+            color: var(--text-secondary);
+        }
+
+        /* Coach Personalities */
+        .coach-types {
+            padding: 120px 40px;
+            background: var(--bg-dark);
+        }
+
+        .coaches-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-top: 60px;
+        }
+
+        .coach-card {
+            background: var(--bg-card);
+            border-radius: 20px;
+            padding: 30px;
+            text-align: center;
+            border: 2px solid var(--border);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .coach-card:hover {
+            border-color: var(--accent-cyan);
+            transform: scale(1.05);
+        }
+
+        .coach-avatar {
+            width: 100px;
+            height: 100px;
+            margin: 0 auto 20px;
+            background: var(--gradient-cyan);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 48px;
+        }
+
+        .coach-card h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        .coach-personality {
+            color: var(--accent-cyan);
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 15px;
+        }
+
+        .coach-card p {
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        /* Sports Grid */
+        .sports-expansion {
+            padding: 120px 40px;
+            background: var(--bg-darker);
+        }
+
+        .sports-showcase {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 30px;
+            margin-top: 60px;
+        }
+
+        .sport-item {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 15px;
+            padding: 30px 20px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .sport-item:hover {
+            border-color: var(--accent-cyan);
+            transform: translateY(-5px);
+        }
+
+        .sport-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            filter: grayscale(0);
+        }
+
+        .sport-name {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 5px;
+        }
+
+        .sport-status {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        .sport-item.available .sport-status {
+            color: var(--accent-green);
+        }
+
+        /* CTA Section */
+        .cta {
+            padding: 120px 40px;
+            background: linear-gradient(135deg, rgba(0, 212, 255, 0.1) 0%, rgba(0, 255, 136, 0.1) 100%);
+            text-align: center;
+            position: relative;
+            border-top: 1px solid var(--border);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .cta h2 {
+            font-size: clamp(36px, 4vw, 56px);
+            margin-bottom: 20px;
+            font-weight: 900;
+        }
+
+        .cta p {
+            font-size: 20px;
+            color: var(--text-secondary);
+            margin-bottom: 40px;
+            max-width: 600px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .cta-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Footer */
+        footer {
+            background: var(--bg-darker);
+            padding: 60px 40px 30px;
+            border-top: 1px solid var(--border);
+        }
+
+        .footer-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 2fr 1fr 1fr 1fr 1fr;
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-brand h3 {
+            font-size: 24px;
+            margin-bottom: 15px;
+        }
+
+        .footer-brand p {
+            color: var(--text-secondary);
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .footer-links h4 {
+            color: var(--text-primary);
+            margin-bottom: 20px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .footer-links ul {
+            list-style: none;
+        }
+
+        .footer-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            display: block;
+            padding: 5px 0;
+            transition: color 0.3s ease;
+        }
+
+        .footer-links a:hover {
+            color: var(--accent-cyan);
+        }
+
+        .footer-bottom {
+            padding-top: 30px;
+            border-top: 1px solid var(--border);
+            text-align: center;
+            color: var(--text-muted);
+        }
+
+        /* Mobile menu button */
+        .mobile-menu {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+        }
+
+        .mobile-menu span {
+            width: 25px;
+            height: 2px;
+            background: var(--text-primary);
+            transition: all 0.3s ease;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none;
+            }
+
+            .mobile-menu {
+                display: flex;
+            }
+
+            .hero-container {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .hero-stats {
+                justify-content: center;
+            }
+
+            .hero-buttons {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+
+            .hero-visual {
+                margin-top: 40px;
+            }
+
+            .phone-mockup {
+                width: 300px;
+                height: 600px;
+            }
+
+            .vision-demo {
+                grid-template-columns: 1fr;
+            }
+
+            .footer-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .investor-metrics {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav>
+        <div class="nav-container">
+            <div class="logo">
+                <svg class="logo-icon" viewBox="0 0 100 100">
+                    <circle cx="50" cy="50" r="40" fill="none" stroke="#00D4FF" stroke-width="3" />
+                    <circle cx="50" cy="50" r="28" fill="none" stroke="#00D4FF" stroke-width="2" opacity="0.7" />
+                    <circle cx="50" cy="50" r="16" fill="none" stroke="#00D4FF" stroke-width="2" opacity="0.5" />
+                    <circle cx="50" cy="50" r="6" fill="#00D4FF" />
+                    <circle cx="50" cy="50" r="3" fill="#fff" />
+                    <line x1="50" y1="15" x2="50" y2="25" stroke="#00D4FF" stroke-width="2" />
+                    <line x1="50" y1="75" x2="50" y2="85" stroke="#00D4FF" stroke-width="2" />
+                    <line x1="15" y1="50" x2="25" y2="50" stroke="#00D4FF" stroke-width="2" />
+                    <line x1="75" y1="50" x2="85" y2="50" stroke="#00D4FF" stroke-width="2" />
+                </svg>
+                <div class="logo-text">MyCoach<span>AI</span></div>
+            </div>
+            <div class="nav-links">
+                <a href="#vision">Vision Track</a>
+                <a href="#features">Features</a>
+                <a href="#social">Community</a>
+                <a href="#sports">Sports</a>
+                <a href="#investors">Investors</a>
+                <a href="#" class="nav-cta">Start Free Trial</a>
+            </div>
+            <div class="mobile-menu">
+                <span></span>
+                <span></span>
+                <span></span>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-container">
+            <div class="hero-content">
+                <h1>
+                    The <span class="gradient-text">AI Coaching Layer</span><br>
+                    for Human Performance
+                </h1>
+                <p>
+                    We're not building another fitness app. We're creating the intelligence layer that understands, corrects, and optimizes human movement across every sport and activity.
+                </p>
+                
+                <div class="hero-stats">
+                    <div class="stat">
+                        <div class="stat-value">98%</div>
+                        <div class="stat-label">Form Accuracy</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">0.3s</div>
+                        <div class="stat-label">Response Time</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-value">12</div>
+                        <div class="stat-label">Sports Supported</div>
+                    </div>
+                </div>
+
+                <div class="hero-buttons">
+                    <a href="#" class="btn-primary">Request Early Access</a>
+                    <a href="#" class="btn-secondary">View Investor Deck</a>
+                </div>
+            </div>
+
+            <div class="hero-visual">
+                <div class="phone-mockup">
+                    <div class="phone-screen">
+                        <div class="app-interface">
+                            <div class="app-header">
+                                <div style="color: #00D4FF; font-weight: 700; margin-bottom: 5px;">LIVE COACHING</div>
+                                <div style="color: #888; font-size: 14px;">Squat - Set 3 of 5</div>
+                            </div>
+                            <div class="app-vision">
+                                <div class="vision-overlay">
+                                    <div class="tracking-points">
+                                        <div class="tracking-point" style="top: 20%; left: 50%;"></div>
+                                        <div class="tracking-point" style="top: 40%; left: 35%;"></div>
+                                        <div class="tracking-point" style="top: 40%; left: 65%;"></div>
+                                        <div class="tracking-point" style="top: 60%; left: 50%;"></div>
+                                        <div class="tracking-point" style="top: 80%; left: 40%;"></div>
+                                        <div class="tracking-point" style="top: 80%; left: 60%;"></div>
+                                    </div>
+                                </div>
+                                <div style="position: absolute; bottom: 30px; text-align: center; width: 100%;">
+                                    <div style="background: rgba(0, 212, 255, 0.2); border: 1px solid #00D4FF; padding: 10px 20px; border-radius: 20px; display: inline-block;">
+                                        <span style="color: #00D4FF; font-weight: 600;">✓ Perfect form! Keep it up!</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Investor Banner -->
+    <section class="investor-banner" id="investors">
+        <h2 style="font-size: 36px; margin-bottom: 20px;">Building the Future of Human Performance</h2>
+        <p style="color: var(--text-secondary); font-size: 18px; max-width: 800px; margin: 0 auto;">
+            MyCoachAI is creating a new category: AI-powered movement intelligence that works across all sports and fitness activities.
+        </p>
+        <div class="investor-metrics">
+            <div class="metric">
+                <div class="metric-value">$47B</div>
+                <div class="metric-label">TAM by 2028</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">3.2M</div>
+                <div class="metric-label">Waitlist Users</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">12</div>
+                <div class="metric-label">Patents Pending</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">89%</div>
+                <div class="metric-label">User Retention</div>
+            </div>
+            <div class="metric">
+                <div class="metric-value">5</div>
+                <div class="metric-label">Enterprise Pilots</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Vision Track Section -->
+    <section class="vision-track" id="vision">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-label">Revolutionary Technology</div>
+                <h2 class="section-title">Vision Track™ Changes Everything</h2>
+                <p class="section-subtitle">
+                    Real-time computer vision that sees, understands, and coaches your every move with superhuman precision
+                </p>
+            </div>
+
+            <div class="vision-demo">
+                <div class="demo-visual">
+                    <div class="demo-screen">
+                        <div class="skeleton-viz">
+                            <!-- Animated skeleton visualization -->
+                            <svg width="100%" height="100%" viewBox="0 0 200 300">
+                                <circle cx="100" cy="50" r="20" fill="none" stroke="#00D4FF" stroke-width="2" />
+                                <line x1="100" y1="70" x2="100" y2="150" stroke="#00D4FF" stroke-width="3" />
+                                <line x1="100" y1="90" x2="60" y2="120" stroke="#00D4FF" stroke-width="2" />
+                                <line x1="100" y1="90" x2="140" y2="120" stroke="#00D4FF" stroke-width="2" />
+                                <line x1="100" y1="150" x2="80" y2="220" stroke="#00D4FF" stroke-width="2" />
+                                <line x1="100" y1="150" x2="120" y2="220" stroke="#00D4FF" stroke-width="2" />
+                                <circle cx="100" cy="50" r="3" fill="#00D4FF" />
+                                <circle cx="100" cy="90" r="3" fill="#00D4FF" />
+                                <circle cx="100" cy="150" r="3" fill="#00D4FF" />
+                                <circle cx="60" cy="120" r="3" fill="#00D4FF" />
+                                <circle cx="140" cy="120" r="3" fill="#00D4FF" />
+                                <circle cx="80" cy="220" r="3" fill="#00D4FF" />
+                                <circle cx="120" cy="220" r="3" fill="#00D4FF" />
+                            </svg>
+                        </div>
+                    </div>
+                </div>
+                <div class="demo-content">
+                    <h3>See the Difference</h3>
+                    <ul class="feature-list">
+                        <li class="feature-item">
+                            <div class="feature-icon"></div>
+                            <div class="feature-text">
+                                <h4>Real-time Form Correction</h4>
+                                <p>Instant feedback on every rep with 98% accuracy</p>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-icon"></div>
+                            <div class="feature-text">
+                                <h4>Automatic Rep Counting</h4>
+                                <p>Never lose track - AI counts and logs everything</p>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-icon"></div>
+                            <div class="feature-text">
+                                <h4>Injury Prevention</h4>
+                                <p>Detects dangerous form before injuries happen</p>
+                            </div>
+                        </li>
+                        <li class="feature-item">
+                            <div class="feature-icon"></div>
+                            <div class="feature-text">
+                                <h4>Progress Tracking</h4>
+                                <p>Visual analysis of your improvement over time</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-label">Complete Platform</div>
+                <h2 class="section-title">Everything You Need to Excel</h2>
+                <p class="section-subtitle">
+                    From AI vision to social challenges, we've reimagined fitness coaching
+                </p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-emoji">👁️</div>
+                    <h3>Vision Track Technology</h3>
+                    <p>Our proprietary computer vision system analyzes your form in real-time, providing instant corrections and ensuring perfect technique every time.</p>
+                    <span class="feature-badge">Core Technology</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-emoji">📱</div>
+                    <h3>Smart Equipment Detection</h3>
+                    <p>Take a photo of any equipment - even a chair or water bottle - and our AI creates custom exercises optimized for what you have.</p>
+                    <span class="feature-badge">Patent Pending</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-emoji">⌚</div>
+                    <h3>Biometric Integration</h3>
+                    <p>Connects with Apple Watch, Garmin, Whoop, and more to combine movement analysis with heart rate, recovery, and sleep data.</p>
+                    <span class="feature-badge">All Wearables</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-emoji">🎯</div>
+                    <h3>Personalized Plans</h3>
+                    <p>AI creates custom workout plans based on your goals, schedule, equipment, and progress. Adapts in real-time as you improve.</p>
+                    <span class="feature-badge">Fully Adaptive</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-emoji">🎭</div>
+                    <h3>Coach Personalities</h3>
+                    <p>Choose your coach style: Tough Drill Sergeant, Supportive Friend, or Strategic Leader. Each with unique motivation styles.</p>
+                    <span class="feature-badge">3 Personalities</span>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-emoji">📊</div>
+                    <h3>Advanced Analytics</h3>
+                    <p>Deep insights into your performance with muscle activation maps, fatigue tracking, and predictive progress modeling.</p>
+                    <span class="feature-badge">Pro Analytics</span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Features Section -->
+    <section class="social-features" id="social">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-label">Community Powered</div>
+                <h2 class="section-title">Train Together, Anywhere</h2>
+                <p class="section-subtitle">
+                    The motivation of group fitness with the flexibility of home workouts
+                </p>
+            </div>
+
+            <div class="social-grid">
+                <div class="social-card">
+                    <div class="social-icon">🏆</div>
+                    <h3>Live Leaderboards</h3>
+                    <p>Compete in real-time with users worldwide. See your rank update with every rep.</p>
+                </div>
+
+                <div class="social-card">
+                    <div class="social-icon">🙏</div>
+                    <h3>High-Five System</h3>
+                    <p>Send and receive motivation during workouts. Feel the energy of training partners globally.</p>
+                </div>
+
+                <div class="social-card">
+                    <div class="social-icon">👥</div>
+                    <h3>Group Challenges</h3>
+                    <p>Join teams, create custom challenges, and push each other to new heights.</p>
+                </div>
+
+                <div class="social-card">
+                    <div class="social-icon">📈</div>
+                    <h3>Shared Progress</h3>
+                    <p>Celebrate PRs, streaks, and milestones with your community automatically.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Coach Types Section -->
+    <section class="coach-types">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-label">AI Personalities</div>
+                <h2 class="section-title">Your Perfect Training Partner</h2>
+                <p class="section-subtitle">
+                    Choose the coaching style that motivates you most
+                </p>
+            </div>
+
+            <div class="coaches-grid">
+                <div class="coach-card">
+                    <div class="coach-avatar">💪</div>
+                    <h3>The Sergeant</h3>
+                    <div class="coach-personality">Tough Love</div>
+                    <p>"Drop and give me 20! No excuses, just results. Pain is temporary, greatness is forever!"</p>
+                </div>
+
+                <div class="coach-card">
+                    <div class="coach-avatar">🎯</div>
+                    <h3>The Strategist</h3>
+                    <div class="coach-personality">Leader Style</div>
+                    <p>"Let's optimize your performance. Smart training beats hard training. Data-driven excellence."</p>
+                </div>
+
+                <div class="coach-card">
+                    <div class="coach-avatar">❤️</div>
+                    <h3>The Friend</h3>
+                    <div class="coach-personality">Supportive</div>
+                    <p>"You've got this! Every rep counts. I'm proud of you for showing up. Let's do this together!"</p>
+                </div>
+
+                <div class="coach-card">
+                    <div class="coach-avatar">🔥</div>
+                    <h3>The Motivator</h3>
+                    <div class="coach-personality">High Energy</div>
+                    <p>"LET'S GO! Feel that burn! You're unstoppable! Channel that inner champion!"</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Sports Expansion Section -->
+    <section class="sports-expansion" id="sports">
+        <div class="section-container">
+            <div class="section-header">
+                <div class="section-label">Multi-Sport Platform</div>
+                <h2 class="section-title">Every Sport, Perfected</h2>
+                <p class="section-subtitle">
+                    One app for all your training needs - current and coming soon
+                </p>
+            </div>
+
+            <div class="sports-showcase">
+                <div class="sport-item available">
+                    <div class="sport-icon">🏋️</div>
+                    <div class="sport-name">Gym Training</div>
+                    <div class="sport-status">Available Now</div>
+                </div>
+
+                <div class="sport-item available">
+                    <div class="sport-icon">🏃</div>
+                    <div class="sport-name">Running</div>
+                    <div class="sport-status">Available Now</div>
+                </div>
+
+                <div class="sport-item available">
+                    <div class="sport-icon">🧘</div>
+                    <div class="sport-name">Yoga</div>
+                    <div class="sport-status">Available Now</div>
+                </div>
+
+                <div class="sport-item">
+                    <div class="sport-icon">🚴</div>
+                    <div class="sport-name">Cycling</div>
+                    <div class="sport-status">Coming Q2</div>
+                </div>
+
+                <div class="sport-item">
+                    <div class="sport-icon">🏊</div>
+                    <div class="sport-name">Swimming</div>
+                    <div class="sport-status">Coming Q2</div>
+                </div>
+
+                <div class="sport-item">
+                    <div class="sport-icon">🎾</div>
+                    <div class="sport-name">Tennis</div>
+                    <div class="sport-status">Coming Q3</div>
+                </div>
+
+                <div class="sport-item">
+                    <div class="sport-icon">⛳</div>
+                    <div class="sport-name">Golf</div>
+                    <div class="sport-status">Coming Q3</div>
+                </div>
+
+                <div class="sport-item">
+                    <div class="sport-icon">🥊</div>
+                    <div class="sport-name">Boxing</div>
+                    <div class="sport-status">Coming Q4</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta">
+        <div class="section-container">
+            <h2>Ready to Transform Your Training?</h2>
+            <p>Join 3.2 million people on the waitlist for the future of fitness</p>
+            <div class="cta-buttons">
+                <a href="#" class="btn-primary">Get Early Access</a>
+                <a href="#" class="btn-secondary">Watch Demo</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="footer-brand">
+                <h3>MyCoachAI</h3>
+                <p>
+                    Building the AI coaching layer for human performance. 
+                    Real-time form correction, personalized training, and 
+                    community motivation across every sport.
+                </p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Product</h4>
+                <ul>
+                    <li><a href="#">Features</a></li>
+                    <li><a href="#">Vision Track</a></li>
+                    <li><a href="#">Pricing</a></li>
+                    <li><a href="#">Roadmap</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h4>Company</h4>
+                <ul>
+                    <li><a href="#">About</a></li>
+                    <li><a href="#">Careers</a></li>
+                    <li><a href="#">Press</a></li>
+                    <li><a href="#">Investors</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h4>Resources</h4>
+                <ul>
+                    <li><a href="#">Blog</a></li>
+                    <li><a href="#">Research</a></li>
+                    <li><a href="#">API Docs</a></li>
+                    <li><a href="#">Support</a></li>
+                </ul>
+            </div>
+
+            <div class="footer-links">
+                <h4>Legal</h4>
+                <ul>
+                    <li><a href="#">Privacy</a></li>
+                    <li><a href="#">Terms</a></li>
+                    <li><a href="#">Patents</a></li>
+                    <li><a href="#">Security</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="footer-bottom">
+            <p>&copy; 2024 MyCoachAI, Inc. All rights reserved. | Building the future of human performance.</p>
+        </div>
+    </footer>
+</body>
+</html>
