@@ -1,3 +1,5 @@
+import { ScreenContainer } from '../../components/ScreenContainer';
+import { Button } from '../../components/Button';
 import React, { useState } from 'react';
 import {
   View,
@@ -59,60 +61,58 @@ export default function OnboardingEquipment() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.innerContainer}>
-        <ScrollView 
-          style={styles.scrollView} 
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.header}>
-            <View style={styles.progressBar}>
-              <View style={[styles.progressFill, { width: '80%' }]} />
-            </View>
-            <Text style={styles.step}>Step 4 of 5</Text>
-            <Text style={styles.title}>Available Equipment</Text>
-            <Text style={styles.subtitle}>Select all that you have access to</Text>
+    <ScreenContainer>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.header}>
+          <View style={styles.progressBar}>
+            <View style={[styles.progressFill, { width: '80%' }]} />
           </View>
+          <Text style={styles.step}>Step 4 of 5</Text>
+          <Text style={styles.title}>Available Equipment</Text>
+          <Text style={styles.subtitle}>Select all that you have access to</Text>
+        </View>
 
-          <View style={styles.equipmentContainer}>
-            {equipment.map((item) => {
-              const isSelected = selectedEquipment.includes(item.id);
-              
-              return (
-                <TouchableOpacity
-                  key={item.id}
-                  style={[styles.equipmentCard, isSelected && styles.selectedEquipment]}
-                  onPress={() => toggleEquipment(item.id)}
-                >
-                  <View style={styles.equipmentContent}>
-                    <Text style={styles.equipmentIcon}>{item.icon}</Text>
-                    <View style={styles.equipmentTextContainer}>
-                      <Text style={[styles.equipmentLabel, isSelected && styles.selectedText]}>
-                        {item.label}
-                      </Text>
-                      <Text style={[styles.equipmentDescription, isSelected && styles.selectedDescription]}>
-                        {item.description}
-                      </Text>
-                    </View>
+        <View style={styles.equipmentContainer}>
+          {equipment.map((item) => {
+            const isSelected = selectedEquipment.includes(item.id);
+            return (
+              <TouchableOpacity
+                key={item.id}
+                style={[styles.equipmentCard, isSelected && styles.selectedEquipment]}
+                onPress={() => toggleEquipment(item.id)}
+              >
+                <View style={styles.equipmentContent}>
+                  <Text style={styles.equipmentIcon}>{item.icon}</Text>
+                  <View style={styles.equipmentTextContainer}>
+                    <Text style={[styles.equipmentLabel, isSelected && styles.selectedText]}>
+                      {item.label}
+                    </Text>
+                    <Text style={[styles.equipmentDescription, isSelected && styles.selectedDescription]}>
+                      {item.description}
+                    </Text>
                   </View>
-                  {isSelected && (
-                    <View style={styles.checkmark}>
-                      <Text style={styles.checkmarkText}>✓</Text>
-                    </View>
-                  )}
-                </TouchableOpacity>
-              );
-            })}
-          </View>
+                </View>
+                {isSelected && (
+                  <View style={styles.checkmark}>
+                    <Text style={styles.checkmarkText}>✓</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            );
+          })}
+        </View>
 
-          <View style={styles.tipContainer}>
-            <Text style={styles.tipIcon}>💡</Text>
-            <Text style={styles.tipText}>
-              Don't worry if you have limited equipment. We'll create effective workouts with whatever you have!
-            </Text>
-          </View>
-        </ScrollView>
+        <View style={styles.tipContainer}>
+          <Text style={styles.tipIcon}>💡</Text>
+          <Text style={styles.tipText}>
+            Don't worry if you have limited equipment. We'll create effective workouts with whatever you have!
+          </Text>
+        </View>
 
         <View style={styles.navigationContainer}>
           <TouchableOpacity style={styles.backButton} onPress={handleBack}>
@@ -129,15 +129,15 @@ export default function OnboardingEquipment() {
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
-    </SafeAreaView>
+      </ScrollView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff5f0',
+    backgroundColor: '#0a0a0a',
   },
   innerContainer: {
     flex: 1,
@@ -160,7 +160,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     borderRadius: 2,
   },
   step: {
@@ -193,7 +193,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   selectedEquipment: {
-    borderColor: '#FF6B35',
+    borderColor: '#00D4FF',
     backgroundColor: '#fff8f5',
   },
   equipmentContent: {
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   selectedText: {
-    color: '#FF6B35',
+    color: '#00D4FF',
   },
   selectedDescription: {
     color: '#FF8C60',
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -259,7 +259,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 12,
     padding: 20,
-    backgroundColor: '#fff5f0',
+    backgroundColor: '#0a0a0a',
     borderTopWidth: 1,
     borderTopColor: '#f0f0f0',
   },
@@ -269,16 +269,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#FF6B35',
+    borderColor: '#00D4FF',
   },
   backButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#FF6B35',
+    color: '#00D4FF',
   },
   nextButton: {
     flex: 1,
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     paddingVertical: 16,
     borderRadius: 10,
     alignItems: 'center',

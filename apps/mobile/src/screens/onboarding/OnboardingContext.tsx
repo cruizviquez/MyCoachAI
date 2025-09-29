@@ -1,5 +1,8 @@
 import React, { createContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+/*import { ScreenContainer } from '../../components/ScreenContainer';
+import { Button } from '../../components/Button';
+import { theme } from '../../styles/theme';*/
 
 export interface OnboardingData {
   fitnessLevel?: string;

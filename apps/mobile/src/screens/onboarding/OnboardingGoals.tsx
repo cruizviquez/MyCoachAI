@@ -4,7 +4,6 @@ import {
   Text, 
   StyleSheet, 
   TouchableOpacity, 
-  SafeAreaView, 
   ScrollView, 
   Dimensions,
   Platform 
@@ -13,6 +12,8 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/navigation';
 import { useOnboarding } from '../../state/OnboardingContext';
+import { ScreenContainer } from '../../components/ScreenContainer';
+import { Button } from '../../components/Button';
 
 const { height: screenHeight } = Dimensions.get('window');
 
@@ -58,90 +59,88 @@ export default function OnboardingGoals() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.innerContainer}>
-        <ScrollView 
-          style={styles.scrollView} 
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.header}>
-            <View style={styles.progressBar}>
-              <View style={[styles.progressFill, { width: '20%' }]} />
-            </View>
-            <Text style={styles.step}>Step 1 of 5</Text>
-            <Text style={styles.title}>What's your main goal?</Text>
-            <Text style={styles.subtitle}>We'll customize your workouts</Text>
+    <ScreenContainer>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.header}>
+          <View style={styles.progressBar}>
+            <View style={[styles.progressFill, { width: '20%' }]} />
           </View>
-
-          <View style={styles.goalsContainer}>
-            {goals.map((goal) => {
-              const isSelected = selectedGoals.includes(goal.id);
-              
-              return (
-                <TouchableOpacity
-                  key={goal.id}
-                  style={[styles.goalCard, isSelected && styles.selectedGoal]}
-                  onPress={() => toggleGoal(goal.id)}
-                >
-                  <Text style={styles.goalIcon}>{goal.icon}</Text>
-                  <View style={styles.goalTextContainer}>
-                    <Text style={[styles.goalTitle, isSelected && styles.selectedText]}>
-                      {goal.title}
-                    </Text>
-                    <Text style={[styles.goalDescription, isSelected && styles.selectedSubtext]}>
-                      {goal.description}
-                    </Text>
-                  </View>
-                  {isSelected && (
-                    <View style={styles.checkmark}>
-                      <Text style={styles.checkmarkText}>✓</Text>
-                    </View>
-                  )}
-                </TouchableOpacity>
-              );
-            })}
-          </View>
-
-          {/* Spacing for bottom buttons */}
-          <View style={{ height: 100 }} />
-        </ScrollView>
-
-        {/* Fixed Bottom Button Container */}
-        <View style={styles.bottomButtonContainer}>
-          <TouchableOpacity
-            style={[styles.navButton, styles.backButton]}
-            onPress={handleBack}
-          >
-            <Text style={styles.backButtonText}>Back</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity
-            style={[
-              styles.navButton, 
-              styles.nextButton, 
-              selectedGoals.length === 0 && styles.nextButtonDisabled
-            ]}
-            onPress={handleNext}
-            disabled={selectedGoals.length === 0}
-          >
-            <Text style={[
-              styles.nextButtonText, 
-              selectedGoals.length === 0 && styles.nextButtonTextDisabled
-            ]}>
-              Continue
-            </Text>
-          </TouchableOpacity>
+          <Text style={styles.step}>Step 1 of 5</Text>
+          <Text style={styles.title}>What's your main goal?</Text>
+          <Text style={styles.subtitle}>We'll customize your workouts</Text>
         </View>
+
+        <View style={styles.goalsContainer}>
+          {goals.map((goal) => {
+            const isSelected = selectedGoals.includes(goal.id);
+            return (
+              <TouchableOpacity
+                key={goal.id}
+                style={[styles.goalCard, isSelected && styles.selectedGoal]}
+                onPress={() => toggleGoal(goal.id)}
+              >
+                <Text style={styles.goalIcon}>{goal.icon}</Text>
+                <View style={styles.goalTextContainer}>
+                  <Text style={[styles.goalTitle, isSelected && styles.selectedText]}>
+                    {goal.title}
+                  </Text>
+                  <Text style={[styles.goalDescription, isSelected && styles.selectedSubtext]}>
+                    {goal.description}
+                  </Text>
+                </View>
+                {isSelected && (
+                  <View style={styles.checkmark}>
+                    <Text style={styles.checkmarkText}>✓</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+
+        {/* Spacing for bottom buttons */}
+        <View style={{ height: 100 }} />
+      </ScrollView>
+
+      {/* Fixed Bottom Button Container */}
+      <View style={styles.bottomButtonContainer}>
+        <TouchableOpacity
+          style={[styles.navButton, styles.backButton]}
+          onPress={handleBack}
+        >
+          <Text style={styles.backButtonText}>Back</Text>
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          style={[
+            styles.navButton,
+            styles.nextButton,
+            selectedGoals.length === 0 && styles.nextButtonDisabled
+          ]}
+          onPress={handleNext}
+          disabled={selectedGoals.length === 0}
+        >
+          <Text style={[
+            styles.nextButtonText,
+            selectedGoals.length === 0 && styles.nextButtonTextDisabled
+          ]}>
+            Continue
+          </Text>
+        </TouchableOpacity>
       </View>
-    </SafeAreaView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff5f0',
+    backgroundColor: '#0a0a0a',
   },
   innerContainer: {
     flex: 1,
@@ -163,7 +162,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     borderRadius: 2,
   },
   step: {
@@ -196,7 +195,7 @@ const styles = StyleSheet.create({
     minHeight: 60,
   },
   selectedGoal: {
-    borderColor: '#FF6B35',
+    borderColor: '#00D4FF',
     backgroundColor: '#fff8f5',
   },
   goalIcon: {
@@ -217,7 +216,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   selectedText: {
-    color: '#FF6B35',
+    color: '#00D4FF',
   },
   selectedSubtext: {
     color: '#FF8C60',
@@ -226,7 +225,7 @@ const styles = StyleSheet.create({
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -236,11 +235,11 @@ const styles = StyleSheet.create({
     fontSize: 12,
   },
   bottomButtonContainer: {
-    position: Platform.OS === 'web' ? 'fixed' : 'absolute',
+    position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#fff5f0',
+    backgroundColor: '#0a0a0a',
     paddingHorizontal: 20,
     paddingVertical: 20,
     paddingBottom: Platform.OS === 'web' ? 20 : 30,
@@ -263,11 +262,11 @@ const styles = StyleSheet.create({
   backButton: {
     backgroundColor: 'transparent',
     borderWidth: 2,
-    borderColor: '#FF6B35',
+    borderColor: '#00D4FF',
     marginRight: 6,
   },
   nextButton: {
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     marginLeft: 6,
   },
   nextButtonDisabled: {
@@ -276,7 +275,7 @@ const styles = StyleSheet.create({
   backButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#FF6B35',
+    color: '#00D4FF',
   },
   nextButtonText: {
     fontSize: 16,

@@ -1,3 +1,5 @@
+import { ScreenContainer } from '../../components/ScreenContainer';
+import { Button } from '../../components/Button';
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -62,25 +64,25 @@ export default function WorkoutPlanScreen({ navigation }: WorkoutPlanScreenProps
 
   if (loading) {
     return (
-      <SafeAreaView style={styles.container}>
+      <ScreenContainer>
         <View style={styles.loadingContainer}>
-          <ActivityIndicator size="large" color="#FF6B35" />
-          <Text style={styles.loadingText}>Creating your personalized workout...</Text>
+          <ActivityIndicator size="large" color="#00D4FF" />
+          <Text style={styles.loadingText}>Generating your workout plan...</Text>
         </View>
-      </SafeAreaView>
+      </ScreenContainer>
     );
   }
 
   if (error) {
     return (
-      <SafeAreaView style={styles.container}>
+      <ScreenContainer>
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>{error}</Text>
           <TouchableOpacity style={styles.retryButton} onPress={generateNewWorkout}>
             <Text style={styles.retryButtonText}>Try Again</Text>
           </TouchableOpacity>
         </View>
-      </SafeAreaView>
+      </ScreenContainer>
     );
   }
 
@@ -89,8 +91,12 @@ export default function WorkoutPlanScreen({ navigation }: WorkoutPlanScreenProps
   }
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false}>
+    <ScreenContainer>
+      <ScrollView
+        contentContainerStyle={{ paddingBottom: 40 }}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
         <View style={styles.header}>
           <Text style={styles.title}>Your Workout Plan</Text>
           <Text style={styles.subtitle}>{currentWorkout.name}</Text>
@@ -154,14 +160,14 @@ export default function WorkoutPlanScreen({ navigation }: WorkoutPlanScreenProps
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff5f0',
+    backgroundColor: '#0a0a0a',
   },
   loadingContainer: {
     flex: 1,
@@ -186,7 +192,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   retryButton: {
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     paddingHorizontal: 30,
     paddingVertical: 15,
     borderRadius: 25,
@@ -223,7 +229,7 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#FF6B35',
+    color: '#00D4FF',
   },
   statLabel: {
     fontSize: 14,
@@ -259,7 +265,7 @@ const styles = StyleSheet.create({
     width: 30,
     height: 30,
     borderRadius: 15,
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     color: 'white',
     textAlign: 'center',
     lineHeight: 30,
@@ -297,7 +303,7 @@ const styles = StyleSheet.create({
     paddingBottom: 40,
   },
   startButton: {
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     paddingVertical: 18,
     borderRadius: 25,
     alignItems: 'center',
@@ -311,13 +317,13 @@ const styles = StyleSheet.create({
   regenerateButton: {
     backgroundColor: 'transparent',
     borderWidth: 2,
-    borderColor: '#FF6B35',
+    borderColor: '#00D4FF',
     paddingVertical: 16,
     borderRadius: 25,
     alignItems: 'center',
   },
   regenerateButtonText: {
-    color: '#FF6B35',
+    color: '#00D4FF',
     fontSize: 16,
     fontWeight: '600',
   },

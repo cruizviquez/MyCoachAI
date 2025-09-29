@@ -1,3 +1,5 @@
+import { ScreenContainer } from '../../components/ScreenContainer';
+import { Button } from '../../components/Button';
 import React, { useState } from 'react';
 import {
   View,
@@ -38,7 +40,23 @@ export default function OnboardingSchedule() {
         preferredTime,
       }
     });
-    navigation.navigate('WorkoutPlan');
+    navigation.navigate('WorkoutPlan', {
+      level: 'beginner',
+      equipment: Array.isArray(data.equipment) ? (data.equipment[0] || '') : (data.equipment || ''),
+      time: preferredTime,
+      goal: data.goals ? data.goals[0] : undefined,
+      limitations: data.limitations || [],
+      profile: {
+        weight: data.weight,
+        height: data.height,
+        age: data.age,
+        gender: data.gender,
+      },
+      schedule: {
+        daysPerWeek,
+        preferredTime,
+      }
+    });
   };
 
   const handleBack = () => {
@@ -46,81 +64,78 @@ export default function OnboardingSchedule() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.innerContainer}>
-        <ScrollView 
-          style={styles.scrollView} 
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.header}>
-            <View style={styles.progressBar}>
-              <View style={[styles.progressFill, { width: '100%' }]} />
-            </View>
-            <Text style={styles.step}>Step 5 of 5</Text>
-            <Text style={styles.title}>Your Schedule</Text>
-            <Text style={styles.subtitle}>When can you work out?</Text>
+    <ScreenContainer>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.header}>
+          <View style={styles.progressBar}>
+            <View style={[styles.progressFill, { width: '100%' }]} />
           </View>
+          <Text style={styles.step}>Step 5 of 5</Text>
+          <Text style={styles.title}>Your Schedule</Text>
+          <Text style={styles.subtitle}>When can you work out?</Text>
+        </View>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Days per week</Text>
-            <Text style={styles.sectionSubtitle}>How many days can you commit?</Text>
-            
-            <View style={styles.daysContainer}>
-              {dayOptions.map((day) => (
-                <TouchableOpacity
-                  key={day}
-                  style={[styles.dayButton, daysPerWeek === day && styles.selectedDay]}
-                  onPress={() => setDaysPerWeek(day)}
-                >
-                  <Text style={[styles.dayNumber, daysPerWeek === day && styles.selectedDayText]}>
-                    {day}
-                  </Text>
-                  <Text style={[styles.dayLabel, daysPerWeek === day && styles.selectedDayText]}>
-                    {day === 7 ? 'days' : 'days'}
-                  </Text>
-                </TouchableOpacity>
-              ))}
-            </View>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Days per week</Text>
+          <Text style={styles.sectionSubtitle}>How many days can you commit?</Text>
+          <View style={styles.daysContainer}>
+            {dayOptions.map((day) => (
+              <TouchableOpacity
+                key={day}
+                style={[styles.dayButton, daysPerWeek === day && styles.selectedDay]}
+                onPress={() => setDaysPerWeek(day)}
+              >
+                <Text style={[styles.dayNumber, daysPerWeek === day && styles.selectedDayText]}>
+                  {day}
+                </Text>
+                <Text style={[styles.dayLabel, daysPerWeek === day && styles.selectedDayText]}>
+                  {day === 7 ? 'days' : 'days'}
+                </Text>
+              </TouchableOpacity>
+            ))}
           </View>
+        </View>
 
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Preferred time</Text>
-            <Text style={styles.sectionSubtitle}>When do you feel most energized?</Text>
-            
-            <View style={styles.timeContainer}>
-              {timeOptions.map((time) => (
-                <TouchableOpacity
-                  key={time.id}
-                  style={[styles.timeCard, preferredTime === time.id && styles.selectedTime]}
-                  onPress={() => setPreferredTime(time.id)}
-                >
-                  <Text style={styles.timeIcon}>{time.icon}</Text>
-                  <View style={styles.timeTextContainer}>
-                    <Text style={[styles.timeLabel, preferredTime === time.id && styles.selectedTimeText]}>
-                      {time.label}
-                    </Text>
-                    <Text style={[styles.timeDescription, preferredTime === time.id && styles.selectedTimeDescription]}>
-                      {time.description}
-                    </Text>
+        <View style={styles.section}>
+          <Text style={styles.sectionTitle}>Preferred time</Text>
+          <Text style={styles.sectionSubtitle}>When do you feel most energized?</Text>
+          <View style={styles.timeContainer}>
+            {timeOptions.map((time) => (
+              <TouchableOpacity
+                key={time.id}
+                style={[styles.timeCard, preferredTime === time.id && styles.selectedTime]}
+                onPress={() => setPreferredTime(time.id)}
+              >
+                <Text style={styles.timeIcon}>{time.icon}</Text>
+                <View style={styles.timeTextContainer}>
+                  <Text style={[styles.timeLabel, preferredTime === time.id && styles.selectedTimeText]}>
+                    {time.label}
+                  </Text>
+                  <Text style={[styles.timeDescription, preferredTime === time.id && styles.selectedTimeDescription]}>
+                    {time.description}
+                  </Text>
+                </View>
+                {preferredTime === time.id && (
+                  <View style={styles.checkmark}>
+                    <Text style={styles.checkmarkText}>✓</Text>
                   </View>
-                  {preferredTime === time.id && (
-                    <View style={styles.checkmark}>
-                      <Text style={styles.checkmarkText}>✓</Text>
-                    </View>
-                  )}
-                </TouchableOpacity>
-              ))}
-            </View>
+                )}
+              </TouchableOpacity>
+            ))}
           </View>
+        </View>
 
-          <View style={styles.summaryContainer}>
-            <Text style={styles.summaryTitle}>Your commitment:</Text>
-            <Text style={styles.summaryText}>
-              {daysPerWeek} workouts per week, preferably in the {preferredTime}
-            </Text>
-          </View>
-        </ScrollView>
+        <View style={styles.summaryContainer}>
+          <Text style={styles.summaryTitle}>Your commitment:</Text>
+          <Text style={styles.summaryText}>
+            {daysPerWeek} workouts per week, preferably in the {preferredTime}
+          </Text>
+        </View>
 
         <View style={styles.navigationContainer}>
           <TouchableOpacity style={styles.backButton} onPress={handleBack}>
@@ -131,15 +146,15 @@ export default function OnboardingSchedule() {
             <Text style={styles.finishButtonText}>Get My Plan</Text>
           </TouchableOpacity>
         </View>
-      </View>
-    </SafeAreaView>
+      </ScrollView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff5f0',
+    backgroundColor: '#0a0a0a',
   },
   innerContainer: {
     flex: 1,
@@ -162,7 +177,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     borderRadius: 2,
   },
   step: {
@@ -210,8 +225,8 @@ const styles = StyleSheet.create({
     borderColor: '#e2e8f0',
   },
   selectedDay: {
-    backgroundColor: '#FF6B35',
-    borderColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
+    borderColor: '#00D4FF',
   },
   dayNumber: {
     fontSize: 24,
@@ -239,7 +254,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   selectedTime: {
-    borderColor: '#FF6B35',
+    borderColor: '#00D4FF',
     backgroundColor: '#fff8f5',
   },
   timeIcon: {
@@ -260,7 +275,7 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   selectedTimeText: {
-    color: '#FF6B35',
+    color: '#00D4FF',
   },
   selectedTimeDescription: {
     color: '#FF8C60',
@@ -269,7 +284,7 @@ const styles = StyleSheet.create({
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -299,7 +314,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     gap: 12,
     padding: 20,
-    backgroundColor: '#fff5f0',
+    backgroundColor: '#0a0a0a',
     borderTopWidth: 1,
     borderTopColor: '#f0f0f0',
   },
@@ -309,16 +324,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#FF6B35',
+    borderColor: '#00D4FF',
   },
   backButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#FF6B35',
+    color: '#00D4FF',
   },
   finishButton: {
     flex: 1,
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     paddingVertical: 16,
     borderRadius: 10,
     alignItems: 'center',

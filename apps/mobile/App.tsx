@@ -80,7 +80,7 @@ export default function App() {
               <Stack.Screen 
                 name="Home" 
                 component={HomeScreen} 
-                options={{ title: 'MyCoachAI' }}
+                options={{ title: 'RoboQoach' }}
               />
               <Stack.Screen 
                 name="Camera" 

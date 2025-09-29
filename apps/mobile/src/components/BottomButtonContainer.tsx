@@ -17,16 +17,16 @@ export default function BottomButtonContainer({ children }: BottomButtonContaine
 
 const styles = StyleSheet.create({
   container: {
-    position: Platform.OS === 'web' ? 'fixed' : 'absolute',
+  position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#fff5f0',
+    backgroundColor: '#0a0a0a',
     paddingHorizontal: 20,
     paddingVertical: 20,
-    paddingBottom: Platform.OS === 'web' ? 20 : 40,
+    paddingBottom: Platform.OS === 'web' ? 30 : 50,
     borderTopWidth: 1,
-    borderTopColor: '#f0f0f0',
+    borderTopColor: '#2a2a2a',
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: 12,

@@ -1,3 +1,5 @@
+import { ScreenContainer } from '../../components/ScreenContainer';
+import { Button } from '../../components/Button';
 import React, { useState } from 'react';
 import {
   View,
@@ -65,50 +67,48 @@ export default function OnboardingLimitations() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <View style={styles.innerContainer}>
-        <ScrollView 
-          style={styles.scrollView} 
-          contentContainerStyle={styles.scrollContent}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.header}>
-            <View style={styles.progressBar}>
-              <View style={[styles.progressFill, { width: '60%' }]} />
-            </View>
-            <Text style={styles.step}>Step 3 of 5</Text>
-            <Text style={styles.title}>Any limitations?</Text>
-            <Text style={styles.subtitle}>We'll adapt your workouts accordingly</Text>
+    <ScreenContainer>
+      <ScrollView
+        style={styles.scrollView}
+        contentContainerStyle={styles.scrollContent}
+        showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
+      >
+        <View style={styles.header}>
+          <View style={styles.progressBar}>
+            <View style={[styles.progressFill, { width: '60%' }]} />
           </View>
+          <Text style={styles.step}>Step 3 of 5</Text>
+          <Text style={styles.title}>Any limitations?</Text>
+          <Text style={styles.subtitle}>We'll adapt your workouts accordingly</Text>
+        </View>
 
-          <View style={styles.limitationsContainer}>
-            {limitations.map((limitation) => {
-              const isSelected = selectedLimitations.includes(limitation.id);
-              
-              return (
-                <TouchableOpacity
-                  key={limitation.id}
-                  style={[styles.limitationCard, isSelected && styles.selectedLimitation]}
-                  onPress={() => toggleLimitation(limitation.id)}
-                >
-                  <Text style={styles.limitationIcon}>{limitation.icon}</Text>
-                  <Text style={[styles.limitationText, isSelected && styles.selectedText]}>
-                    {limitation.label}
-                  </Text>
-                  {isSelected && (
-                    <View style={styles.checkmark}>
-                      <Text style={styles.checkmarkText}>✓</Text>
-                    </View>
-                  )}
-                </TouchableOpacity>
-              );
-            })}
-          </View>
+        <View style={styles.limitationsContainer}>
+          {limitations.map((limitation) => {
+            const isSelected = selectedLimitations.includes(limitation.id);
+            return (
+              <TouchableOpacity
+                key={limitation.id}
+                style={[styles.limitationCard, isSelected && styles.selectedLimitation]}
+                onPress={() => toggleLimitation(limitation.id)}
+              >
+                <Text style={styles.limitationIcon}>{limitation.icon}</Text>
+                <Text style={[styles.limitationText, isSelected && styles.selectedText]}>
+                  {limitation.label}
+                </Text>
+                {isSelected && (
+                  <View style={styles.checkmark}>
+                    <Text style={styles.checkmarkText}>✓</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            );
+          })}
+        </View>
 
-          <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
-            <Text style={styles.skipText}>Skip this step</Text>
-          </TouchableOpacity>
-        </ScrollView>
+        <TouchableOpacity style={styles.skipButton} onPress={handleSkip}>
+          <Text style={styles.skipText}>Skip this step</Text>
+        </TouchableOpacity>
 
         <View style={styles.navigationContainer}>
           <TouchableOpacity style={styles.backButton} onPress={handleBack}>
@@ -125,15 +125,15 @@ export default function OnboardingLimitations() {
             </Text>
           </TouchableOpacity>
         </View>
-      </View>
-    </SafeAreaView>
+      </ScrollView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff5f0',
+    backgroundColor: '#0a0a0a',
   },
   innerContainer: {
     flex: 1,
@@ -156,7 +156,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     borderRadius: 2,
   },
   step: {
@@ -188,7 +188,7 @@ const styles = StyleSheet.create({
     borderColor: 'transparent',
   },
   selectedLimitation: {
-    borderColor: '#FF6B35',
+    borderColor: '#00D4FF',
     backgroundColor: '#fff8f5',
   },
   limitationIcon: {
@@ -202,13 +202,13 @@ const styles = StyleSheet.create({
     fontWeight: '500',
   },
   selectedText: {
-    color: '#FF6B35',
+    color: '#00D4FF',
   },
   checkmark: {
     width: 24,
     height: 24,
     borderRadius: 12,
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -224,14 +224,14 @@ const styles = StyleSheet.create({
   },
   skipText: {
     fontSize: 16,
-    color: '#FF6B35',
+    color: '#00D4FF',
     textDecorationLine: 'underline',
   },
   navigationContainer: {
     flexDirection: 'row',
     gap: 12,
     padding: 20,
-    backgroundColor: '#fff5f0',
+    backgroundColor: '#0a0a0a',
     borderTopWidth: 1,
     borderTopColor: '#f0f0f0',
   },
@@ -241,16 +241,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#FF6B35',
+    borderColor: '#00D4FF',
   },
   backButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#FF6B35',
+    color: '#00D4FF',
   },
   nextButton: {
     flex: 1,
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     paddingVertical: 16,
     borderRadius: 10,
     alignItems: 'center',

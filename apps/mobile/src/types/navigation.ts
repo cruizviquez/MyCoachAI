@@ -33,4 +33,24 @@ export type RootStackParamList = {
       currentSet: number;
     };
   };
+  Dashboard: undefined;
+  VisionCoachScreen: {
+    workout: {
+      name: string;
+      sets: number;
+      reps: number;
+      // Add more fields as needed
+    };
+  };
+  Results: {
+    workout: {
+      name: string;
+      sets: number;
+      reps: number;
+    };
+    performance: {
+      totalReps: number;
+      avgForm: number;
+    };
+  };
 };

@@ -1,3 +1,5 @@
+import { ScreenContainer } from '../../components/ScreenContainer';
+import { Button } from '../../components/Button';
 import React, { useState, useEffect } from 'react';
 import {
   View,
@@ -68,12 +70,16 @@ export default function OnboardingProfile() {
   const isFormValid = age && weight && height;
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ScreenContainer>
       <KeyboardAvoidingView
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-        style={styles.keyboardView}
+        style={{ flex: 1 }}
+        behavior={Platform.OS === 'ios' ? 'padding' : undefined}
       >
-        <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
+        <ScrollView
+          contentContainerStyle={styles.scrollContent}
+          showsVerticalScrollIndicator={false}
+          keyboardShouldPersistTaps="handled"
+        >
           <View style={styles.header}>
             <View style={styles.progressBar}>
               <View style={[styles.progressFill, { width: '40%' }]} />
@@ -138,7 +144,7 @@ export default function OnboardingProfile() {
               <View style={styles.bmiContainer}>
                 <Text style={styles.bmiTitle}>Your BMI</Text>
                 <Text style={styles.bmiValue}>{bmi}</Text>
-                <Text style={[styles.bmiCategory, { color: getBMICategory(parseFloat(bmi)).color }]}>
+                <Text style={[styles.bmiCategory, { color: getBMICategory(parseFloat(bmi)).color }]}> 
                   {getBMICategory(parseFloat(bmi)).category}
                 </Text>
               </View>
@@ -162,14 +168,14 @@ export default function OnboardingProfile() {
           </View>
         </ScrollView>
       </KeyboardAvoidingView>
-    </SafeAreaView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff5f0',
+    backgroundColor: '#0a0a0a',
   },
   keyboardView: {
     flex: 1,
@@ -189,7 +195,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     borderRadius: 2,
   },
   step: {
@@ -241,8 +247,8 @@ const styles = StyleSheet.create({
     borderColor: '#e2e8f0',
   },
   selectedGender: {
-    backgroundColor: '#FF6B35',
-    borderColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
+    borderColor: '#00D4FF',
   },
   genderText: {
     fontSize: 16,
@@ -285,16 +291,16 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#FF6B35',
+    borderColor: '#00D4FF',
   },
   backButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#FF6B35',
+    color: '#00D4FF',
   },
   continueButton: {
     flex: 1,
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     paddingVertical: 16,
     borderRadius: 10,
     alignItems: 'center',

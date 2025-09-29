@@ -1,4 +1,5 @@
 import React from 'react';
+import { ScreenContainer } from '../../components/ScreenContainer';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
@@ -18,7 +19,7 @@ export default function WelcomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <ScreenContainer scrollable={true}>
       <View style={styles.content}>
         <View style={styles.header}>
           <View style={styles.logoContainer}>
@@ -26,7 +27,7 @@ export default function WelcomeScreen() {
             <Text style={styles.logoRobot}>🤖</Text>
           </View>
           <Text style={styles.title}>
-            MyCoach<Text style={styles.titleAI}>AI</Text>
+            RoboQ<Text style={styles.titleAI}>oach</Text>
           </Text>
           <Text style={styles.subtitle}>Your Personal AI Trainer</Text>
         </View>
@@ -63,20 +64,21 @@ export default function WelcomeScreen() {
           </TouchableOpacity>
         </View>
       </View>
-    </SafeAreaView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff5f0',
+    backgroundColor: '#0a0a0a',
   },
   content: {
     flex: 1,
     paddingHorizontal: 24,
     justifyContent: 'space-between',
     paddingVertical: 40,
+    paddingBottom: 60,
   },
   header: {
     alignItems: 'center',
@@ -86,15 +88,12 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 20,
-    backgroundColor: '#fff',
+    backgroundColor: '#1a1a1a',
     paddingHorizontal: 20,
     paddingVertical: 15,
     borderRadius: 25,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 8,
-    elevation: 4,
+    borderWidth: 1,
+    borderColor: '#2a2a2a',
   },
   logoIcon: {
     fontSize: 40,
@@ -106,15 +105,15 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: '#1a202c',
+    color: '#ffffff',
     marginBottom: 8,
   },
   titleAI: {
-    color: '#FF6B35',
+    color: '#00D4FF',
   },
   subtitle: {
     fontSize: 18,
-    color: '#666',
+    color: '#888888',
     fontWeight: '500',
   },
   description: {
@@ -123,7 +122,7 @@ const styles = StyleSheet.create({
   },
   descriptionText: {
     fontSize: 17,
-    color: '#4a5568',
+    color: '#888888',
     textAlign: 'center',
     lineHeight: 26,
   },
@@ -133,16 +132,13 @@ const styles = StyleSheet.create({
   feature: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
+    backgroundColor: '#1a1a1a',
     padding: 16,
     borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 6,
-    elevation: 3,
+    borderWidth: 1,
+    borderColor: '#2a2a2a',
     borderLeftWidth: 4,
-    borderLeftColor: '#FF6B35',
+    borderLeftColor: '#00D4FF',
   },
   featureEmoji: {
     fontSize: 24,
@@ -150,19 +146,19 @@ const styles = StyleSheet.create({
   },
   featureText: {
     fontSize: 15,
-    color: '#1a202c',
+    color: '#ffffff',
     fontWeight: '600',
   },
   buttonContainer: {
     gap: 12,
   },
   primaryButton: {
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     paddingVertical: 18,
     paddingHorizontal: 32,
     borderRadius: 12,
     alignItems: 'center',
-    shadowColor: '#FF6B35',
+    shadowColor: '#00D4FF',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
@@ -179,16 +175,16 @@ const styles = StyleSheet.create({
     fontSize: 13,
   },
   secondaryButton: {
-    backgroundColor: 'white',
+    backgroundColor: 'transparent',
     paddingVertical: 16,
     paddingHorizontal: 32,
     borderRadius: 12,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#FF6B35',
+    borderColor: '#00D4FF',
   },
   secondaryButtonText: {
-    color: '#FF6B35',
+    color: '#00D4FF',
     fontSize: 17,
     fontWeight: '600',
   },

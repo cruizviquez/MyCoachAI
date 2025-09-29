@@ -1,3 +1,5 @@
+import { ScreenContainer } from '../../components/ScreenContainer';
+import { Button } from '../../components/Button';
 import React, { useState } from 'react';
 import {
   View,
@@ -41,16 +43,21 @@ export default function SetupScreen({ navigation }: SetupScreenProps) {
       equipment,
       workoutDuration: duration,
     });
-    navigation.navigate('WorkoutPlan');
+    navigation.navigate('WorkoutPlan', {
+      level: fitnessLevel,
+      equipment: equipment[0] || '',
+      time: duration,
+    });
   };
 
   const isFormComplete = fitnessLevel && equipment.length > 0 && duration;
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView 
+    <ScreenContainer>
+      <ScrollView
         contentContainerStyle={styles.scrollContent}
         showsVerticalScrollIndicator={false}
+        keyboardShouldPersistTaps="handled"
       >
         {/* Question 1: Fitness Level */}
         <View style={styles.questionSection}>
@@ -150,14 +157,14 @@ export default function SetupScreen({ navigation }: SetupScreenProps) {
           </TouchableOpacity>
         </View>
       </ScrollView>
-    </SafeAreaView>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff5f0',
+    backgroundColor: '#0a0a0a',
   },
   scrollContent: {
     flexGrow: 1,
@@ -170,7 +177,7 @@ const styles = StyleSheet.create({
   questionNumber: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#FF6B35',
+    color: '#00D4FF',
     marginBottom: 8,
   },
   question: {
@@ -195,19 +202,19 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 25,
     borderWidth: 2,
-    borderColor: '#FF6B35',
+    borderColor: '#00D4FF',
     backgroundColor: 'white',
     margin: 6,
     minWidth: width < 400 ? 100 : 120,
     alignItems: 'center',
   },
   optionButtonSelected: {
-    backgroundColor: '#FF6B35',
-    borderColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
+    borderColor: '#00D4FF',
   },
   optionText: {
     fontSize: 15,
-    color: '#FF6B35',
+    color: '#00D4FF',
     fontWeight: '600',
   },
   optionTextSelected: {
@@ -218,7 +225,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   getStartedButton: {
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     paddingVertical: 18,
     borderRadius: 30,
     alignItems: 'center',

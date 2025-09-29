@@ -1,3 +1,4 @@
+import { ScreenContainer, Button } from 'components';
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
@@ -20,8 +21,7 @@ export default function HomeScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
+  <ScreenContainer scrollable={true} style={styles.scrollView}>
         <View style={styles.header}>
           <Text style={styles.greeting}>Welcome back! 👋</Text>
           <Text style={styles.title}>Today's Workout</Text>
@@ -58,17 +58,16 @@ export default function HomeScreen() {
         </View>
 
         <TouchableOpacity style={styles.startButton} onPress={handleStartWorkout}>
-          <Text style={styles.startButtonText}>Start Workout with AI Coach 🤖</Text>
+          <Text style={styles.startButtonText}>Start Workout with RoboQoach 🤖</Text>
         </TouchableOpacity>
-      </ScrollView>
-    </SafeAreaView>
+      </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff5f0',
+    backgroundColor: '#0a0a0a',
   },
   scrollView: {
     flex: 1,
@@ -79,13 +78,13 @@ const styles = StyleSheet.create({
   },
   greeting: {
     fontSize: 16,
-    color: '#666',
+    color: '#888888',
     marginBottom: 5,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#1a202c',
+    color: '#ffffff',
   },
   statsContainer: {
     flexDirection: 'row',
@@ -95,22 +94,22 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-    backgroundColor: 'white',
+    backgroundColor: '#1a1a1a',
     padding: 15,
     borderRadius: 12,
     alignItems: 'center',
-    borderWidth: 2,
-    borderColor: '#FF6B3510',
+    borderWidth: 1,
+    borderColor: '#2a2a2a',
   },
   statNumber: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#FF6B35',
+    color: '#00D4FF',
     marginBottom: 4,
   },
   statLabel: {
     fontSize: 12,
-    color: '#666',
+    color: '#888888',
   },
   workoutSection: {
     padding: 20,
@@ -119,16 +118,18 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#333',
+    color: '#ffffff',
     marginBottom: 15,
   },
   exerciseCard: {
     flexDirection: 'row',
-    backgroundColor: 'white',
+    backgroundColor: '#1a1a1a',
     borderRadius: 12,
     padding: 15,
     marginBottom: 12,
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#2a2a2a',
   },
   exerciseIcon: {
     fontSize: 28,
@@ -140,20 +141,20 @@ const styles = StyleSheet.create({
   exerciseName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#ffffff',
     marginBottom: 4,
   },
   exerciseDetails: {
     fontSize: 14,
-    color: '#666',
+    color: '#888888',
   },
   startButton: {
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     paddingVertical: 18,
     borderRadius: 12,
     alignItems: 'center',
     marginHorizontal: 20,
-    marginBottom: 30,
+    marginBottom: 40,
   },
   startButtonText: {
     color: 'white',
