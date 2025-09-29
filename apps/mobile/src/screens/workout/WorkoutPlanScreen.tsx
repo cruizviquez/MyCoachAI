@@ -223,7 +223,7 @@ const styles = StyleSheet.create({
   statValue: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#FF6B35',
+    color: '#00D4FF',
   },
   statLabel: {
     fontSize: 14,
