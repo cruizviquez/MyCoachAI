@@ -27,6 +27,25 @@
             --gradient-dark: linear-gradient(180deg, #0a0a0a 0%, #1a1a1a 100%);
         }
 
+        /* Professional Icon Styles */
+        .icon {
+            width: 24px;
+            height: 24px;
+            display: inline-block;
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        .icon-large {
+            width: 48px;
+            height: 48px;
+        }
+
+        .icon-cyan {
+            color: var(--accent-cyan);
+            fill: var(--accent-cyan);
+        }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             background: var(--bg-dark);
@@ -81,7 +100,7 @@
 
         .nav-links {
             display: flex;
-            gap: 40px;
+            gap: 30px;
             align-items: center;
         }
 
@@ -89,12 +108,14 @@
             color: var(--text-secondary);
             text-decoration: none;
             font-weight: 500;
-            transition: color 0.3s ease;
+            transition: all 0.2s ease;
             position: relative;
+            padding: 8px 0;
         }
 
         .nav-links a:hover {
             color: var(--text-primary);
+            transform: translateY(-1px);
         }
 
         .nav-cta {
@@ -138,12 +159,17 @@
             line-height: 1;
             margin-bottom: 30px;
             letter-spacing: -2px;
+            color: #000000;
         }
 
         .gradient-text {
             background: var(--gradient-cyan);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+        }
+
+        .black-text {
+            color: var(--text-primary);
         }
 
         .hero-content p {
@@ -191,13 +217,21 @@
             text-decoration: none;
             font-weight: 700;
             font-size: 16px;
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             display: inline-block;
+            cursor: pointer;
+            user-select: none;
         }
 
         .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 15px 40px rgba(0, 212, 255, 0.3);
+            transform: translateY(-3px);
+            box-shadow: 0 20px 50px rgba(0, 212, 255, 0.4);
+            background: linear-gradient(135deg, #00E6FF 0%, #00AADD 100%);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.3);
         }
 
         .btn-secondary {
@@ -208,13 +242,23 @@
             text-decoration: none;
             font-weight: 600;
             border: 2px solid var(--border);
-            transition: all 0.3s ease;
+            transition: all 0.2s ease;
             display: inline-block;
+            cursor: pointer;
+            user-select: none;
         }
 
         .btn-secondary:hover {
             border-color: var(--accent-cyan);
             color: var(--accent-cyan);
+            background: rgba(0, 212, 255, 0.1);
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(0, 212, 255, 0.2);
+        }
+
+        .btn-secondary:active {
+            transform: translateY(0px);
+            box-shadow: 0 5px 15px rgba(0, 212, 255, 0.15);
         }
 
         /* Hero Visual */
@@ -859,7 +903,6 @@
                 <a href="#features">Features</a>
                 <a href="#social">Community</a>
                 <a href="#sports">Sports</a>
-                <a href="#investors">Investors</a>
                 <a href="#" class="nav-cta">Start Free Trial</a>
             </div>
             <div class="mobile-menu">
@@ -875,8 +918,8 @@
         <div class="hero-container">
             <div class="hero-content">
                 <h1>
-                    The <span class="gradient-text">AI Coaching Layer</span><br>
-                    for Human Performance
+                    <span class="black-text">The</span> <span class="gradient-text">AI Coaching Layer</span><br>
+                    <span class="black-text">for Human Performance</span>
                 </h1>
                 <p>
                     We're not building another fitness app. We're creating the intelligence layer that understands, corrects, and optimizes human movement across every sport and activity.
@@ -1049,42 +1092,74 @@
 
             <div class="features-grid">
                 <div class="feature-card">
-                    <div class="feature-emoji">👁️</div>
+                    <div class="feature-emoji">
+                        <svg class="icon icon-large icon-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </div>
                     <h3>Vision Track Technology</h3>
                     <p>Our proprietary computer vision system analyzes your form in real-time, providing instant corrections and ensuring perfect technique every time.</p>
                     <span class="feature-badge">Core Technology</span>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-emoji">📱</div>
+                    <div class="feature-emoji">
+                        <svg class="icon icon-large icon-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="5" y="2" width="14" height="20" rx="2" ry="2"/>
+                            <line x1="12" y1="18" x2="12.01" y2="18"/>
+                        </svg>
+                    </div>
                     <h3>Smart Equipment Detection</h3>
                     <p>Take a photo of any equipment - even a chair or water bottle - and our AI creates custom exercises optimized for what you have.</p>
                     <span class="feature-badge">Patent Pending</span>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-emoji">⌚</div>
+                    <div class="feature-emoji">
+                        <svg class="icon icon-large icon-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="7"/>
+                            <polyline points="12,9 12,12 13.5,13.5"/>
+                            <path d="M16.51 17.35l-.35 3.83a2 2 0 0 1-2 1.82H9.84a2 2 0 0 1-2-1.82l-.35-3.83m.01-10.7l.35-3.83A2 2 0 0 1 9.84 1h4.32a2 2 0 0 1 2 1.82l.35 3.83"/>
+                        </svg>
+                    </div>
                     <h3>Biometric Integration</h3>
                     <p>Connects with Apple Watch, Garmin, Whoop, and more to combine movement analysis with heart rate, recovery, and sleep data.</p>
                     <span class="feature-badge">All Wearables</span>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-emoji">🎯</div>
+                    <div class="feature-emoji">
+                        <svg class="icon icon-large icon-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <circle cx="12" cy="12" r="6"/>
+                            <circle cx="12" cy="12" r="2"/>
+                        </svg>
+                    </div>
                     <h3>Personalized Plans</h3>
                     <p>AI creates custom workout plans based on your goals, schedule, equipment, and progress. Adapts in real-time as you improve.</p>
                     <span class="feature-badge">Fully Adaptive</span>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-emoji">🎭</div>
+                    <div class="feature-emoji">
+                        <svg class="icon icon-large icon-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+                        </svg>
+                    </div>
                     <h3>Coach Personalities</h3>
                     <p>Choose your coach style: Tough Drill Sergeant, Supportive Friend, or Strategic Leader. Each with unique motivation styles.</p>
                     <span class="feature-badge">3 Personalities</span>
                 </div>
 
                 <div class="feature-card">
-                    <div class="feature-emoji">📊</div>
+                    <div class="feature-emoji">
+                        <svg class="icon icon-large icon-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10"/>
+                            <line x1="12" y1="20" x2="12" y2="4"/>
+                            <line x1="6" y1="20" x2="6" y2="14"/>
+                        </svg>
+                    </div>
                     <h3>Advanced Analytics</h3>
                     <p>Deep insights into your performance with muscle activation maps, fatigue tracking, and predictive progress modeling.</p>
                     <span class="feature-badge">Pro Analytics</span>
@@ -1106,25 +1181,49 @@
 
             <div class="social-grid">
                 <div class="social-card">
-                    <div class="social-icon">🏆</div>
+                    <div class="social-icon">
+                        <svg class="icon icon-large icon-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/>
+                            <path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/>
+                            <path d="M4 22h16"/>
+                            <path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/>
+                            <path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/>
+                            <path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/>
+                        </svg>
+                    </div>
                     <h3>Live Leaderboards</h3>
                     <p>Compete in real-time with users worldwide. See your rank update with every rep.</p>
                 </div>
 
                 <div class="social-card">
-                    <div class="social-icon">🙏</div>
+                    <div class="social-icon">
+                        <svg class="icon icon-large icon-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        </svg>
+                    </div>
                     <h3>High-Five System</h3>
                     <p>Send and receive motivation during workouts. Feel the energy of training partners globally.</p>
                 </div>
 
                 <div class="social-card">
-                    <div class="social-icon">👥</div>
+                    <div class="social-icon">
+                        <svg class="icon icon-large icon-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/>
+                            <circle cx="9" cy="7" r="4"/>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"/>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"/>
+                        </svg>
+                    </div>
                     <h3>Group Challenges</h3>
                     <p>Join teams, create custom challenges, and push each other to new heights.</p>
                 </div>
 
                 <div class="social-card">
-                    <div class="social-icon">📈</div>
+                    <div class="social-icon">
+                        <svg class="icon icon-large icon-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/>
+                        </svg>
+                    </div>
                     <h3>Shared Progress</h3>
                     <p>Celebrate PRs, streaks, and milestones with your community automatically.</p>
                 </div>
@@ -1145,28 +1244,47 @@
 
             <div class="coaches-grid">
                 <div class="coach-card">
-                    <div class="coach-avatar">💪</div>
+                    <div class="coach-avatar">
+                        <svg class="icon icon-large icon-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6 2l3 6 5-4-3 10c-.5.5-.5 1.5 0 2l3 10-5-4-3 6"/>
+                            <path d="M18 12h-2.5a1.5 1.5 0 0 1 0-3H18"/>
+                        </svg>
+                    </div>
                     <h3>The Sergeant</h3>
                     <div class="coach-personality">Tough Love</div>
                     <p>"Drop and give me 20! No excuses, just results. Pain is temporary, greatness is forever!"</p>
                 </div>
 
                 <div class="coach-card">
-                    <div class="coach-avatar">🎯</div>
+                    <div class="coach-avatar">
+                        <svg class="icon icon-large icon-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <circle cx="12" cy="12" r="6"/>
+                            <circle cx="12" cy="12" r="2"/>
+                        </svg>
+                    </div>
                     <h3>The Strategist</h3>
                     <div class="coach-personality">Leader Style</div>
                     <p>"Let's optimize your performance. Smart training beats hard training. Data-driven excellence."</p>
                 </div>
 
                 <div class="coach-card">
-                    <div class="coach-avatar">❤️</div>
+                    <div class="coach-avatar">
+                        <svg class="icon icon-large icon-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
+                        </svg>
+                    </div>
                     <h3>The Friend</h3>
                     <div class="coach-personality">Supportive</div>
                     <p>"You've got this! Every rep counts. I'm proud of you for showing up. Let's do this together!"</p>
                 </div>
 
                 <div class="coach-card">
-                    <div class="coach-avatar">🔥</div>
+                    <div class="coach-avatar">
+                        <svg class="icon icon-large icon-cyan" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>
+                        </svg>
+                    </div>
                     <h3>The Motivator</h3>
                     <div class="coach-personality">High Energy</div>
                     <p>"LET'S GO! Feel that burn! You're unstoppable! Channel that inner champion!"</p>
@@ -1188,49 +1306,89 @@
 
             <div class="sports-showcase">
                 <div class="sport-item available">
-                    <div class="sport-icon">🏋️</div>
+                    <div class="sport-icon">
+                        <svg class="icon icon-large" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M6.5 6.5h11"/>
+                            <path d="M6.5 17.5h11"/>
+                            <path d="M6.5 12H12"/>
+                        </svg>
+                    </div>
                     <div class="sport-name">Gym Training</div>
                     <div class="sport-status">Available Now</div>
                 </div>
 
                 <div class="sport-item available">
-                    <div class="sport-icon">🏃</div>
+                    <div class="sport-icon">
+                        <svg class="icon icon-large" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/>
+                        </svg>
+                    </div>
                     <div class="sport-name">Running</div>
                     <div class="sport-status">Available Now</div>
                 </div>
 
                 <div class="sport-item available">
-                    <div class="sport-icon">🧘</div>
+                    <div class="sport-icon">
+                        <svg class="icon icon-large" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+                            <path d="M2 17l10 5 10-5"/>
+                            <path d="M2 12l10 5 10-5"/>
+                        </svg>
+                    </div>
                     <div class="sport-name">Yoga</div>
                     <div class="sport-status">Available Now</div>
                 </div>
 
                 <div class="sport-item">
-                    <div class="sport-icon">🚴</div>
+                    <div class="sport-icon">
+                        <svg class="icon icon-large" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/>
+                            <polygon points="10,8 16,12 10,16 10,8"/>
+                        </svg>
+                    </div>
                     <div class="sport-name">Cycling</div>
                     <div class="sport-status">Coming Q2</div>
                 </div>
 
                 <div class="sport-item">
-                    <div class="sport-icon">🏊</div>
+                    <div class="sport-icon">
+                        <svg class="icon icon-large" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M7 16.3c2.2 0 4-1.83 4-4.05 0-1.16-.57-2.26-1.71-3.19S7.29 6.75 7 5.3c-.29 1.45-1.14 2.84-2.29 3.76S3 11.17 3 12.25c0 2.22 1.8 4.05 4 4.05z"/>
+                            <path d="M12.56 6.6A10.97 10.97 0 0 0 14 3.02c.5 2.5 2 4.9 4 6.5s3 3.5 3 5.5a6.98 6.98 0 0 1-11.91 4.97"/>
+                        </svg>
+                    </div>
                     <div class="sport-name">Swimming</div>
                     <div class="sport-status">Coming Q2</div>
                 </div>
 
                 <div class="sport-item">
-                    <div class="sport-icon">🎾</div>
+                    <div class="sport-icon">
+                        <svg class="icon icon-large" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                            <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                        </svg>
+                    </div>
                     <div class="sport-name">Tennis</div>
                     <div class="sport-status">Coming Q3</div>
                 </div>
 
                 <div class="sport-item">
-                    <div class="sport-icon">⛳</div>
+                    <div class="sport-icon">
+                        <svg class="icon icon-large" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M22 4.01c-1 .49-1.98.689-3 .99-1.121-1.265-2.783-1.335-4.38-.737S11.977 6.323 12 8v1c-3.245.083-6.135-1.395-8-4 0 0-4.182 7.433 4 11-1.872 1.247-3.739 2.088-6 2 3.308 1.803 6.913 2.423 10.034 1.517 3.58-1.04 6.522-3.723 7.651-7.742a13.84 13.84 0 0 0 .497-3.753c-.002-.249 1.51-2.772 1.818-4.013z"/>
+                        </svg>
+                    </div>
                     <div class="sport-name">Golf</div>
                     <div class="sport-status">Coming Q3</div>
                 </div>
 
                 <div class="sport-item">
-                    <div class="sport-icon">🥊</div>
+                    <div class="sport-icon">
+                        <svg class="icon icon-large" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="6" y="6" width="12" height="12" rx="1"/>
+                            <circle cx="12" cy="12" r="2"/>
+                        </svg>
+                    </div>
                     <div class="sport-name">Boxing</div>
                     <div class="sport-status">Coming Q4</div>
                 </div>
