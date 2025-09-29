@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { Ionicons, MaterialIcons, Feather } from '@expo/vector-icons';
 import { RootStackParamList } from '../../types/navigation';
 
 type WelcomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Welcome'>;
@@ -22,11 +23,11 @@ export default function WelcomeScreen() {
       <View style={styles.content}>
         <View style={styles.header}>
           <View style={styles.logoContainer}>
-            <Text style={styles.logoIcon}>🏋️‍♂️</Text>
-            <Text style={styles.logoRobot}>🤖</Text>
+            <Ionicons name="fitness" size={32} color="#00D4FF" style={styles.logoIcon} />
+            <MaterialIcons name="smart-toy" size={28} color="#FF6B35" style={styles.logoRobot} />
           </View>
           <Text style={styles.title}>
-            MyCoach<Text style={styles.titleAI}>AI</Text>
+            <Text style={styles.titleMain}>MyCoach</Text><Text style={styles.titleAI}>AI</Text>
           </Text>
           <Text style={styles.subtitle}>Your Personal AI Trainer</Text>
         </View>
@@ -39,27 +40,33 @@ export default function WelcomeScreen() {
 
         <View style={styles.features}>
           <View style={styles.feature}>
-            <Text style={styles.featureEmoji}>💪</Text>
+            <Ionicons name="barbell" size={20} color="#00D4FF" style={styles.featureIcon} />
             <Text style={styles.featureText}>Smart workout generation</Text>
           </View>
           <View style={styles.feature}>
-            <Text style={styles.featureEmoji}>🎯</Text>
+            <Feather name="target" size={20} color="#00D4FF" style={styles.featureIcon} />
             <Text style={styles.featureText}>Real-time form feedback</Text>
           </View>
           <View style={styles.feature}>
-            <Text style={styles.featureEmoji}>📊</Text>
+            <Feather name="trending-up" size={20} color="#00D4FF" style={styles.featureIcon} />
             <Text style={styles.featureText}>Track your progress</Text>
           </View>
         </View>
 
         <View style={styles.buttonContainer}>
           <TouchableOpacity style={styles.primaryButton} onPress={handlePersonalizedSetup}>
-            <Text style={styles.primaryButtonText}>Personalized Setup 🎯</Text>
+            <View style={styles.buttonContent}>
+              <Feather name="target" size={18} color="white" style={styles.buttonIcon} />
+              <Text style={styles.primaryButtonText}>Personalized Setup</Text>
+            </View>
             <Text style={styles.buttonSubtext}>Get AI-optimized workouts (2 min)</Text>
           </TouchableOpacity>
 
           <TouchableOpacity style={styles.secondaryButton} onPress={handleQuickSetup}>
-            <Text style={styles.secondaryButtonText}>Quick Start ⚡</Text>
+            <View style={styles.buttonContent}>
+              <Feather name="zap" size={16} color="#FF6B35" style={styles.buttonIcon} />
+              <Text style={styles.secondaryButtonText}>Quick Start</Text>
+            </View>
           </TouchableOpacity>
         </View>
       </View>
@@ -97,20 +104,21 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   logoIcon: {
-    fontSize: 40,
     marginRight: 8,
   },
   logoRobot: {
-    fontSize: 35,
+    marginLeft: 4,
   },
   title: {
     fontSize: 36,
     fontWeight: 'bold',
-    color: '#1a202c',
     marginBottom: 8,
   },
+  titleMain: {
+    color: '#000000',
+  },
   titleAI: {
-    color: '#FF6B35',
+    color: '#00D4FF',
   },
   subtitle: {
     fontSize: 18,
@@ -142,10 +150,9 @@ const styles = StyleSheet.create({
     shadowRadius: 6,
     elevation: 3,
     borderLeftWidth: 4,
-    borderLeftColor: '#FF6B35',
+    borderLeftColor: '#00D4FF',
   },
-  featureEmoji: {
-    fontSize: 24,
+  featureIcon: {
     marginRight: 14,
   },
   featureText: {
@@ -156,17 +163,26 @@ const styles = StyleSheet.create({
   buttonContainer: {
     gap: 12,
   },
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonIcon: {
+    marginRight: 8,
+  },
   primaryButton: {
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     paddingVertical: 18,
     paddingHorizontal: 32,
     borderRadius: 12,
     alignItems: 'center',
-    shadowColor: '#FF6B35',
+    shadowColor: '#00D4FF',
     shadowOffset: { width: 0, height: 4 },
     shadowOpacity: 0.3,
     shadowRadius: 8,
     elevation: 6,
+    transform: [{ scale: 1 }],
   },
   primaryButtonText: {
     color: 'white',
@@ -185,10 +201,11 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#FF6B35',
+    borderColor: '#00D4FF',
+    transform: [{ scale: 1 }],
   },
   secondaryButtonText: {
-    color: '#FF6B35',
+    color: '#00D4FF',
     fontSize: 17,
     fontWeight: '600',
   },

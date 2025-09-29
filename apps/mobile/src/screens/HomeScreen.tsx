@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { Ionicons, MaterialIcons, Feather } from '@expo/vector-icons';
 import { RootStackParamList } from '../types/navigation';
 
 type HomeScreenNavigationProp = StackNavigationProp<RootStackParamList, 'Home'>;
@@ -10,9 +11,9 @@ export default function HomeScreen() {
   const navigation = useNavigation<HomeScreenNavigationProp>();
 
   const todayWorkouts = [
-    { id: '1', name: 'Push-ups', sets: 3, reps: 15, icon: '💪' },
-    { id: '2', name: 'Squats', sets: 3, reps: 20, icon: '🦵' },
-    { id: '3', name: 'Plank', sets: 3, duration: '30s', icon: '🧘' },
+    { id: '1', name: 'Push-ups', sets: 3, reps: 15, icon: 'fitness' },
+    { id: '2', name: 'Squats', sets: 3, reps: 20, icon: 'body' },
+    { id: '3', name: 'Plank', sets: 3, duration: '30s', icon: 'time' },
   ];
 
   const handleStartWorkout = () => {
@@ -23,7 +24,10 @@ export default function HomeScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         <View style={styles.header}>
-          <Text style={styles.greeting}>Welcome back! 👋</Text>
+          <View style={styles.greetingContainer}>
+            <Ionicons name="hand-right" size={20} color="#00D4FF" />
+            <Text style={styles.greeting}>Welcome back!</Text>
+          </View>
           <Text style={styles.title}>Today's Workout</Text>
         </View>
 
@@ -46,7 +50,7 @@ export default function HomeScreen() {
           <Text style={styles.sectionTitle}>Ready to go?</Text>
           {todayWorkouts.map((exercise) => (
             <View key={exercise.id} style={styles.exerciseCard}>
-              <Text style={styles.exerciseIcon}>{exercise.icon}</Text>
+              <Ionicons name={exercise.icon as any} size={24} color="#00D4FF" style={styles.exerciseIcon} />
               <View style={styles.exerciseInfo}>
                 <Text style={styles.exerciseName}>{exercise.name}</Text>
                 <Text style={styles.exerciseDetails}>
@@ -58,7 +62,10 @@ export default function HomeScreen() {
         </View>
 
         <TouchableOpacity style={styles.startButton} onPress={handleStartWorkout}>
-          <Text style={styles.startButtonText}>Start Workout with AI Coach 🤖</Text>
+          <View style={styles.buttonContent}>
+            <MaterialIcons name="smart-toy" size={20} color="white" style={styles.buttonIcon} />
+            <Text style={styles.startButtonText}>Start Workout with AI Coach</Text>
+          </View>
         </TouchableOpacity>
       </ScrollView>
     </SafeAreaView>
@@ -77,15 +84,20 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingTop: 10,
   },
+  greetingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 5,
+  },
   greeting: {
     fontSize: 16,
     color: '#666',
-    marginBottom: 5,
+    marginLeft: 8,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#1a202c',
+    color: '#000000',
   },
   statsContainer: {
     flexDirection: 'row',
@@ -100,12 +112,12 @@ const styles = StyleSheet.create({
     borderRadius: 12,
     alignItems: 'center',
     borderWidth: 2,
-    borderColor: '#FF6B3510',
+    borderColor: '#00D4FF10',
   },
   statNumber: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#FF6B35',
+    color: '#00D4FF',
     marginBottom: 4,
   },
   statLabel: {
@@ -119,7 +131,7 @@ const styles = StyleSheet.create({
   sectionTitle: {
     fontSize: 20,
     fontWeight: '600',
-    color: '#333',
+    color: '#000000',
     marginBottom: 15,
   },
   exerciseCard: {
@@ -131,7 +143,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   exerciseIcon: {
-    fontSize: 28,
     marginRight: 15,
   },
   exerciseInfo: {
@@ -140,7 +151,7 @@ const styles = StyleSheet.create({
   exerciseName: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#333',
+    color: '#000000',
     marginBottom: 4,
   },
   exerciseDetails: {
@@ -148,12 +159,25 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   startButton: {
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     paddingVertical: 18,
     borderRadius: 12,
     alignItems: 'center',
     marginHorizontal: 20,
     marginBottom: 30,
+    shadowColor: '#00D4FF',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 6,
+  },
+  buttonContent: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  buttonIcon: {
+    marginRight: 8,
   },
   startButtonText: {
     color: 'white',

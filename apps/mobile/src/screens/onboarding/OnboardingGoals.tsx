@@ -11,6 +11,7 @@ import {
 } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
+import { Ionicons, MaterialIcons, Feather } from '@expo/vector-icons';
 import { RootStackParamList } from '../../types/navigation';
 import { useOnboarding } from '../../state/OnboardingContext';
 
@@ -26,11 +27,11 @@ export default function OnboardingGoals() {
   const [selectedGoals, setSelectedGoals] = useState<string[]>(data.goals || []);
 
   const goals = [
-    { id: 'weight_loss', title: 'Lose Weight', icon: '🔥', description: 'Burn fat & get lean' },
-    { id: 'muscle_gain', title: 'Build Muscle', icon: '💪', description: 'Gain strength & size' },
-    { id: 'flexibility', title: 'Improve Flexibility', icon: '🧘', description: 'Increase mobility' },
-    { id: 'general_fitness', title: 'General Fitness', icon: '🏃', description: 'Overall health' },
-    { id: 'endurance', title: 'Build Endurance', icon: '⚡', description: 'Boost stamina' },
+    { id: 'weight_loss', title: 'Lose Weight', icon: 'flame', iconType: 'Ionicons', description: 'Burn fat & get lean' },
+    { id: 'muscle_gain', title: 'Build Muscle', icon: 'fitness', iconType: 'Ionicons', description: 'Gain strength & size' },
+    { id: 'flexibility', title: 'Improve Flexibility', icon: 'body', iconType: 'Ionicons', description: 'Increase mobility' },
+    { id: 'general_fitness', title: 'General Fitness', icon: 'run', iconType: 'Ionicons', description: 'Overall health' },
+    { id: 'endurance', title: 'Build Endurance', icon: 'zap', iconType: 'Feather', description: 'Boost stamina' },
   ];
 
   const toggleGoal = (goalId: string) => {
@@ -84,7 +85,13 @@ export default function OnboardingGoals() {
                   style={[styles.goalCard, isSelected && styles.selectedGoal]}
                   onPress={() => toggleGoal(goal.id)}
                 >
-                  <Text style={styles.goalIcon}>{goal.icon}</Text>
+                  <View style={styles.goalIconContainer}>
+                    {goal.iconType === 'Feather' ? (
+                      <Feather name={goal.icon as any} size={20} color={isSelected ? '#FFFFFF' : '#00D4FF'} />
+                    ) : (
+                      <Ionicons name={goal.icon as any} size={20} color={isSelected ? '#FFFFFF' : '#00D4FF'} />
+                    )}
+                  </View>
                   <View style={styles.goalTextContainer}>
                     <Text style={[styles.goalTitle, isSelected && styles.selectedText]}>
                       {goal.title}
@@ -95,7 +102,7 @@ export default function OnboardingGoals() {
                   </View>
                   {isSelected && (
                     <View style={styles.checkmark}>
-                      <Text style={styles.checkmarkText}>✓</Text>
+                      <Ionicons name="checkmark" size={12} color="white" />
                     </View>
                   )}
                 </TouchableOpacity>
@@ -163,7 +170,7 @@ const styles = StyleSheet.create({
   },
   progressFill: {
     height: '100%',
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     borderRadius: 2,
   },
   step: {
@@ -174,7 +181,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#1a202c',
+    color: '#000000',
     marginBottom: 6,
   },
   subtitle: {
@@ -196,11 +203,16 @@ const styles = StyleSheet.create({
     minHeight: 60,
   },
   selectedGoal: {
-    borderColor: '#FF6B35',
-    backgroundColor: '#fff8f5',
+    borderColor: '#00D4FF',
+    backgroundColor: '#f0f9ff',
   },
-  goalIcon: {
-    fontSize: 24,
+  goalIconContainer: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#f0f9ff',
+    alignItems: 'center',
+    justifyContent: 'center',
     marginRight: 12,
   },
   goalTextContainer: {
@@ -209,7 +221,7 @@ const styles = StyleSheet.create({
   goalTitle: {
     fontSize: 15,
     fontWeight: '600',
-    color: '#333',
+    color: '#000000',
     marginBottom: 2,
   },
   goalDescription: {
@@ -217,23 +229,18 @@ const styles = StyleSheet.create({
     color: '#666',
   },
   selectedText: {
-    color: '#FF6B35',
+    color: '#00D4FF',
   },
   selectedSubtext: {
-    color: '#FF8C60',
+    color: '#40B8E0',
   },
   checkmark: {
     width: 20,
     height: 20,
     borderRadius: 10,
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     justifyContent: 'center',
     alignItems: 'center',
-  },
-  checkmarkText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 12,
   },
   bottomButtonContainer: {
     position: Platform.OS === 'web' ? 'fixed' : 'absolute',
@@ -263,11 +270,11 @@ const styles = StyleSheet.create({
   backButton: {
     backgroundColor: 'transparent',
     borderWidth: 2,
-    borderColor: '#FF6B35',
+    borderColor: '#00D4FF',
     marginRight: 6,
   },
   nextButton: {
-    backgroundColor: '#FF6B35',
+    backgroundColor: '#00D4FF',
     marginLeft: 6,
   },
   nextButtonDisabled: {
@@ -276,7 +283,7 @@ const styles = StyleSheet.create({
   backButtonText: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#FF6B35',
+    color: '#00D4FF',
   },
   nextButtonText: {
     fontSize: 16,
