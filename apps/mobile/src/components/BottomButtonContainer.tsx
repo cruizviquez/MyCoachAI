@@ -1,5 +1,6 @@
-import React from 'react';
+
 import { View, StyleSheet, Platform, Dimensions } from 'react-native';
+import { theme } from '../styles/theme';
 
 const { height } = Dimensions.get('window');
 
@@ -17,20 +18,19 @@ export default function BottomButtonContainer({ children }: BottomButtonContaine
 
 const styles = StyleSheet.create({
   container: {
-  position: 'absolute',
+    position: 'absolute',
     bottom: 0,
     left: 0,
     right: 0,
-    backgroundColor: '#0a0a0a',
+    backgroundColor: theme.colors.background,
     paddingHorizontal: 20,
     paddingVertical: 20,
     paddingBottom: Platform.OS === 'web' ? 30 : 50,
     borderTopWidth: 1,
-    borderTopColor: '#2a2a2a',
+    borderTopColor: theme.colors.surfaceLight,
     flexDirection: 'row',
     justifyContent: 'space-between',
     gap: 12,
-    // Ensure it's above other content
     zIndex: 100,
     elevation: 10,
   },

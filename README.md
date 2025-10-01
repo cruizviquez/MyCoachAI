@@ -1,3 +1,47 @@
+## Exercise Specs and Pose Analysis
+
+The backend now supports JSON-driven exercise definitions for form feedback and rep detection.
+
+File: `backend/app/services/exercise_specs.json`
+
+Schema overview per exercise:
+
+- `name`: Display name
+- `difficulty`: e.g., Beginner/Intermediate/Advanced
+- `targetMuscles`: Free text
+- `durationEstimate`: Free text
+- `caloriesPerRep`: Number
+- `landmarks`: Generic landmark names used by rules (shoulder, elbow, wrist, hip, knee, ankle)
+- `rules`: Array of rule objects
+    - `id`: Rule identifier
+    - `type`: One of `angle`, `horizontal_distance`, `vertical_alignment`
+    - `points`: Landmark names used by the rule (3 for angle, 2 for distance, 2+ for vertical alignment)
+    - `min`/`max` or `maxDeviation`: Numeric thresholds
+    - `errorMessage`: Message shown when rule fails
+    - `severity`: low | medium | high
+- `repDetection`: Basic rep signal
+    - `landmark`: Landmark to track
+    - `axis`: x | y
+    - `threshold`: Numeric threshold in normalized coordinates
+    - `direction`: down_up | up_down
+
+Generic landmarks map to MoveNet left-side keypoints by default (e.g., `shoulder` -> `left_shoulder`). You can reference explicit MoveNet keys like `right_knee` by using the exact name.
+
+The analyzer will return a structure:
+
+```
+{
+    feedback: string,
+    corrections: string[],
+    rules: [{ id, type, value, ok, severity }],
+    rep_signal: { landmark, axis, value, threshold, direction },
+    rep_count: number,
+    is_good_rep: boolean
+}
+```
+
+To add a new exercise, append to `exercise_specs.json` and restart the backend.
+
 # MyCoachAI
 
 ### Your Personal AI Trainer

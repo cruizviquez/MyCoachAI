@@ -1,0 +1,76 @@
+{
+  "squat": {
+    "name": "Squats",
+    "difficulty": "Beginner",
+    "targetMuscles": "Legs, Glutes",
+    "durationEstimate": "5-10 min",
+    "caloriesPerRep": 0.5,
+    "landmarks": ["shoulder", "hip", "knee", "ankle"],
+    "rules": [
+      {
+        "id": "depth",
+        "type": "angle",
+        "points": ["shoulder", "hip", "knee"],
+        "min": 80,
+        "max": 100,
+        "errorMessage": "Squat deeper - hips below knees",
+        "severity": "medium"
+      },
+      {
+        "id": "knee_alignment",
+        "type": "horizontal_distance",
+        "points": ["knee", "ankle"],
+        "maxDeviation": 0.1,
+        "errorMessage": "Keep knees aligned with toes",
+        "severity": "high"
+      },
+      {
+        "id": "back_straight",
+        "type": "angle",
+        "points": ["shoulder", "hip", "knee"],
+        "min": 160,
+        "errorMessage": "Keep your chest up",
+        "severity": "medium"
+      }
+    ],
+    "repDetection": {
+      "landmark": "hip",
+      "axis": "y",
+      "threshold": 0.55,
+      "direction": "down_up"
+    }
+  },
+  "pushup": {
+    "name": "Push-ups",
+    "difficulty": "Beginner",
+    "targetMuscles": "Chest, Arms",
+    "durationEstimate": "5-8 min",
+    "caloriesPerRep": 0.4,
+    "landmarks": ["shoulder", "elbow", "wrist", "hip", "ankle"],
+    "rules": [
+      {
+        "id": "elbow_depth",
+        "type": "angle",
+        "points": ["shoulder", "elbow", "wrist"],
+        "min": 70,
+        "max": 90,
+        "errorMessage": "Lower your chest more",
+        "severity": "medium"
+      },
+      {
+        "id": "body_straight",
+        "type": "vertical_alignment",
+        "points": ["shoulder", "hip", "ankle"],
+        "maxDeviation": 0.15,
+        "errorMessage": "Keep your body straight",
+        "severity": "high"
+      }
+    ],
+    "repDetection": {
+      "landmark": "shoulder",
+      "axis": "y",
+      "threshold": 0.4,
+      "direction": "down_up"
+    }
+  }
+}

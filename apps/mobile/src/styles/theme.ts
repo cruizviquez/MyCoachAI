@@ -11,27 +11,34 @@ export const theme = {
   colors: {
     // Primary palette
     primary: '#00D4FF',      // Cyan
-    primaryDark: '#0099CC',   
+    primaryDark: '#0099CC',
     primaryLight: '#66E5FF',
-    
+
     // Neutral palette
-    background: '#0A0A0A',    // Near black
-    surface: '#1A1A1A',       // Dark gray
-    surfaceLight: '#2A2A2A',  // Light gray
-    
+    background: '#0a0a0a',    // Premium black
+    backgroundDarker: '#050505',
+    surface: '#1a1a1a',        // Card dark
+    surfaceLight: '#2a2a2a',   // Border gray
+
     // Text colors
-    textPrimary: '#FFFFFF',
-    textSecondary: '#B0B0B0',
-    textMuted: '#808080',
-    
+    textPrimary: '#ffffff',
+    textSecondary: '#888888',
+    textMuted: '#666666',
+
     // Semantic colors
     success: '#00FF88',
     warning: '#FFD700',
     error: '#FF4B4B',
-    
+
+    // Accent
+    accentCyan: '#00D4FF',
+    accentGreen: '#00FF88',
+    accentRed: '#FF4B4B',
+    accentGold: '#FFD700',
+
     // Gradients
     gradient: ['#00D4FF', '#0099CC'],
-    darkGradient: ['#1A1A1A', '#0A0A0A'],
+    darkGradient: ['#0a0a0a', '#1a1a1a'],
   },
   
   spacing: {

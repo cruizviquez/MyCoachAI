@@ -13,6 +13,8 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/navigation';
 import { useOnboarding } from '../../state/OnboardingContext';
+import { theme } from 'styles/theme';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 
 type OnboardingScheduleNavigationProp = StackNavigationProp<RootStackParamList, 'OnboardingSchedule'>;
 
@@ -26,10 +28,10 @@ export default function OnboardingSchedule() {
 
   const dayOptions = [2, 3, 4, 5, 6, 7];
   const timeOptions = [
-    { id: 'morning', label: 'Morning', icon: '🌅', description: '6 AM - 12 PM' },
-    { id: 'afternoon', label: 'Afternoon', icon: '☀️', description: '12 PM - 5 PM' },
-    { id: 'evening', label: 'Evening', icon: '🌆', description: '5 PM - 9 PM' },
-    { id: 'night', label: 'Night', icon: '🌙', description: 'After 9 PM' },
+    { id: 'morning', label: 'Morning', icon: <MaterialIcons name="wb-sunny" size={36} color={theme.colors.primary} />, description: '6 AM - 12 PM' },
+    { id: 'afternoon', label: 'Afternoon', icon: <MaterialIcons name="wb-cloudy" size={36} color={theme.colors.primary} />, description: '12 PM - 5 PM' },
+    { id: 'evening', label: 'Evening', icon: <MaterialIcons name="nights-stay" size={36} color={theme.colors.primary} />, description: '5 PM - 9 PM' },
+    { id: 'night', label: 'Night', icon: <Ionicons name="moon" size={36} color={theme.colors.primary} />, description: 'After 9 PM' },
   ];
 
   const handleFinish = () => {
@@ -110,8 +112,11 @@ export default function OnboardingSchedule() {
                 key={time.id}
                 style={[styles.timeCard, preferredTime === time.id && styles.selectedTime]}
                 onPress={() => setPreferredTime(time.id)}
+                activeOpacity={0.85}
               >
-                <Text style={styles.timeIcon}>{time.icon}</Text>
+                <View style={styles.timeIconWrap}>
+                  {time.icon}
+                </View>
                 <View style={styles.timeTextContainer}>
                   <Text style={[styles.timeLabel, preferredTime === time.id && styles.selectedTimeText]}>
                     {time.label}
@@ -186,26 +191,31 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
-    color: '#1a202c',
-    marginBottom: 8,
+    color: theme.colors.primary,
+    marginBottom: 12,
+    letterSpacing: 1.2,
+    textShadowColor: '#0a0a0a',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 6,
+    textAlign: 'center',
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#666',
   },
   section: {
     marginBottom: 32,
   },
   sectionTitle: {
-    fontSize: 20,
+    fontSize: 24,
     fontWeight: '600',
     color: '#333',
     marginBottom: 4,
   },
   sectionSubtitle: {
-    fontSize: 14,
+    fontSize: 18,
     color: '#666',
     marginBottom: 16,
   },
@@ -246,20 +256,32 @@ const styles = StyleSheet.create({
   timeCard: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: 'white',
-    borderRadius: 10,
-    padding: 16,
-    marginBottom: 12,
+    backgroundColor: '#f7fafd',
+    borderRadius: 14,
+    padding: 18,
+    marginBottom: 14,
     borderWidth: 2,
-    borderColor: 'transparent',
+    borderColor: '#e2e8f0',
+    shadowColor: '#00D4FF',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.06,
+    shadowRadius: 6,
+    elevation: 2,
   },
   selectedTime: {
     borderColor: '#00D4FF',
-    backgroundColor: '#fff8f5',
+    backgroundColor: '#e6faff',
+    shadowOpacity: 0.15,
+    elevation: 4,
   },
-  timeIcon: {
-    fontSize: 28,
-    marginRight: 16,
+  timeIconWrap: {
+    width: 48,
+    height: 48,
+    borderRadius: 24,
+    backgroundColor: '#e6faff',
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginRight: 18,
   },
   timeTextContainer: {
     flex: 1,

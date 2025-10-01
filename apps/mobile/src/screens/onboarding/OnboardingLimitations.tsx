@@ -13,6 +13,8 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/navigation';
 import { useOnboarding } from '../../state/OnboardingContext';
+import { theme } from 'styles/theme';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 
 type OnboardingLimitationsNavigationProp = StackNavigationProp<RootStackParamList, 'OnboardingLimitations'>;
 
@@ -24,14 +26,14 @@ export default function OnboardingLimitations() {
   const [selectedLimitations, setSelectedLimitations] = useState<string[]>(data.limitations || []);
 
   const limitations = [
-    { id: 'none', label: 'No limitations', icon: '💪' },
-    { id: 'knee', label: 'Knee problems', icon: '🦵' },
-    { id: 'back', label: 'Back issues', icon: '🔙' },
-    { id: 'shoulder', label: 'Shoulder injury', icon: '🤷' },
-    { id: 'ankle', label: 'Ankle problems', icon: '🦶' },
-    { id: 'wrist', label: 'Wrist issues', icon: '✋' },
-    { id: 'hip', label: 'Hip problems', icon: '🚶' },
-    { id: 'other', label: 'Other limitations', icon: '⚠️' },
+    { id: 'none', label: 'No limitations', icon: <MaterialIcons name="check-circle" size={28} color={theme.colors.primary} /> },
+    { id: 'knee', label: 'Knee problems', icon: <MaterialIcons name="accessibility" size={28} color={theme.colors.primary} /> },
+    { id: 'back', label: 'Back issues', icon: <MaterialIcons name="airline-seat-recline-normal" size={28} color={theme.colors.primary} /> },
+    { id: 'shoulder', label: 'Shoulder injury', icon: <MaterialIcons name="pan-tool" size={28} color={theme.colors.primary} /> },
+    { id: 'ankle', label: 'Ankle problems', icon: <Ionicons name="walk" size={28} color={theme.colors.primary} /> },
+    { id: 'wrist', label: 'Wrist issues', icon: <MaterialIcons name="pan-tool-alt" size={28} color={theme.colors.primary} /> },
+    { id: 'hip', label: 'Hip problems', icon: <MaterialIcons name="directions-walk" size={28} color={theme.colors.primary} /> },
+    { id: 'other', label: 'Other limitations', icon: <MaterialIcons name="warning" size={28} color={theme.colors.primary} /> },
   ];
 
   const toggleLimitation = (limitationId: string) => {
@@ -92,7 +94,7 @@ export default function OnboardingLimitations() {
                 style={[styles.limitationCard, isSelected && styles.selectedLimitation]}
                 onPress={() => toggleLimitation(limitation.id)}
               >
-                <Text style={styles.limitationIcon}>{limitation.icon}</Text>
+                <View style={styles.limitationIcon}>{limitation.icon}</View>
                 <Text style={[styles.limitationText, isSelected && styles.selectedText]}>
                   {limitation.label}
                 </Text>
@@ -165,13 +167,18 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
-    color: '#1a202c',
-    marginBottom: 8,
+    color: theme.colors.primary,
+    marginBottom: 12,
+    letterSpacing: 1.2,
+    textShadowColor: '#0a0a0a',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 6,
+    textAlign: 'center',
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#666',
   },
   limitationsContainer: {
@@ -197,7 +204,7 @@ const styles = StyleSheet.create({
   },
   limitationText: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 20,
     color: '#333',
     fontWeight: '500',
   },
@@ -223,7 +230,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
   },
   skipText: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#00D4FF',
     textDecorationLine: 'underline',
   },

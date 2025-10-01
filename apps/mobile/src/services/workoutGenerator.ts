@@ -58,15 +58,37 @@ export const generateWorkoutPlan = async (userData: OnboardingData): Promise<Wor
   // Simulate API delay
   await new Promise(resolve => setTimeout(resolve, 1500));
 
+  // Personalization logic
   const fitnessLevel = (userData.fitnessLevel || 'beginner').toLowerCase();
   const duration = parseInt(userData.workoutDuration || '30');
   const hasEquipment = userData.equipment && userData.equipment.length > 0 && !userData.equipment.includes('None');
-  
-  // Get appropriate exercise pool
-  const exercisePool = exerciseDatabase[fitnessLevel]?.[hasEquipment ? 'dumbbells' : 'none'] || 
-                      exerciseDatabase.beginner.none;
+  const age = userData.age || 25;
+  const gender = userData.gender || 'male';
+  const bmi = userData.bmi || null;
+  const daysPerWeek = userData.schedule?.daysPerWeek || 3;
+  const preferredTime = userData.schedule?.preferredTime || 'morning';
 
-  // Calculate number of exercises based on duration
+  // Get appropriate exercise pool
+  let exercisePool: any[] = (exerciseDatabase as any)[fitnessLevel]?.[hasEquipment ? 'dumbbells' : 'none'] || exerciseDatabase.beginner.none;
+
+  // Personalize for age: if age > 50, avoid high-impact moves
+  if (age > 50) {
+    exercisePool = exercisePool.filter((ex: any) => !ex.name.toLowerCase().includes('jump'));
+  }
+
+  // Personalize for gender (example: could add more gender-specific logic)
+  if (gender === 'female') {
+    // Example: prioritize lower body or core, or just leave as is
+    // (No-op for now, but placeholder for future logic)
+  }
+
+  // Personalize for BMI: if BMI > 30, prioritize low-impact cardio
+  if (bmi && bmi > 30) {
+    exercisePool = exercisePool.filter((ex: any) => !ex.name.toLowerCase().includes('jump'));
+    // Optionally, add more walking or plank variations
+  }
+
+  // Calculate number of exercises based on duration and days/week
   const exerciseCount = Math.min(
     Math.floor(duration / 7), // Roughly 7 minutes per exercise including rest
     exercisePool.length
@@ -78,7 +100,7 @@ export const generateWorkoutPlan = async (userData: OnboardingData): Promise<Wor
     .slice(0, exerciseCount);
 
   // Build workout plan
-  const exercises: Exercise[] = selectedExercises.map((ex, index) => ({
+  let exercises: Exercise[] = selectedExercises.map((ex: any, index: number) => ({
     id: `ex_${index}_${Date.now()}`,
     name: ex.name,
     sets: ex.defaultSets,
@@ -91,17 +113,15 @@ export const generateWorkoutPlan = async (userData: OnboardingData): Promise<Wor
   // Consider user limitations
   if (userData.limitations && userData.limitations.length > 0) {
     // Filter out exercises that might aggravate injuries
-    // This is simplified - in production, you'd have a more sophisticated mapping
     const safeExercises = exercises.filter(ex => {
-      if (userData.limitations?.includes('Knee') && ex.name.toLowerCase().includes('squat')) {
+      if (userData.limitations?.some(lim => lim.toLowerCase().includes('knee')) && ex.name.toLowerCase().includes('squat')) {
         return false;
       }
-      if (userData.limitations?.includes('Shoulder') && ex.name.toLowerCase().includes('press')) {
+      if (userData.limitations?.some(lim => lim.toLowerCase().includes('shoulder')) && ex.name.toLowerCase().includes('press')) {
         return false;
       }
       return true;
     });
-    
     // If we filtered out too many exercises, add some safe alternatives
     if (safeExercises.length < 3) {
       safeExercises.push({
@@ -114,20 +134,16 @@ export const generateWorkoutPlan = async (userData: OnboardingData): Promise<Wor
         description: 'Low-impact cardio alternative',
       });
     }
-    
-    return {
-      id: `workout_${Date.now()}`,
-      name: `${userData.goals?.join(' & ') || 'General'} Workout`,
-      exercises: safeExercises,
-      totalDuration: duration,
-      difficulty: fitnessLevel,
-      createdAt: new Date(),
-    };
+    exercises = safeExercises;
   }
+
+  // Optionally, use schedule to build a weekly plan (future enhancement)
+  // For now, just include daysPerWeek and preferredTime in the plan name
+  const planName = `${userData.goals?.join(' & ') || 'General'} Workout (${daysPerWeek}x/week, ${preferredTime})`;
 
   return {
     id: `workout_${Date.now()}`,
-    name: `${userData.goals?.join(' & ') || 'General'} Workout`,
+    name: planName,
     exercises,
     totalDuration: duration,
     difficulty: fitnessLevel,

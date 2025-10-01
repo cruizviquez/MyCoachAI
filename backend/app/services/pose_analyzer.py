@@ -1,5 +1,7 @@
+import json
+import os
 import numpy as np
-from typing import Dict, List, Any
+from typing import Dict, List, Any, Tuple
 
 # MoveNet keypoint indices
 KEYPOINT_MAP = {
@@ -9,59 +11,142 @@ KEYPOINT_MAP = {
     'left_knee': 13, 'right_knee': 14, 'left_ankle': 15, 'right_ankle': 16
 }
 
+# Map generic names to left-side landmarks by default
+GENERIC_TO_KEYPOINT = {
+    'shoulder': 'left_shoulder',
+    'elbow': 'left_elbow',
+    'wrist': 'left_wrist',
+    'hip': 'left_hip',
+    'knee': 'left_knee',
+    'ankle': 'left_ankle',
+}
+
+def _load_specs() -> Dict[str, Any]:
+    here = os.path.dirname(__file__)
+    path = os.path.join(here, 'exercise_specs.json')
+    try:
+        with open(path, 'r') as f:
+            return json.load(f)
+    except Exception as e:
+        print('Failed to load exercise specs:', e)
+        return {}
+
+SPECS = _load_specs()
+
+def _point_from_name(name: str, keypoints: np.ndarray) -> Tuple[float, float, float]:
+    mapped = GENERIC_TO_KEYPOINT.get(name, name)
+    idx = KEYPOINT_MAP.get(mapped)
+    if idx is None or idx >= keypoints.shape[0]:
+        return (0.0, 0.0, 0.0)
+    return tuple(keypoints[idx])  # (x, y, c)
+
+def _angle(a, b, c) -> float:
+    # angle at b between ba and bc in degrees
+    ba = np.array([a[0]-b[0], a[1]-b[1]])
+    bc = np.array([c[0]-b[0], c[1]-b[1]])
+    denom = (np.linalg.norm(ba) * np.linalg.norm(bc))
+    if denom == 0:
+        return 0.0
+    cos_val = np.clip(np.dot(ba, bc) / denom, -1.0, 1.0)
+    return float(np.degrees(np.arccos(cos_val)))
+
+def _horizontal_deviation(p1, p2) -> float:
+    # normalized by image width (assumes x in [0,1])
+    return abs(p1[0] - p2[0])
+
+def _vertical_alignment(points: List[Tuple[float, float, float]]) -> float:
+    # std dev of x positions as a proxy for vertical alignment; lower is better
+    xs = [p[0] for p in points if p[2] > 0.3]
+    if len(xs) < 2:
+        return 1.0
+    return float(np.std(xs))
+
 def analyze_pose(exercise_type: str, keypoints: np.ndarray) -> Dict[str, Any]:
-    """Analyze pose based on exercise type and return feedback"""
-    if exercise_type.lower() == "squat":
-        return analyze_squat(keypoints)
-    elif exercise_type.lower() == "pushup":
-        return analyze_pushup(keypoints)
-    else:
+    """Analyze pose based on exercise type and return feedback using JSON-driven rules"""
+    et = exercise_type.lower()
+    spec = SPECS.get(et)
+    if not spec:
         return {
             "feedback": f"{exercise_type} analysis coming soon!",
             "corrections": ["Keep good form"],
-            "rep_count": 1,
-            "is_good_rep": True
+            "rep_count": 0,
+            "is_good_rep": False
         }
 
-def analyze_squat(keypoints: np.ndarray) -> Dict[str, Any]:
-    """Analyze squat form"""
-    corrections = []
-    feedback = "Good squat form!"
-    
-    # Get key points (only if confidence > 0.5)
-    try:
-        left_hip = keypoints[KEYPOINT_MAP['left_hip']]
-        left_knee = keypoints[KEYPOINT_MAP['left_knee']]
-        
-        if left_hip[2] > 0.5 and left_knee[2] > 0.5:
-            # Check squat depth (y increases downward)
-            if left_hip[1] > left_knee[1]:
-                corrections.append("Great depth! 💪")
-            else:
-                corrections.append("Go deeper - hip should be below knee level")
-                feedback = "Good start - try going deeper"
+    results = []
+    corrections: List[str] = []
+    good = True
+
+    for rule in spec.get('rules', []):
+        rtype = rule.get('type')
+        pts = [ _point_from_name(n, keypoints) for n in rule.get('points', []) ]
+        ok = True
+        value = None
+
+        if rtype == 'angle' and len(pts) == 3:
+            value = _angle(pts[0], pts[1], pts[2])
+            min_v = rule.get('min', -9999)
+            max_v = rule.get('max', 9999)
+            ok = (value >= min_v) and (value <= max_v)
+        elif rtype == 'horizontal_distance' and len(pts) == 2:
+            value = _horizontal_deviation(pts[0], pts[1])
+            max_dev = rule.get('maxDeviation', 0.2)
+            ok = value <= max_dev
+        elif rtype == 'vertical_alignment' and len(pts) >= 2:
+            value = _vertical_alignment(pts)
+            max_dev = rule.get('maxDeviation', 0.2)
+            ok = value <= max_dev
         else:
-            corrections.append("Position yourself fully in frame")
-            feedback = "Move into better camera view"
-    except (IndexError, KeyError):
-        corrections.append("Pose detection in progress...")
-        feedback = "Keep moving to help AI detect your pose"
-    
+            ok = True  # unknown rule types considered pass
+
+        results.append({
+            'id': rule.get('id'),
+            'type': rtype,
+            'value': value,
+            'ok': ok,
+            'severity': rule.get('severity', 'low')
+        })
+
+        if not ok:
+            corrections.append(rule.get('errorMessage', 'Adjust your form'))
+            if rule.get('severity') == 'high':
+                good = False
+
+    # Simple rep position signal
+    rep_cfg = spec.get('repDetection', {})
+    lm = rep_cfg.get('landmark')
+    axis = rep_cfg.get('axis', 'y')
+    threshold = rep_cfg.get('threshold', 0.5)
+    dirn = rep_cfg.get('direction', 'down_up')
+    rep_value = None
+    if lm:
+        p = _point_from_name(lm, keypoints)
+        coord = p[1] if axis == 'y' else p[0]
+        rep_value = float(coord)
+    is_good_rep = good and all(r['ok'] for r in results)
+
+    feedback = "Excellent form!" if is_good_rep else (corrections[0] if corrections else "Keep steady")
+
     return {
-        "feedback": feedback,
-        "corrections": corrections,
-        "rep_count": 1,
-        "is_good_rep": any("Great" in c for c in corrections)
+        'feedback': feedback,
+        'corrections': corrections,
+        'rules': results,
+        'rep_signal': {
+            'landmark': lm,
+            'axis': axis,
+            'value': rep_value,
+            'threshold': threshold,
+            'direction': dirn,
+        },
+        'rep_count': 0,
+        'is_good_rep': is_good_rep,
     }
 
+def analyze_squat(keypoints: np.ndarray) -> Dict[str, Any]:  # backwards compatibility if used elsewhere
+    return analyze_pose('squat', keypoints)
+
 def analyze_pushup(keypoints: np.ndarray) -> Dict[str, Any]:
-    """Analyze pushup form"""
-    return {
-        "feedback": "Nice pushup form!",
-        "corrections": ["Keep your body straight", "Control the movement"],
-        "rep_count": 1,
-        "is_good_rep": True
-    }
+    return analyze_pose('pushup', keypoints)
 
 def calculate_form_score(exercise_type: str, keypoints: np.ndarray) -> float:
     """Calculate overall form score (0-100)"""

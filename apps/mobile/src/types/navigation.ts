@@ -1,4 +1,5 @@
 export type RootStackParamList = {
+  QuickStart: undefined;
   Welcome: undefined;
   Setup: undefined;
   OnboardingGoals: undefined;
@@ -6,6 +7,7 @@ export type RootStackParamList = {
   OnboardingLimitations: undefined;
   OnboardingEquipment: undefined;
   OnboardingSchedule: undefined;
+  OnboardingSingle: undefined;
   WorkoutPlan: { 
     level: string; 
     equipment: string; 

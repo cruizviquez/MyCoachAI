@@ -14,6 +14,8 @@ import { RootStackParamList } from '../../types/navigation';
 import { useOnboarding } from '../../state/OnboardingContext';
 import { ScreenContainer } from '../../components/ScreenContainer';
 import { Button } from '../../components/Button';
+import { theme } from 'styles/theme';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 
 const { height: screenHeight } = Dimensions.get('window');
 
@@ -27,11 +29,11 @@ export default function OnboardingGoals() {
   const [selectedGoals, setSelectedGoals] = useState<string[]>(data.goals || []);
 
   const goals = [
-    { id: 'weight_loss', title: 'Lose Weight', icon: '🔥', description: 'Burn fat & get lean' },
-    { id: 'muscle_gain', title: 'Build Muscle', icon: '💪', description: 'Gain strength & size' },
-    { id: 'flexibility', title: 'Improve Flexibility', icon: '🧘', description: 'Increase mobility' },
-    { id: 'general_fitness', title: 'General Fitness', icon: '🏃', description: 'Overall health' },
-    { id: 'endurance', title: 'Build Endurance', icon: '⚡', description: 'Boost stamina' },
+    { id: 'weight_loss', title: 'Lose Weight', icon: <MaterialIcons name="local-fire-department" size={28} color={theme.colors.primary} />, description: 'Burn fat & get lean' },
+    { id: 'muscle_gain', title: 'Build Muscle', icon: <MaterialIcons name="fitness-center" size={28} color={theme.colors.primary} />, description: 'Gain strength & size' },
+    { id: 'flexibility', title: 'Improve Flexibility', icon: <Ionicons name="body" size={28} color={theme.colors.primary} />, description: 'Increase mobility' },
+    { id: 'general_fitness', title: 'General Fitness', icon: <MaterialIcons name="directions-run" size={28} color={theme.colors.primary} />, description: 'Overall health' },
+    { id: 'endurance', title: 'Build Endurance', icon: <Ionicons name="flash" size={28} color={theme.colors.primary} />, description: 'Boost stamina' },
   ];
 
   const toggleGoal = (goalId: string) => {
@@ -84,7 +86,7 @@ export default function OnboardingGoals() {
                 style={[styles.goalCard, isSelected && styles.selectedGoal]}
                 onPress={() => toggleGoal(goal.id)}
               >
-                <Text style={styles.goalIcon}>{goal.icon}</Text>
+                <View style={styles.goalIcon}>{goal.icon}</View>
                 <View style={styles.goalTextContainer}>
                   <Text style={[styles.goalTitle, isSelected && styles.selectedText]}>
                     {goal.title}
@@ -171,13 +173,18 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    fontSize: 24,
+    fontSize: 32,
     fontWeight: 'bold',
-    color: '#1a202c',
-    marginBottom: 6,
+    color: theme.colors.primary,
+    marginBottom: 12,
+    letterSpacing: 1.2,
+    textShadowColor: '#0a0a0a',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 6,
+    textAlign: 'center',
   },
   subtitle: {
-    fontSize: 15,
+    fontSize: 18,
     color: '#666',
   },
   goalsContainer: {
@@ -206,13 +213,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   goalTitle: {
-    fontSize: 15,
+    fontSize: 18,
     fontWeight: '600',
     color: '#333',
     marginBottom: 2,
   },
   goalDescription: {
-    fontSize: 12,
+    fontSize: 15,
     color: '#666',
   },
   selectedText: {

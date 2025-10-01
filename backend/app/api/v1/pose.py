@@ -1,8 +1,12 @@
-from fastapi import APIRouter, HTTPException
+
+from fastapi import APIRouter, HTTPException, UploadFile, File
 from pydantic import BaseModel
 from typing import List
 import numpy as np
+import cv2
+from tempfile import NamedTemporaryFile
 from app.services.pose_analyzer import analyze_pose, calculate_form_score
+from app.services.mediapipe_utils import extract_keypoints_from_image, mediapipe_keypoints_to_numpy
 
 router = APIRouter()
 
@@ -23,30 +27,32 @@ class FormFeedback(BaseModel):
     rep_count: int
     is_good_rep: bool
 
-@router.post("/analyze", response_model=FormFeedback)
-async def analyze_form(pose_data: PoseData):
-    """Analyze pose data and return real-time form feedback"""
+
+# New: Accept image upload, run Mediapipe, and analyze pose
+@router.post("/analyze/image")
+async def analyze_pose_image(exercise_type: str, file: UploadFile = File(...)):
     try:
-        # Convert keypoints to numpy array
-        keypoints_array = np.array([
-            [kp.x, kp.y, kp.confidence] 
-            for kp in pose_data.keypoints
-        ])
-        
-        # Analyze the pose
-        analysis = analyze_pose(pose_data.exercise_type, keypoints_array)
-        form_score = calculate_form_score(pose_data.exercise_type, keypoints_array)
-        
-        return FormFeedback(
-            form_score=form_score,
-            feedback_text=analysis["feedback"],
-            corrections=analysis["corrections"],
-            rep_count=analysis["rep_count"],
-            is_good_rep=analysis["is_good_rep"]
-        )
-        
+        with NamedTemporaryFile(delete=False, suffix=".jpg") as temp:
+            temp.write(await file.read())
+            temp_path = temp.name
+        image = cv2.imread(temp_path)
+        if image is None:
+            raise HTTPException(status_code=400, detail="Invalid image upload")
+        keypoints = extract_keypoints_from_image(image)
+        if not keypoints:
+            return {"feedback": "No person detected", "corrections": [], "rep_count": 0, "is_good_rep": False, "form_score": 0.0}
+        keypoints_array = mediapipe_keypoints_to_numpy(keypoints)
+        analysis = analyze_pose(exercise_type, keypoints_array)
+        form_score = calculate_form_score(exercise_type, keypoints_array)
+        return {
+            "form_score": form_score,
+            "feedback_text": analysis["feedback"],
+            "corrections": analysis["corrections"],
+            "rep_count": analysis["rep_count"],
+            "is_good_rep": analysis["is_good_rep"]
+        }
     except Exception as e:
-        raise HTTPException(status_code=400, detail=f"Error analyzing pose: {str(e)}")
+        raise HTTPException(status_code=400, detail=f"Error analyzing pose from image: {str(e)}")
 
 @router.get("/exercises")
 async def get_supported_exercises():

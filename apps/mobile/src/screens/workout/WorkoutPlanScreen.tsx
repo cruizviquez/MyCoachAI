@@ -1,6 +1,8 @@
 import { ScreenContainer } from '../../components/ScreenContainer';
 import { Button } from '../../components/Button';
 import React, { useState, useEffect } from 'react';
+import { Platform } from 'react-native';
+import { ToastAndroid } from 'react-native';
 import {
   View,
   Text,
@@ -16,6 +18,8 @@ import { RootStackParamList } from '../../types/navigation';
 import { useOnboarding } from '../../state/OnboardingContext';
 import { useWorkout } from '../../state/WorkoutContext';
 import { generateWorkoutPlan } from '../../services/workoutGenerator';
+import { theme } from 'styles/theme';
+import { RoboQoachLogo } from '../../components/RoboQoachLogo';
 
 type WorkoutPlanScreenProps = {
   navigation: NativeStackNavigationProp<RootStackParamList, 'WorkoutPlan'>;
@@ -25,23 +29,36 @@ export default function WorkoutPlanScreen({ navigation }: WorkoutPlanScreenProps
   const { data } = useOnboarding();
   const { currentWorkout, setCurrentWorkout } = useWorkout();
   const [loading, setLoading] = useState(true);
+  const [regenerating, setRegenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     generateNewWorkout();
   }, []);
 
-  const generateNewWorkout = async () => {
+  const generateNewWorkout = async (showToast = false) => {
     try {
-      setLoading(true);
+      if (showToast) setRegenerating(true);
+      else setLoading(true);
       setError(null);
       const workout = await generateWorkoutPlan(data);
       setCurrentWorkout(workout);
+      if (showToast) {
+        if (Platform.OS === 'android') {
+          ToastAndroid.show('New workout generated!', ToastAndroid.SHORT);
+        } else {
+          // For iOS or web, use alert as fallback
+          alert('New workout generated!');
+        }
+      }
+      // For dev: log new plan
+      console.log('Generated workout:', workout);
     } catch (err) {
       setError('Failed to generate workout. Please try again.');
       console.error('Workout generation error:', err);
     } finally {
-      setLoading(false);
+      if (showToast) setRegenerating(false);
+      else setLoading(false);
     }
   };
 
@@ -52,12 +69,13 @@ export default function WorkoutPlanScreen({ navigation }: WorkoutPlanScreenProps
   };
 
   const handleRegenerateWorkout = () => {
+    if (regenerating) return; // Prevent double-tap
     Alert.alert(
       'Generate New Workout',
       'This will replace your current workout plan. Are you sure?',
       [
         { text: 'Cancel', style: 'cancel' },
-              { text: 'Generate', onPress: () => generateNewWorkout() }, // Make sure this is called
+        { text: 'Generate', onPress: () => generateNewWorkout(true) },
       ]
     );
   };
@@ -78,7 +96,7 @@ export default function WorkoutPlanScreen({ navigation }: WorkoutPlanScreenProps
       <ScreenContainer>
         <View style={styles.errorContainer}>
           <Text style={styles.errorText}>{error}</Text>
-          <TouchableOpacity style={styles.retryButton} onPress={generateNewWorkout}>
+          <TouchableOpacity style={styles.retryButton} onPress={() => generateNewWorkout(false)}>
             <Text style={styles.retryButtonText}>Try Again</Text>
           </TouchableOpacity>
         </View>
@@ -94,25 +112,23 @@ export default function WorkoutPlanScreen({ navigation }: WorkoutPlanScreenProps
     <ScreenContainer>
       <ScrollView
         contentContainerStyle={{ paddingBottom: 40 }}
-        showsVerticalScrollIndicator={false}
+        showsVerticalScrollIndicator={true}
         keyboardShouldPersistTaps="handled"
       >
-        <View style={styles.header}>
-          <Text style={styles.title}>Your Workout Plan</Text>
-          <Text style={styles.subtitle}>{currentWorkout.name}</Text>
-          <View style={styles.statsContainer}>
-            <View style={styles.stat}>
-              <Text style={styles.statValue}>{currentWorkout.totalDuration}</Text>
-              <Text style={styles.statLabel}>Minutes</Text>
-            </View>
-            <View style={styles.stat}>
-              <Text style={styles.statValue}>{currentWorkout.exercises.length}</Text>
-              <Text style={styles.statLabel}>Exercises</Text>
-            </View>
-            <View style={styles.stat}>
-              <Text style={styles.statValue}>{currentWorkout.difficulty}</Text>
-              <Text style={styles.statLabel}>Level</Text>
-            </View>
+        <Text style={styles.screenTitle}>Workout Plan</Text>
+        <Text style={styles.subtitle}>{currentWorkout.name}</Text>
+        <View style={styles.statsContainer}>
+          <View style={styles.stat}>
+            <Text style={styles.statValue}>{currentWorkout.totalDuration}</Text>
+            <Text style={styles.statLabel}>Minutes</Text>
+          </View>
+          <View style={styles.stat}>
+            <Text style={styles.statValue}>{currentWorkout.exercises.length}</Text>
+            <Text style={styles.statLabel}>Exercises</Text>
+          </View>
+          <View style={styles.stat}>
+            <Text style={styles.statValue}>{currentWorkout.difficulty}</Text>
+            <Text style={styles.statLabel}>Level</Text>
           </View>
         </View>
 
@@ -145,19 +161,37 @@ export default function WorkoutPlanScreen({ navigation }: WorkoutPlanScreenProps
         </View>
 
         <View style={styles.actionContainer}>
-          <TouchableOpacity
-            style={styles.startButton}
-            onPress={handleStartWorkout}
-          >
-            <Text style={styles.startButtonText}>Start Workout</Text>
-          </TouchableOpacity>
+          <View style={styles.actionRow}>
+            <TouchableOpacity
+              style={styles.actionButton}
+              onPress={() => {
+                if (!loading && !regenerating && currentWorkout) {
+                  // Add a visible feedback for debugging
+                  alert('Starting workout!');
+                  navigation.navigate('Home');
+                } else {
+                  alert('Workout not ready yet!');
+                }
+              }}
+            >
+              <Text style={styles.startButtonText}>Start Workout</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={[styles.actionButton, regenerating && { opacity: 0.5 }]}
+              onPress={() => {
+                if (!regenerating) {
+                  alert('Generating new plan...');
+                  handleRegenerateWorkout();
+                }
+              }}
+              disabled={regenerating}
+            >
+              <Text style={styles.startButtonText}>
+                {regenerating ? 'Generating...' : 'Generate Other Plan'}
+              </Text>
+            </TouchableOpacity>
+          </View>
 
-          <TouchableOpacity
-            style={styles.regenerateButton}
-            onPress={handleRegenerateWorkout}
-          >
-            <Text style={styles.regenerateButtonText}>Generate New Workout</Text>
-          </TouchableOpacity>
         </View>
       </ScrollView>
     </ScreenContainer>
@@ -165,6 +199,30 @@ export default function WorkoutPlanScreen({ navigation }: WorkoutPlanScreenProps
 }
 
 const styles = StyleSheet.create({
+  screenTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: theme.colors.primary,
+    letterSpacing: 1.1,
+    textAlign: 'left',
+    marginBottom: 12,
+    marginLeft: 8,
+  },
+  actionRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-start',
+    gap: 16,
+    marginLeft: 8,
+  },
+  actionButton: {
+    backgroundColor: '#00D4FF',
+    paddingVertical: 12,
+    paddingHorizontal: 18,
+    borderRadius: 20,
+    alignItems: 'center',
+    marginBottom: 8,
+    minWidth: 120,
+  },
   container: {
     flex: 1,
     backgroundColor: '#0a0a0a',
@@ -201,16 +259,6 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 16,
     fontWeight: '600',
-  },
-  header: {
-    padding: 20,
-    alignItems: 'center',
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 8,
   },
   subtitle: {
     fontSize: 18,
@@ -302,25 +350,11 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 40,
   },
-  startButton: {
-    backgroundColor: '#00D4FF',
-    paddingVertical: 18,
-    borderRadius: 25,
-    alignItems: 'center',
-    marginBottom: 12,
-  },
+  // (removed duplicate screenTitle, actionRow, actionButton styles)
   startButtonText: {
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
-  },
-  regenerateButton: {
-    backgroundColor: 'transparent',
-    borderWidth: 2,
-    borderColor: '#00D4FF',
-    paddingVertical: 16,
-    borderRadius: 25,
-    alignItems: 'center',
   },
   regenerateButtonText: {
     color: '#00D4FF',

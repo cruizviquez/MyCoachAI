@@ -13,6 +13,8 @@ import { useNavigation } from '@react-navigation/native';
 import { StackNavigationProp } from '@react-navigation/stack';
 import { RootStackParamList } from '../../types/navigation';
 import { useOnboarding } from '../../state/OnboardingContext';
+import { theme } from 'styles/theme';
+import { MaterialIcons, Ionicons } from '@expo/vector-icons';
 
 type OnboardingEquipmentNavigationProp = StackNavigationProp<RootStackParamList, 'OnboardingEquipment'>;
 
@@ -24,14 +26,15 @@ export default function OnboardingEquipment() {
   const [selectedEquipment, setSelectedEquipment] = useState<string[]>(data.equipment || []);
 
   const equipment = [
-    { id: 'none', label: 'No equipment', icon: '🤷', description: 'Bodyweight only' },
-    { id: 'dumbbells', label: 'Dumbbells', icon: '🏋️', description: 'Various weights' },
-    { id: 'resistance_bands', label: 'Resistance Bands', icon: '🎯', description: 'Elastic bands' },
-    { id: 'pull_up_bar', label: 'Pull-up Bar', icon: '🚪', description: 'Door or wall mounted' },
-    { id: 'kettlebell', label: 'Kettlebell', icon: '🔔', description: 'Single or multiple' },
-    { id: 'barbell', label: 'Barbell', icon: '🏋️‍♂️', description: 'With weight plates' },
-    { id: 'bench', label: 'Exercise Bench', icon: '🪑', description: 'Flat or adjustable' },
-    { id: 'mat', label: 'Yoga Mat', icon: '🧘', description: 'For floor exercises' },
+    { id: 'none', label: 'No equipment', icon: <MaterialIcons name="block" size={28} color={theme.colors.primary} />, description: 'Bodyweight only' },
+    { id: 'dumbbells', label: 'Dumbbells', icon: <MaterialIcons name="fitness-center" size={28} color={theme.colors.primary} />, description: 'Various weights' },
+    { id: 'resistance_bands', label: 'Resistance Bands', icon: <MaterialIcons name="linear-scale" size={28} color={theme.colors.primary} />, description: 'Elastic bands' },
+    { id: 'pull_up_bar', label: 'Pull-up Bar', icon: <MaterialIcons name="horizontal-rule" size={28} color={theme.colors.primary} />, description: 'Door or wall mounted' },
+    { id: 'kettlebell', label: 'Kettlebell', icon: <Ionicons name="ellipse" size={28} color={theme.colors.primary} />, description: 'Single or multiple' },
+    { id: 'barbell', label: 'Barbell', icon: <MaterialIcons name="fitness-center" size={28} color={theme.colors.primary} />, description: 'With weight plates' },
+    { id: 'bench', label: 'Exercise Bench', icon: <MaterialIcons name="weekend" size={28} color={theme.colors.primary} />, description: 'Flat or adjustable' },
+    { id: 'mat', label: 'Yoga Mat', icon: <Ionicons name="reorder-four" size={28} color={theme.colors.primary} />, description: 'For floor exercises' },
+    { id: 'full_gym', label: 'Full Gym', icon: <MaterialIcons name="sports-gymnastics" size={28} color={theme.colors.primary} />, description: 'Access to a full gym' },
   ];
 
   const toggleEquipment = (equipmentId: string) => {
@@ -87,7 +90,7 @@ export default function OnboardingEquipment() {
                 onPress={() => toggleEquipment(item.id)}
               >
                 <View style={styles.equipmentContent}>
-                  <Text style={styles.equipmentIcon}>{item.icon}</Text>
+                  <View style={styles.equipmentIcon}>{item.icon}</View>
                   <View style={styles.equipmentTextContainer}>
                     <Text style={[styles.equipmentLabel, isSelected && styles.selectedText]}>
                       {item.label}
@@ -169,13 +172,18 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   title: {
-    fontSize: 28,
+    fontSize: 32,
     fontWeight: 'bold',
-    color: '#1a202c',
-    marginBottom: 8,
+    color: theme.colors.primary,
+    marginBottom: 12,
+    letterSpacing: 1.2,
+    textShadowColor: '#0a0a0a',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 6,
+    textAlign: 'center',
   },
   subtitle: {
-    fontSize: 16,
+    fontSize: 18,
     color: '#666',
   },
   equipmentContainer: {
@@ -209,13 +217,13 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   equipmentLabel: {
-    fontSize: 16,
+    fontSize: 18,
     fontWeight: '600',
     color: '#333',
     marginBottom: 2,
   },
   equipmentDescription: {
-    fontSize: 13,
+    fontSize: 15,
     color: '#666',
   },
   selectedText: {

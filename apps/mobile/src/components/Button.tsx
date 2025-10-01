@@ -97,16 +97,16 @@ const styles = StyleSheet.create({
   
   // Sizes
   small: {
-    paddingVertical: responsive.vScale(10),
-    paddingHorizontal: responsive.scale(16),
+    paddingVertical: responsive.vScale(8),
+    paddingHorizontal: responsive.scale(14),
   },
   medium: {
-    paddingVertical: responsive.vScale(14),
-    paddingHorizontal: responsive.scale(24),
+    paddingVertical: responsive.vScale(12),
+    paddingHorizontal: responsive.scale(20),
   },
   large: {
-    paddingVertical: responsive.vScale(18),
-    paddingHorizontal: responsive.scale(32),
+    paddingVertical: responsive.vScale(14),
+    paddingHorizontal: responsive.scale(24),
   },
   
   // Variants

@@ -2,6 +2,7 @@ import React, { createContext, useState, useEffect } from 'react';
 import * as SecureStore from 'expo-secure-store';
 
 export interface OnboardingData {
+  name?: string;
   fitnessLevel?: string;
   equipment?: string[];
   workoutDuration?: string;

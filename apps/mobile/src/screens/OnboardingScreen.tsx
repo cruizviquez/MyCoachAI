@@ -19,6 +19,7 @@ import { theme } from 'styles/theme';
 import { responsive } from 'utils/responsive';
 
 import { StackNavigationProp } from '@react-navigation/stack';
+import { RoboQoachLogo } from '../components/RoboQoachLogo';
 import { RootStackParamList } from '../types/navigation';
 
 type OnboardingScreenNavigationProp = StackNavigationProp<RootStackParamList, 'OnboardingProfile'>;
@@ -44,14 +45,13 @@ export const OnboardingScreen = ({ navigation }: OnboardingScreenProps) => {
     <ScreenContainer scrollable={true}>
       {/* Logo Section */}
       <View style={styles.logoSection}>
-        <View style={styles.logoCircle}>
-          <Text style={styles.logoText}>RQ</Text>
-        </View>
+        <RoboQoachLogo size={64} />
         <Text style={styles.brandName}>
-          Robo<Text style={{ color: theme.colors.primary }}>Qoach</Text>
+          Robo<Text style={styles.brandNameCyan}>Qoach</Text>
         </Text>
         <Text style={styles.tagline}>AI-Powered Fitness Coaching</Text>
       </View>
+      
 
       {/* Form Section */}
       <View style={styles.formSection}>
@@ -141,9 +141,20 @@ const styles = StyleSheet.create({
   },
   brandName: {
     fontSize: responsive.fontSize(32),
-    fontWeight: '900',
-    color: theme.colors.textPrimary,
-    marginBottom: responsive.vScale(8),
+    fontWeight: 'bold',
+    color: 'white',
+    marginTop: 12,
+    marginBottom: 4,
+    letterSpacing: 1.2,
+    textAlign: 'center',
+  },
+  brandNameCyan: {
+    color: theme.colors.primary,
+    fontWeight: 'bold',
+    letterSpacing: 1.2,
+    textShadowColor: '#0a0a0a',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 6,
   },
   tagline: {
     fontSize: responsive.fontSize(16),

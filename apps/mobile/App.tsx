@@ -1,3 +1,4 @@
+import QuickStartScreen from './src/screens/onboarding/QuickStartScreen';
 import 'react-native-gesture-handler';
 
 import React from 'react';
@@ -20,6 +21,7 @@ import OnboardingSchedule from './src/screens/onboarding/OnboardingSchedule';
 import WorkoutPlanScreen from './src/screens/workout/WorkoutPlanScreen';
 import HomeScreen from './src/screens/HomeScreen';
 import CameraScreen from './src/screens/CameraScreen';
+import OnboardingSingleScreen from './src/screens/OnboardingSingleScreen';
 
 const Stack = createStackNavigator();
 
@@ -41,6 +43,16 @@ export default function App() {
                 name="Welcome" 
                 component={WelcomeScreen}
                 options={{ headerShown: false }}
+              />
+                <Stack.Screen 
+                  name="QuickStart" 
+                  component={QuickStartScreen}
+                  options={{ title: 'Quick Start' }}
+                />
+              <Stack.Screen 
+                name="OnboardingSingle" 
+                component={OnboardingSingleScreen}
+                options={{ title: 'Get Started', headerShown: false }}
               />
               <Stack.Screen 
                 name="Setup" 
@@ -75,7 +87,9 @@ export default function App() {
               <Stack.Screen 
                 name="WorkoutPlan" 
                 component={WorkoutPlanScreen}
-                options={{ title: 'Your Plan' }}
+                options={{ 
+                  headerShown: false
+                }}
               />
               <Stack.Screen 
                 name="Home" 

@@ -22,10 +22,17 @@ export default function HomeScreen() {
 
   return (
   <ScreenContainer scrollable={true} style={styles.scrollView}>
-        <View style={styles.header}>
-          <Text style={styles.greeting}>Welcome back! 👋</Text>
-          <Text style={styles.title}>Today's Workout</Text>
-        </View>
+  <ScrollView showsVerticalScrollIndicator={true}>
+  <View style={styles.header}>
+    <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 4 }}>
+      <Text style={styles.greeting}>Welcome back! </Text>
+      <RoboQoachLogo size={24} />
+    </View>
+    <View style={{ flexDirection: 'row', alignItems: 'center' }}>
+      <RoboQoachLogo size={28} />
+      <Text style={styles.title}>Today's Workout</Text>
+    </View>
+  </View>
 
         <View style={styles.statsContainer}>
           <View style={styles.statCard}>
@@ -60,6 +67,7 @@ export default function HomeScreen() {
         <TouchableOpacity style={styles.startButton} onPress={handleStartWorkout}>
           <Text style={styles.startButtonText}>Start Workout with RoboQoach 🤖</Text>
         </TouchableOpacity>
+        </ScrollView>
       </ScreenContainer>
   );
 }
@@ -84,7 +92,12 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#ffffff',
+    color: '#00D4FF', // theme.colors.primary
+    letterSpacing: 1.2,
+    textShadowColor: '#0a0a0a',
+    textShadowOffset: { width: 0, height: 2 },
+    textShadowRadius: 6,
+    textAlign: 'center',
   },
   statsContainer: {
     flexDirection: 'row',
