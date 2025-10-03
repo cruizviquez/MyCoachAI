@@ -25,9 +25,10 @@ export default function AuthScreen() {
     }
   };
 
+  const { useRouter } = require('expo-router');
+  const router = useRouter();
   return (
     <View style={styles.container}>
-  {/* Removed CustomHeader for web compatibility */}
       <Text style={styles.title}>{isSignUp ? 'Sign Up' : 'Sign In'}</Text>
       <TextInput
         style={styles.input}
@@ -57,6 +58,12 @@ export default function AuthScreen() {
         onPress={() => setIsSignUp(!isSignUp)}
       >
         {isSignUp ? 'Already have an account? Sign In' : "Don't have an account? Sign Up"}
+      </Text>
+      <Text
+        style={[styles.switch, { color: theme.colors.primary, marginTop: 32 }]}
+        onPress={() => router.push('/Dashboard')}
+      >
+        Skip for anonymous use
       </Text>
     </View>
   );
