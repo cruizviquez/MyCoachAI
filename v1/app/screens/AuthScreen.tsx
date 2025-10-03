@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { Platform } from 'react-native';
 import { View, Text, TextInput, Button, StyleSheet } from 'react-native';
 import { theme } from '../assets/theme';
 import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword } from 'firebase/auth';
@@ -26,6 +27,7 @@ export default function AuthScreen() {
 
   return (
     <View style={styles.container}>
+  {/* Removed CustomHeader for web compatibility */}
       <Text style={styles.title}>{isSignUp ? 'Sign Up' : 'Sign In'}</Text>
       <TextInput
         style={styles.input}

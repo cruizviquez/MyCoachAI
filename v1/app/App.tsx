@@ -1,23 +1,5 @@
-import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { Stack } from 'expo-router';
 
 export default function App() {
-  return (
-    <View style={styles.container}>
-      <Text style={styles.text}>RoboQoach is working!</Text>
-    </View>
-  );
+  return <Stack />;
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#000',
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  text: {
-    color: '#00FFFF',
-    fontSize: 24,
-  },
-});

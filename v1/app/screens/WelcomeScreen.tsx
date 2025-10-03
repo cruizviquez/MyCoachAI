@@ -1,32 +1,69 @@
+
 import React from 'react';
-import { View, Text, Image, StyleSheet } from 'react-native';
-import { theme } from '../assets/theme';
+import { useRouter } from 'expo-router';
+import { ScreenContainer } from './ScreenContainer';
+import { RoboQoachLogo } from './RoboQoachLogo';
+import { theme } from './theme';
+import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 
 export default function WelcomeScreen() {
+  const router = useRouter();
+
+  const handlePersonalizedSetup = () => {
+    router.push('/GoalScreen');
+  };
+
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>Welcome to RoboQoach</Text>
-      <Text style={styles.subtitle}>Your AI Fitness Coach</Text>
-    </View>
+    <ScreenContainer scrollable={false}>
+      <View style={styles.content}>
+        <View style={styles.logoHeader}>
+          <RoboQoachLogo size={48} />
+          <Text style={styles.title}>RoboQoach</Text>
+        </View>
+        <Text style={styles.welcomeText}>Welcome to RoboQoach!</Text>
+        <TouchableOpacity style={styles.primaryButton} onPress={handlePersonalizedSetup}>
+          <Text style={styles.primaryButtonText}>Get Started</Text>
+        </TouchableOpacity>
+      </View>
+    </ScreenContainer>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
+  content: {
     flex: 1,
-    backgroundColor: theme.colors.background,
-    alignItems: 'center',
     justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 40,
+    backgroundColor: theme.colors.background,
+  },
+  logoHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 32,
   },
   title: {
-    color: theme.colors.text,
     fontSize: 32,
     fontWeight: 'bold',
-    marginBottom: 8,
+    color: theme.colors.primary,
+    marginLeft: 16,
   },
-  subtitle: {
+  welcomeText: {
+    fontSize: 20,
     color: theme.colors.text,
-    fontSize: 18,
     marginBottom: 32,
+    textAlign: 'center',
+  },
+  primaryButton: {
+    backgroundColor: theme.colors.primary,
+    paddingVertical: 14,
+    paddingHorizontal: 40,
+    borderRadius: 24,
+  },
+  primaryButtonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });

@@ -1,6 +1,5 @@
-import { Stack } from 'expo-router';
-import WelcomeScreen from './screens/WelcomeScreen';
+import { registerRootComponent } from 'expo';
+import App from './App';
 
-export default function App() {
-  return <WelcomeScreen />;
-}
+registerRootComponent(App);
+

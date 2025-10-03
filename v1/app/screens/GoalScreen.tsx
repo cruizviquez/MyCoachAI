@@ -1,10 +1,10 @@
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet, Platform } from 'react-native';
 import { theme } from '../assets/theme';
 
 export default function GoalScreen() {
-  return (
-    <View style={styles.container}>
+    return (
+        <View style={styles.container}>
       <Text style={styles.text}>Select your fitness goal</Text>
     </View>
   );
