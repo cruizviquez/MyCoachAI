@@ -1,18 +1,10 @@
-# RoboQoach## Exercise Specs and Pose Analysis
+## Exercise Specs and Pose Analysis
 
+The backend now supports JSON-driven exercise definitions for form feedback and rep detection.
 
-
-This repository now uses versioned folders.The backend now supports JSON-driven exercise definitions for form feedback and rep detection.
-
-
-
-- `v0/` — archived MVP and experiments (original Expo app + FastAPI backend)File: `backend/app/services/exercise_specs.json`
-
-- `v1/` — new implementation (clean slate), driven by the Technical Specification in `v0/docs/AI Fitness Coach - Technical Specification.pdf`
+File: `backend/app/services/exercise_specs.json`
 
 Schema overview per exercise:
-
-See `v1/README.md` for the new plan and backlog.
 
 - `name`: Display name
 - `difficulty`: e.g., Beginner/Intermediate/Advanced

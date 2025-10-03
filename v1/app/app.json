@@ -1,0 +1,36 @@
+{
+  "expo": {
+    "name": "RoboQoach",
+    "slug": "roboqoach-v1",
+    "version": "0.1.0",
+    "sdkVersion": "54.0.0",
+    "orientation": "portrait",
+    "icon": "",
+    "splash": {
+      "image": "",
+      "resizeMode": "contain",
+      "backgroundColor": "#000000"
+    },
+    "updates": {
+      "fallbackToCacheTimeout": 0
+    },
+    "assetBundlePatterns": [
+      "**/*"
+    ],
+    "ios": {
+      "supportsTablet": true
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "",
+        "backgroundColor": "#000000"
+      }
+    },
+    "web": {
+      "favicon": ""
+    },
+    "plugins": [
+      "expo-font"
+    ]
+  }
+}
